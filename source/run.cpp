@@ -160,6 +160,10 @@ namespace runner {
         buffer_to_file,
         file_to_buffer,
         integer_add,
+        integer_subtract,
+        integer_multiply,
+        integer_divide,
+        integer_modulous,
         integer_within_range,
         boolean_not,
     };
@@ -384,6 +388,58 @@ namespace runner {
             case instruction_type::integer_add:
                 // perform addition
                 context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0] + context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1];
+
+                // next instruction
+                current_instruction++;
+
+                break;
+            case instruction_type::integer_subtract:
+                // perform subtraction
+                context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0] - context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1];
+
+                // next instruction
+                current_instruction++;
+
+                break;
+            case instruction_type::integer_multiply:
+                // perform multiplication
+                context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0] * context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1];
+
+                // next instruction
+                current_instruction++;
+
+                break;
+            case instruction_type::integer_divide:
+                // check for valid denominator
+                if (context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1] != 0) {
+                    // perform division
+                    context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0] / context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1];
+
+                    // setup error code
+                    context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_1] = false;
+                // demoninator is invalid (0)
+                } else {
+                    // setup error code
+                    context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_1] = true;
+                }
+
+                // next instruction
+                current_instruction++;
+
+                break;
+            case instruction_type::integer_modulous:
+                // check for valid denominator
+                if (context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1] != 0) {
+                    // perform division
+                    context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0] % context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1];
+
+                    // setup error code
+                    context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_1] = false;
+                // demoninator is invalid (0)
+                } else {
+                    // setup error code
+                    context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_1] = true;
+                }
 
                 // next instruction
                 current_instruction++;

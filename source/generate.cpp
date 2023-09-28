@@ -457,6 +457,84 @@ namespace generator {
             workspace.p_instruction_count++;
         }
 
+        void write__integer_subtract(workspace& workspace, runner::cell_ID source_1, runner::cell_ID source_2, runner::cell_ID destination) {
+            runner::instruction temp_instruction;
+
+            // create instruction
+            if (workspace.p_pass_type == pass_type::pass_build) {
+                // set type
+                temp_instruction.p_type = runner::instruction_type::integer_subtract;
+                temp_instruction.p_input_0 = source_1;
+                temp_instruction.p_input_1 = source_2;
+                temp_instruction.p_output_0 = destination;
+
+                // write instruction
+                workspace.p_program.p_instructions[workspace.p_instruction_count] = temp_instruction;
+            }
+
+            // next instruction
+            workspace.p_instruction_count++;
+        }
+
+        void write__integer_multiply(workspace& workspace, runner::cell_ID source_1, runner::cell_ID source_2, runner::cell_ID destination) {
+            runner::instruction temp_instruction;
+
+            // create instruction
+            if (workspace.p_pass_type == pass_type::pass_build) {
+                // set type
+                temp_instruction.p_type = runner::instruction_type::integer_multiply;
+                temp_instruction.p_input_0 = source_1;
+                temp_instruction.p_input_1 = source_2;
+                temp_instruction.p_output_0 = destination;
+
+                // write instruction
+                workspace.p_program.p_instructions[workspace.p_instruction_count] = temp_instruction;
+            }
+
+            // next instruction
+            workspace.p_instruction_count++;
+        }
+
+        void write__integer_divide(workspace& workspace, runner::cell_ID source_1, runner::cell_ID source_2, runner::cell_ID destination, runner::cell_ID error_code) {
+            runner::instruction temp_instruction;
+
+            // create instruction
+            if (workspace.p_pass_type == pass_type::pass_build) {
+                // set type
+                temp_instruction.p_type = runner::instruction_type::integer_divide;
+                temp_instruction.p_input_0 = source_1;
+                temp_instruction.p_input_1 = source_2;
+                temp_instruction.p_output_0 = destination;
+                temp_instruction.p_output_1 = error_code;
+
+                // write instruction
+                workspace.p_program.p_instructions[workspace.p_instruction_count] = temp_instruction;
+            }
+
+            // next instruction
+            workspace.p_instruction_count++;
+        }
+
+        void write__integer_modulous(workspace& workspace, runner::cell_ID source_1, runner::cell_ID source_2, runner::cell_ID destination, runner::cell_ID error_code) {
+            runner::instruction temp_instruction;
+
+            // create instruction
+            if (workspace.p_pass_type == pass_type::pass_build) {
+                // set type
+                temp_instruction.p_type = runner::instruction_type::integer_modulous;
+                temp_instruction.p_input_0 = source_1;
+                temp_instruction.p_input_1 = source_2;
+                temp_instruction.p_output_0 = destination;
+                temp_instruction.p_output_1 = error_code;
+
+                // write instruction
+                workspace.p_program.p_instructions[workspace.p_instruction_count] = temp_instruction;
+            }
+
+            // next instruction
+            workspace.p_instruction_count++;
+        }
+
         void write__integer_within_range(workspace& workspace, runner::cell_ID low_bound, runner::cell_ID value, runner::cell_ID high_bound, runner::cell_ID destination) {
             runner::instruction temp_instruction;
 
@@ -729,6 +807,30 @@ namespace generator {
                 case runner::instruction_type::integer_add:
                     // write code
                     write_instructions::write__integer_add(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[1], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[0], abstraction));
+
+                    break;
+                // wave.integer.subtract(2)(1)
+                case runner::instruction_type::integer_subtract:
+                    // write code
+                    write_instructions::write__integer_subtract(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[1], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[0], abstraction));
+
+                    break;
+                // wave.integer.multiply(2)(1)
+                case runner::instruction_type::integer_multiply:
+                    // write code
+                    write_instructions::write__integer_multiply(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[1], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[0], abstraction));
+
+                    break;
+                // wave.integer.divide(2)(1)
+                case runner::instruction_type::integer_divide:
+                    // write code
+                    write_instructions::write__integer_divide(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[1], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[1], abstraction));
+
+                    break;
+                // wave.integer.modulous(2)(1)
+                case runner::instruction_type::integer_modulous:
+                    // write code
+                    write_instructions::write__integer_modulous(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[1], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[1], abstraction));
 
                     break;
                 // wave.integer.within_range(3)(1)

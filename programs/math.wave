@@ -1,0 +1,32 @@
+main()() = {
+    test.integer.math()()
+}
+
+print.result(number)() = {
+    [ setup variables ]
+    wave.set(wave.integer.10)(new_line)
+
+    [ print ]
+    wave.print.number(number)()
+    wave.print.character(new_line)()
+}
+
+test.integer.math()() = {
+    [ setup variables ]
+    wave.set(wave.integer.300)(a)
+    wave.set(wave.integer.200)(b)
+
+    [ perform tests ]
+    wave.integer.add(a b)(add.result)
+    wave.integer.subtract(a b)(subtract.result)
+    wave.integer.multiply(a b)(multiply.result)
+    wave.integer.divide(a b)(divide.result error)
+    wave.integer.modulous(a b)(modulous.result error)
+
+    [ print results ]
+    print.result(add.result)()
+    print.result(subtract.result)()
+    print.result(multiply.result)()
+    print.result(divide.result)()
+    print.result(modulous.result)()
+}

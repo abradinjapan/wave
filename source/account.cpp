@@ -681,6 +681,10 @@ namespace accounter {
                 synthesize_header_only_abstraction("wave.buffer_to_file", 2, 1);
                 synthesize_header_only_abstraction("wave.file_to_buffer", 1, 2);
                 synthesize_header_only_abstraction("wave.integer.add", 2, 1);
+                synthesize_header_only_abstraction("wave.integer.subtract", 2, 1);
+                synthesize_header_only_abstraction("wave.integer.multiply", 2, 1);
+                synthesize_header_only_abstraction("wave.integer.divide", 2, 2);
+                synthesize_header_only_abstraction("wave.integer.modulous", 2, 2);
                 synthesize_header_only_abstraction("wave.integer.within_range", 3, 1);
                 synthesize_header_only_abstraction("wave.boolean.not", 1, 1);
             }
