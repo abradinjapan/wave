@@ -292,41 +292,6 @@ namespace generator {
             workspace.p_instruction_count++;
         }
 
-        void write__jump_to(workspace& workspace, runner::cell_ID source) {
-            runner::instruction temp_instruction;
-
-            // create instruction
-            if (workspace.p_pass_type == pass_type::pass_build) {
-                // set type
-                temp_instruction.p_type = runner::instruction_type::jump_to;
-                temp_instruction.p_input_0 = source;
-
-                // write instruction
-                workspace.p_program.p_instructions[workspace.p_instruction_count] = temp_instruction;
-            }
-
-            // next instruction
-            workspace.p_instruction_count++;
-        }
-
-        void write__jump_if(workspace& workspace, runner::cell_ID condition, runner::cell_ID instruction_ID) {
-            runner::instruction temp_instruction;
-
-            // create instruction
-            if (workspace.p_pass_type == pass_type::pass_build) {
-                // set type
-                temp_instruction.p_type = runner::instruction_type::jump_if;
-                temp_instruction.p_input_0 = condition;
-                temp_instruction.p_input_1 = instruction_ID;
-
-                // write instruction
-                workspace.p_program.p_instructions[workspace.p_instruction_count] = temp_instruction;
-            }
-
-            // next instruction
-            workspace.p_instruction_count++;
-        }
-
         void write__jump(workspace& workspace, runner::cell_ID condition, uint64_t instruction_ID) {
             runner::instruction temp_instruction;
 
@@ -685,18 +650,6 @@ namespace generator {
 
                     // print error
                     std::cout << "Generation Error: Although jump_from_abstraction is a valid instruction, it is not available for general use." << std::endl;
-
-                    break;
-                // wave.jump_to(1)(0)
-                case runner::instruction_type::jump_to:
-                    // write code
-                    write_instructions::write__jump_to(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction));
-
-                    break;
-                // wave.jump_if(2)(0)
-                case runner::instruction_type::jump_if:
-                    // write code
-                    write_instructions::write__jump_if(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[1], abstraction));
 
                     break;
                 // wave.jump(2)(0)

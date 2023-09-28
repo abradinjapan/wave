@@ -151,8 +151,8 @@ namespace runner {
         get_output,
         jump_to_abstraction,
         jump_from_abstraction,
-        jump_to,
-        jump_if,
+        //jump_to,
+        //jump_if,
         jump,
         get_instruction_index,
         request_memory,
@@ -313,22 +313,6 @@ namespace runner {
                 // jump
                 current_instruction = return_stack[return_stack.size() - 1];
                 return_stack.pop_back();
-
-                break;
-            case instruction_type::jump_to:
-                // jump
-                current_instruction = context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0];
-
-                break;
-            case instruction_type::jump_if:
-                // if true
-                if (context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0] == 1) {
-                    // jump
-                    current_instruction = context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1];
-                } else {
-                    // next instruction
-                    current_instruction++;
-                }
 
                 break;
             case instruction_type::jump:
