@@ -789,17 +789,21 @@ namespace generator {
     // generate code from a program
     runner::program generate_program(accounter::skeleton::skeleton& skeleton, bool& error_occured) {
         workspace workspace;
+        uint64_t main_function_ID;
 
         // start pass
         workspace.start_pass_measure(skeleton.p_abstractions.size());
 
-        // generate kickstarter
-        generate_kickstarter(workspace, skeleton.lookup_header_by_name("pirate.sail", error_occured));
+        // get main function ID
+        main_function_ID = skeleton.lookup_header_by_name("main", error_occured);
 
         // check error
         if (error_occured) {
             return workspace.p_program;
         }
+
+        // generate kickstarter
+        generate_kickstarter(workspace, main_function_ID);
 
         // measure each abstraction
         for (uint64_t abstraction_ID = 0; abstraction_ID < skeleton.p_abstractions.size(); abstraction_ID++) {
@@ -822,7 +826,7 @@ namespace generator {
         workspace.start_pass_build();
 
         // generate kickstarter
-        generate_kickstarter(workspace, skeleton.lookup_header_by_name("pirate.sail", error_occured));
+        generate_kickstarter(workspace, main_function_ID);
 
         // check error
         if (error_occured) {
