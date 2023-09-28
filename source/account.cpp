@@ -660,7 +660,7 @@ namespace accounter {
             void add_predefined_abstractions() {
                 // add predefined abstractions to header table
                 synthesize_header_only_abstraction("wave.quit", 0, 0);
-                synthesize_header_only_abstraction("wave.write_cell", 1, 1);
+                synthesize_header_only_abstraction("wave.set", 1, 1);
                 synthesize_header_only_abstraction("wave.copy", 1, 1);
                 synthesize_header_only_abstraction("wave.print_cell_as_number", 1, 0);
                 synthesize_header_only_abstraction("wave.print_cell_as_character", 1, 0);

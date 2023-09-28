@@ -1,10 +1,10 @@
 main()() = {
-    wave.write_cell(wave.integer.72)(character)
+    wave.set(wave.integer.72)(character)
     wave.print_cell_as_character(character)()
-    wave.write_cell(wave.integer.105)(character)
+    wave.set(wave.integer.105)(character)
     wave.print_cell_as_character(character)()
-    wave.write_cell(wave.integer.33)(character)
+    wave.set(wave.integer.33)(character)
     wave.print_cell_as_character(character)()
-    wave.write_cell(wave.integer.10)(new_line)
+    wave.set(wave.integer.10)(new_line)
     wave.print_cell_as_character(new_line)()
 }
