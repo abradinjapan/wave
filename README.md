@@ -1,3 +1,3 @@
 # Wave Programming Language
 
-An expiramental compiler and interpreter combo.
+An experamental compiler and interpreter combo.

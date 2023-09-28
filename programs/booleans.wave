@@ -1,4 +1,4 @@
-main()() = {
+test.boolean.not()() = {
     [ setup variables ]
     wave.set(wave.integer.100)(a)
     wave.set(wave.integer.200)(b)
@@ -25,4 +25,8 @@ main()() = {
     [ print value ]
     wave.print.number(in_range)()
     wave.print.character(new_line)()
+}
+
+main()() = {
+    test.boolean.not()()
 }
