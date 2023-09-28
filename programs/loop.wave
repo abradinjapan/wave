@@ -6,7 +6,6 @@ main()() = {
     wave.set(wave.integer.0)(min)
     wave.copy(min)(current)
     wave.set(wave.integer.10)(max)
-    wave.set(@loop_start)(loop_start)
 
     [ the loop start ]
     @loop_start
