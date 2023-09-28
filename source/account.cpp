@@ -674,6 +674,7 @@ namespace accounter {
                 synthesize_header_only_abstraction("wave.jump_from_abstraction", 0, 0);
                 synthesize_header_only_abstraction("wave.jump_to", 1, 0);
                 synthesize_header_only_abstraction("wave.jump_if", 2, 0);
+                synthesize_header_only_abstraction("wave.jump", 2, 0);
                 synthesize_header_only_abstraction("wave.get_instruction_index", 0, 1);
                 synthesize_header_only_abstraction("wave.request_memory", 1, 1);
                 synthesize_header_only_abstraction("wave.return_memory", 1, 0);

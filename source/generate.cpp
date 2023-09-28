@@ -327,6 +327,24 @@ namespace generator {
             workspace.p_instruction_count++;
         }
 
+        void write__jump(workspace& workspace, runner::cell_ID condition, uint64_t instruction_ID) {
+            runner::instruction temp_instruction;
+
+            // create instruction
+            if (workspace.p_pass_type == pass_type::pass_build) {
+                // set type
+                temp_instruction.p_type = runner::instruction_type::jump;
+                temp_instruction.p_input_0 = condition;
+                temp_instruction.p_instruction_ID = instruction_ID;
+
+                // write instruction
+                workspace.p_program.p_instructions[workspace.p_instruction_count] = temp_instruction;
+            }
+
+            // next instruction
+            workspace.p_instruction_count++;
+        }
+
         void write__get_instruction_index(workspace& workspace, runner::cell_ID destination) {
             runner::instruction temp_instruction;
 
@@ -679,6 +697,19 @@ namespace generator {
                 case runner::instruction_type::jump_if:
                     // write code
                     write_instructions::write__jump_if(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[1], abstraction));
+
+                    break;
+                // wave.jump(2)(0)
+                case runner::instruction_type::jump:
+                    // if measure pass
+                    if (workspace.p_pass_type == pass_type::pass_measure) {
+                        // write dummy code
+                        write_instructions::write__jump(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction), 0);
+                    // if build pass
+                    } else {
+                        // write actual code
+                        write_instructions::write__jump(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction), workspace.p_abstraction_offsets[abstraction_ID].p_code_defined_offsets[abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[1].p_ID].p_instruction_ID);
+                    }
 
                     break;
                 // wave.get_instruction_index(0)(1)

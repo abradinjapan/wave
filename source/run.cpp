@@ -153,6 +153,7 @@ namespace runner {
         jump_from_abstraction,
         jump_to,
         jump_if,
+        jump,
         get_instruction_index,
         request_memory,
         return_memory,
@@ -173,6 +174,7 @@ namespace runner {
         cell_ID p_input_2;
         cell_ID p_output_0;
         cell_ID p_output_1;
+        uint64_t p_instruction_ID;
 
         instruction() {
             p_type = instruction_type::quit;
@@ -182,6 +184,7 @@ namespace runner {
             p_input_2 = 0;
             p_output_0 = 0;
             p_output_1 = 0;
+            p_instruction_ID = 0;
         }
     };
 
@@ -322,6 +325,17 @@ namespace runner {
                 if (context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0] == 1) {
                     // jump
                     current_instruction = context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1];
+                } else {
+                    // next instruction
+                    current_instruction++;
+                }
+
+                break;
+            case instruction_type::jump:
+                // if true
+                if (context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0] == 1) {
+                    // jump via instruction number
+                    current_instruction = program.p_instructions[current_instruction].p_instruction_ID;
                 } else {
                     // next instruction
                     current_instruction++;
