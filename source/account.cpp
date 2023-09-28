@@ -662,8 +662,8 @@ namespace accounter {
                 synthesize_header_only_abstraction("wave.quit", 0, 0);
                 synthesize_header_only_abstraction("wave.set", 1, 1);
                 synthesize_header_only_abstraction("wave.copy", 1, 1);
-                synthesize_header_only_abstraction("wave.print_cell_as_number", 1, 0);
-                synthesize_header_only_abstraction("wave.print_cell_as_character", 1, 0);
+                synthesize_header_only_abstraction("wave.print.number", 1, 0);
+                synthesize_header_only_abstraction("wave.print.character", 1, 0);
                 synthesize_header_only_abstraction("wave.create_new_context", 1, 0);
                 synthesize_header_only_abstraction("wave.restore_old_context", 0, 0);
                 synthesize_header_only_abstraction("wave.pass_input", 1, 0);
@@ -682,8 +682,8 @@ namespace accounter {
                 synthesize_header_only_abstraction("wave.address_to_cell", 2, 1);
                 synthesize_header_only_abstraction("wave.buffer_to_file", 2, 1);
                 synthesize_header_only_abstraction("wave.file_to_buffer", 1, 2);
-                synthesize_header_only_abstraction("wave.integer_add", 2, 1);
-                synthesize_header_only_abstraction("wave.integer_within_range", 3, 1);
+                synthesize_header_only_abstraction("wave.integer.add", 2, 1);
+                synthesize_header_only_abstraction("wave.integer.within_range", 3, 1);
             }
 
         public:

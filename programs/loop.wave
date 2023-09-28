@@ -11,16 +11,16 @@ main()() = {
     @loop_start
 
     [ print number ]
-    wave.print_cell_as_number(current)()
+    wave.print.number(current)()
 
     [ print newline ]
-    wave.print_cell_as_character(new_line)()
+    wave.print.character(new_line)()
 
     [ next number ]
-    wave.integer_add(current increment)(current)
+    wave.integer.add(current increment)(current)
 
     [ check if loop should continue ]
-    wave.integer_within_range(min current max)(should_continue_loop)
+    wave.integer.within_range(min current max)(should_continue_loop)
 
     [ jump to loop start if continuing ]
     wave.jump(should_continue_loop @loop_start)()
