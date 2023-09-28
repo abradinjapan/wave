@@ -1,5 +1,5 @@
 main()() = {
-    wave.write_cell(waves.integer.97)(a)
+    wave.write_cell(wave.integer.97)(a)
     wave.print_cell_as_character(a)()
     wave.write_cell(wave.integer.10)(new_line)
     wave.print_cell_as_character(new_line)()

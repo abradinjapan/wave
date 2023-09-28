@@ -10,9 +10,19 @@
 
 std::string load_file(std::string file_path) {
     std::ifstream file(file_path);
-    std::string content((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
 
-    return content;
+    // if file opened
+    if (file) {
+        // return file contents
+        return std::string((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
+    // if file not opened
+    } else {
+        // announce error
+        std::cout << "File loading error, file was not opened: " << file_path << std::endl;
+
+        // return empty string
+        return "";
+    }
 }
 
 runner::program compile(std::string user_code, bool& compilation_error, bool print_debug) {
@@ -125,9 +135,23 @@ void compile_and_run(std::string user_code) {
 
 int main() {
     std::cout << "Starting up compiler." << std::endl;
+    std::vector<std::string> user_code_file_paths;
 
-    // compile
-    compile_and_run(load_file("programs/hello_world.wave"));
+    // load file paths
+    user_code_file_paths.push_back("programs/hello_world.wave");
+
+    // run compiler for each file
+    for (uint64_t file_ID = 0; file_ID < user_code_file_paths.size(); file_ID++) {
+        std::string user_code;
+
+        // load file
+        user_code = load_file(user_code_file_paths[file_ID]);
+
+        if (user_code != "") {
+            // compile
+            compile_and_run(user_code);
+        }
+    }
 
     // test runner
     //test_runner::test_runner();
