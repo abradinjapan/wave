@@ -150,13 +150,13 @@ namespace parser {
                 lexling_index++;
             } else {
                 // display error
-                std::cout << "Ahoy scallawag! A closing parenthesis hath gone overboard! This be a parsing error! ARRGH!" << std::endl;
+                std::cout << "Parse error, missing closing parenthesis." << std::endl;
 
                 error_occured = true;
             }
         } else {
             // display error
-            std::cout << "Ahoy scallawag! An opening parenthesis hath gone overboard! This be a parsing error! ARRGH!" << std::endl;
+            std::cout << "PArse error, missing opening parenthesis." << std::endl;
 
             error_occured = true;
         }
@@ -191,7 +191,7 @@ namespace parser {
                     error_occured = true;
 
                     // inform user of error
-                    std::cout << "Ahoy scallawag! A parse error hath occured! An invalid argument type was found in an abstraction header and sent to Davy Jones Locker!" << std::endl;
+                    std::cout << "Parse error, invalid header argument: " << lexlings.p_lexlings[lexling_index].p_value << std::endl;
 
                     // quit
                     return output;
@@ -203,13 +203,13 @@ namespace parser {
                 lexling_index++;
             } else {
                 // display error
-                std::cout << "Ahoy scallawag! A closing parenthesis hath gone overboard! This be a parsing error! ARRGH!" << std::endl;
+                std::cout << "Parse error, missing closing parenthesis." << std::endl;
 
                 error_occured = true;
             }
         } else {
             // display error
-            std::cout << "Ahoy scallawag! An opening parenthesis hath gone overboard! This be a parsing error! ARRGH!" << std::endl;
+            std::cout << "Parse error, missing opening parenthesis." << std::endl;
 
             error_occured = true;
         }
@@ -264,7 +264,7 @@ namespace parser {
             output.p_type = statement_type::is_not_valid;
 
             // display error
-            std::cout << "Avast! An unrecognized statement type has boarded our ship and sent us off course!" << std::endl << "Current Lexling: " << lexlings.p_lexlings[lexling_index].p_value << std::endl;
+            std::cout << "Parse error, unrecognized statement type." << std::endl << "Current Lexling: " << lexlings.p_lexlings[lexling_index].p_value << std::endl;
 
             // set error
             error_occured = true;
@@ -301,7 +301,7 @@ namespace parser {
         // error
         } else {
             // display error
-            std::cout << "Avast! An invalid abstraction header has boarded our ship and sent us off course!" << std::endl << "Current Lexling: " << lexlings.p_lexlings[lexling_index].p_value << std::endl;
+            std::cout << "Parse error, invalid abstraction header." << std::endl << "Current Lexling: " << lexlings.p_lexlings[lexling_index].p_value << std::endl;
 
             // set error
             error_occured = true;
@@ -344,7 +344,7 @@ namespace parser {
                 lexling_index++;
             } else {
                 // print error
-                std::cout << "Oi mate! A scope opener '{' has betrayed out crew and gone missing! Find this landlubber and have him dance the hempen jig!" << std::endl;
+                std::cout << "Parse error, missing scope opener '{'." << std::endl;
 
                 // set error
                 error_occured = true;

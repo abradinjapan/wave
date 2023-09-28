@@ -216,7 +216,7 @@ namespace lexer {
                 // no lexling found, error
                 } else {
                     // inform user of failure
-                    std::cout << "Shiver me timbers! A lexical error hath belayed our ship!" << std::endl;
+                    std::cout << "Lexical error, invalid lexling / character detected: " << user_code[index] << std::endl;
 
                     // set error
                     error_occured = true;

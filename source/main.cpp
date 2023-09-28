@@ -97,7 +97,7 @@ void compile_and_run(std::string user_code) {
     bool run_time_error = false;
 
     // inform user of compilation start
-    std::cout << "\n\n\n----------\n" << "Ahoy! Code is about to be compiled!" << std::endl;
+    std::cout << "\n\n\n----------\n" << "Compiling code." << std::endl;
 
     // print original file
     std::cout << "Original File:" << std::endl << user_code << std::endl;
@@ -124,7 +124,7 @@ void compile_and_run(std::string user_code) {
 }
 
 int main() {
-    std::cout << "☠️ This here infernal contraption be a compiler! ARRGH!☠️ " << std::endl;
+    std::cout << "Starting up compiler." << std::endl;
 
     // compile
     compile_and_run(load_file("programs/hello_world.wave"));
