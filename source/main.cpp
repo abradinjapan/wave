@@ -127,13 +127,7 @@ int main() {
     std::cout << "☠️ This here infernal contraption be a compiler! ARRGH!☠️ " << std::endl;
 
     // compile
-    compile_and_run(load_file("programs/test7.pirate"));
-    compile_and_run(load_file("programs/test8.pirate"));
-    compile_and_run(load_file("programs/test9.pirate"));
-    compile_and_run(load_file("programs/test10.pirate"));
-    compile_and_run(load_file("programs/print.pirate"));
-    compile_and_run(load_file("programs/memory.pirate"));
-    compile_and_run(load_file("programs/files.pirate"));
+    compile_and_run(load_file("programs/hello_world.wave"));
 
     // test runner
     //test_runner::test_runner();

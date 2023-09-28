@@ -680,7 +680,7 @@ namespace accounter {
                 synthesize_header_only_abstraction("pirate.cell_to_address", 3, 0);
                 synthesize_header_only_abstraction("pirate.address_to_cell", 2, 1);
                 synthesize_header_only_abstraction("pirate.buffer_to_file", 2, 1);
-                synthesize_header_only_abstraction("pirate.buffer_to_file", 1, 2);
+                synthesize_header_only_abstraction("pirate.file_to_buffer", 1, 2);
                 synthesize_header_only_abstraction("pirate.integer_add", 2, 1);
                 synthesize_header_only_abstraction("pirate.integer_within_range", 3, 1);
             }
