@@ -551,13 +551,13 @@ namespace generator {
             if (abstraction.p_statement_map[statement_ID].p_type == accounter::skeleton::statement_type::is_call_statement) {
                 // write code (NOTE: make sure that the switch cases are aligned with their respective run.cpp instructions!)
                 switch (abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_header_ID) {
-                // pirate.quit(0)(0)
+                // wave.quit(0)(0)
                 case runner::instruction_type::quit:
                     // write code
                     write_instructions::write__quit(workspace);
 
                     break;
-                // pirate.write_cell(1)(1)
+                // wave.write_cell(1)(1)
                 case runner::instruction_type::write_cell:
                     // determine type of input
                     if (abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0].p_type == accounter::skeleton::argument_type::is_integer_literal) {
@@ -579,25 +579,25 @@ namespace generator {
                     }
 
                     break;
-                // pirate.copy(1)(1)
+                // wave.copy(1)(1)
                 case runner::instruction_type::copy_cell:
                     // write code
                     write_instructions::write__copy_cell(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[0], abstraction));
 
                     break;
-                // pirate.print_cell_as_number(1)(0)
+                // wave.print_cell_as_number(1)(0)
                 case runner::instruction_type::print_cell_as_number:
                     // write code
                     write_instructions::write__print_cell_as_number(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction));
 
                     break;
-                // pirate.print_cell_as_character(1)(0)
+                // wave.print_cell_as_character(1)(0)
                 case runner::instruction_type::print_cell_as_character:
                     // write code
                     write_instructions::write__print_cell_as_character(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction));
 
                     break;
-                // pirate.create_new_context(1)(0)
+                // wave.create_new_context(1)(0)
                 case runner::instruction_type::create_new_context:
                     // set error
                     error_occured = true;
@@ -606,7 +606,7 @@ namespace generator {
                     std::cout << "Generation Error: Although create_new_context is a valid instruction, it is not available for general use." << std::endl;
 
                     break;
-                // pirate.restore_old_context(0)(0)
+                // wave.restore_old_context(0)(0)
                 case runner::instruction_type::restore_old_context:
                     // set error
                     error_occured = true;
@@ -615,7 +615,7 @@ namespace generator {
                     std::cout << "Generation Error: Although restore_old_context is a valid instruction, it is not available for general use." << std::endl;
 
                     break;
-                // pirate.pass_input(1)(0)
+                // wave.pass_input(1)(0)
                 case runner::instruction_type::pass_input:
                     // set error
                     error_occured = true;
@@ -624,7 +624,7 @@ namespace generator {
                     std::cout << "Generation Error: Although pass_input is a valid instruction, it is not available for general use." << std::endl;
 
                     break;
-                // pirate.get_input(0)(1)
+                // wave.get_input(0)(1)
                 case runner::instruction_type::get_input:
                     // set error
                     error_occured = true;
@@ -633,7 +633,7 @@ namespace generator {
                     std::cout << "Generation Error: Although get_input is a valid instruction, it is not available for general use." << std::endl;
 
                     break;
-                // pirate.pass_output(1)(0)
+                // wave.pass_output(1)(0)
                 case runner::instruction_type::pass_output:
                     // set error
                     error_occured = true;
@@ -642,7 +642,7 @@ namespace generator {
                     std::cout << "Generation Error: Although pass_output is a valid instruction, it is not available for general use." << std::endl;
 
                     break;
-                // pirate.get_output(0)(1)
+                // wave.get_output(0)(1)
                 case runner::instruction_type::get_output:
                     // set error
                     error_occured = true;
@@ -651,7 +651,7 @@ namespace generator {
                     std::cout << "Generation Error: Although get_output is a valid instruction, it is not available for general use." << std::endl;
 
                     break;
-                // pirate.jump_to_abstraction(1)(0)
+                // wave.jump_to_abstraction(1)(0)
                 case runner::instruction_type::jump_to_abstraction:
                     // set error
                     error_occured = true;
@@ -660,7 +660,7 @@ namespace generator {
                     std::cout << "Generation Error: Although jump_to_abstraction is a valid instruction, it is not available for general use." << std::endl;
 
                     break;
-                // pirate.jump_from_abstraction(0)(0)
+                // wave.jump_from_abstraction(0)(0)
                 case runner::instruction_type::jump_from_abstraction:
                     // set error
                     error_occured = true;
@@ -669,67 +669,67 @@ namespace generator {
                     std::cout << "Generation Error: Although jump_from_abstraction is a valid instruction, it is not available for general use." << std::endl;
 
                     break;
-                // pirate.jump_to(1)(0)
+                // wave.jump_to(1)(0)
                 case runner::instruction_type::jump_to:
                     // write code
                     write_instructions::write__jump_to(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction));
 
                     break;
-                // pirate.jump_if(2)(0)
+                // wave.jump_if(2)(0)
                 case runner::instruction_type::jump_if:
                     // write code
                     write_instructions::write__jump_if(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[1], abstraction));
 
                     break;
-                // pirate.get_instruction_index(0)(1)
+                // wave.get_instruction_index(0)(1)
                 case runner::instruction_type::get_instruction_index:
                     // write code
                     write_instructions::write__get_instruction_index(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[0], abstraction));
 
                     break;
-                // pirate.request_memory(1)(1)
+                // wave.request_memory(1)(1)
                 case runner::instruction_type::request_memory:
                     // write code
                     write_instructions::write__request_memory(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[0], abstraction));
 
                     break;
-                // pirate.return_memory(1)(0)
+                // wave.return_memory(1)(0)
                 case runner::instruction_type::return_memory:
                     // write code
                     write_instructions::write__return_memory(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction));
 
                     break;
-                // pirate.cell_to_address(3)(0)
+                // wave.cell_to_address(3)(0)
                 case runner::instruction_type::cell_to_address:
                     // write code
                     write_instructions::write__cell_to_address(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[1], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[2], abstraction));
 
                     break;
-                // pirate.address_to_cell(2)(1)
+                // wave.address_to_cell(2)(1)
                 case runner::instruction_type::address_to_cell:
                     // write code
                     write_instructions::write__address_to_cell(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[1], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[0], abstraction));
 
                     break;
-                // pirate.buffer_to_file(2)(1)
+                // wave.buffer_to_file(2)(1)
                 case runner::instruction_type::buffer_to_file:
                     // write code
                     write_instructions::write__buffer_to_file(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[1], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[0], abstraction));
 
                     break;
-                // pirate.file_to_buffer(1)(2)
+                // wave.file_to_buffer(1)(2)
                 case runner::instruction_type::file_to_buffer:
                     // write code
                     write_instructions::write__file_to_buffer(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[1], abstraction));
 
                     break;
-                // pirate.integer_add(2)(1)
+                // wave.integer_add(2)(1)
                 case runner::instruction_type::integer_add:
                     // write code
                     write_instructions::write__integer_add(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[1], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[0], abstraction));
 
                     break;
-                // pirate.integer_within_range(3)(1)
+                // wave.integer_within_range(3)(1)
                 case runner::instruction_type::integer_within_range:
                     // write code
                     write_instructions::write__integer_within_range(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[1], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[2], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[0], abstraction));

@@ -348,7 +348,7 @@ namespace accounter {
         int p_argument_ID;
 
         literal(std::string name, int statement_ID, int argument_ID) {
-            std::string prefix = "pirate.integer.";
+            std::string prefix = "wave.integer.";
 
             // set properties
             p_name = name;
@@ -659,30 +659,30 @@ namespace accounter {
             // add predefined abstractions to tables
             void add_predefined_abstractions() {
                 // add predefined abstractions to header table
-                synthesize_header_only_abstraction("pirate.quit", 0, 0);
-                synthesize_header_only_abstraction("pirate.write_cell", 1, 1);
-                synthesize_header_only_abstraction("pirate.copy", 1, 1);
-                synthesize_header_only_abstraction("pirate.print_cell_as_number", 1, 0);
-                synthesize_header_only_abstraction("pirate.print_cell_as_character", 1, 0);
-                synthesize_header_only_abstraction("pirate.create_new_context", 1, 0);
-                synthesize_header_only_abstraction("pirate.restore_old_context", 0, 0);
-                synthesize_header_only_abstraction("pirate.pass_input", 1, 0);
-                synthesize_header_only_abstraction("pirate.get_input", 0, 1);
-                synthesize_header_only_abstraction("pirate.pass_output", 1, 0);
-                synthesize_header_only_abstraction("pirate.get_output", 0, 1);
-                synthesize_header_only_abstraction("pirate.jump_to_abstraction", 1, 0);
-                synthesize_header_only_abstraction("pirate.jump_from_abstraction", 0, 0);
-                synthesize_header_only_abstraction("pirate.jump_to", 1, 0);
-                synthesize_header_only_abstraction("pirate.jump_if", 2, 0);
-                synthesize_header_only_abstraction("pirate.get_instruction_index", 0, 1);
-                synthesize_header_only_abstraction("pirate.request_memory", 1, 1);
-                synthesize_header_only_abstraction("pirate.return_memory", 1, 0);
-                synthesize_header_only_abstraction("pirate.cell_to_address", 3, 0);
-                synthesize_header_only_abstraction("pirate.address_to_cell", 2, 1);
-                synthesize_header_only_abstraction("pirate.buffer_to_file", 2, 1);
-                synthesize_header_only_abstraction("pirate.file_to_buffer", 1, 2);
-                synthesize_header_only_abstraction("pirate.integer_add", 2, 1);
-                synthesize_header_only_abstraction("pirate.integer_within_range", 3, 1);
+                synthesize_header_only_abstraction("wave.quit", 0, 0);
+                synthesize_header_only_abstraction("wave.write_cell", 1, 1);
+                synthesize_header_only_abstraction("wave.copy", 1, 1);
+                synthesize_header_only_abstraction("wave.print_cell_as_number", 1, 0);
+                synthesize_header_only_abstraction("wave.print_cell_as_character", 1, 0);
+                synthesize_header_only_abstraction("wave.create_new_context", 1, 0);
+                synthesize_header_only_abstraction("wave.restore_old_context", 0, 0);
+                synthesize_header_only_abstraction("wave.pass_input", 1, 0);
+                synthesize_header_only_abstraction("wave.get_input", 0, 1);
+                synthesize_header_only_abstraction("wave.pass_output", 1, 0);
+                synthesize_header_only_abstraction("wave.get_output", 0, 1);
+                synthesize_header_only_abstraction("wave.jump_to_abstraction", 1, 0);
+                synthesize_header_only_abstraction("wave.jump_from_abstraction", 0, 0);
+                synthesize_header_only_abstraction("wave.jump_to", 1, 0);
+                synthesize_header_only_abstraction("wave.jump_if", 2, 0);
+                synthesize_header_only_abstraction("wave.get_instruction_index", 0, 1);
+                synthesize_header_only_abstraction("wave.request_memory", 1, 1);
+                synthesize_header_only_abstraction("wave.return_memory", 1, 0);
+                synthesize_header_only_abstraction("wave.cell_to_address", 3, 0);
+                synthesize_header_only_abstraction("wave.address_to_cell", 2, 1);
+                synthesize_header_only_abstraction("wave.buffer_to_file", 2, 1);
+                synthesize_header_only_abstraction("wave.file_to_buffer", 1, 2);
+                synthesize_header_only_abstraction("wave.integer_add", 2, 1);
+                synthesize_header_only_abstraction("wave.integer_within_range", 3, 1);
             }
 
         public:

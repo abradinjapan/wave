@@ -1,6 +1,6 @@
 main()() = {
-    pirate.write_cell(pirate.integer.97)(a)
-    pirate.print_cell_as_character(a)()
-    pirate.write_cell(pirate.integer.10)(new_line)
-    pirate.print_cell_as_character(new_line)()
+    wave.write_cell(waves.integer.97)(a)
+    wave.print_cell_as_character(a)()
+    wave.write_cell(wave.integer.10)(new_line)
+    wave.print_cell_as_character(new_line)()
 }

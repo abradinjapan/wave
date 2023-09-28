@@ -126,7 +126,7 @@ namespace parser {
                     // next lexling
                     lexling_index += 2;
                 // check for integer literal
-                } else if (string_starts_with(lexlings.p_lexlings[lexling_index].p_value, "pirate.integer.") == true) {
+                } else if (string_starts_with(lexlings.p_lexlings[lexling_index].p_value, "wave.integer.") == true) {
                     // add argument
                     output.push_back(name(name_type::is_integer_literal, lexlings.p_lexlings[lexling_index].p_value));
 
