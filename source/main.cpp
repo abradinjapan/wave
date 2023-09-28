@@ -139,6 +139,7 @@ int main() {
 
     // load file paths
     user_code_file_paths.push_back("programs/hello_world.wave");
+    user_code_file_paths.push_back("programs/loop.wave");
 
     // run compiler for each file
     for (uint64_t file_ID = 0; file_ID < user_code_file_paths.size(); file_ID++) {

@@ -156,7 +156,7 @@ namespace parser {
             }
         } else {
             // display error
-            std::cout << "PArse error, missing opening parenthesis." << std::endl;
+            std::cout << "Parse error, missing opening parenthesis." << std::endl;
 
             error_occured = true;
         }
