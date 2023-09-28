@@ -151,8 +151,6 @@ namespace runner {
         get_output,
         jump_to_abstraction,
         jump_from_abstraction,
-        //jump_to,
-        //jump_if,
         jump,
         get_instruction_index,
         request_memory,
@@ -163,6 +161,7 @@ namespace runner {
         file_to_buffer,
         integer_add,
         integer_within_range,
+        boolean_not,
     };
 
     class instruction {
@@ -393,6 +392,14 @@ namespace runner {
             case instruction_type::integer_within_range:
                 // perform range check
                 context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = (cell)(uint64_t)((context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1] >= context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0]) && (context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1] <= context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_2]));
+
+                // next instruction
+                current_instruction++;
+
+                break;
+            case instruction_type::boolean_not:
+                // perform inversion
+                context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = (cell)!((uint64_t)(context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0]));
 
                 // next instruction
                 current_instruction++;

@@ -1,0 +1,28 @@
+main()() = {
+    [ setup variables ]
+    wave.set(wave.integer.100)(a)
+    wave.set(wave.integer.200)(b)
+    wave.set(wave.integer.300)(c)
+    wave.set(wave.integer.10)(new_line)
+
+    [ perform comparison ]
+    wave.integer.within_range(a b c)(in_range)
+
+    [ print value ]
+    wave.print.number(in_range)()
+    wave.print.character(new_line)()
+
+    [ invert flag ]
+    wave.boolean.not(in_range)(in_range)
+
+    [ print value ]
+    wave.print.number(in_range)()
+    wave.print.character(new_line)()
+
+    [ invert flag ]
+    wave.boolean.not(in_range)(in_range)
+
+    [ print value ]
+    wave.print.number(in_range)()
+    wave.print.character(new_line)()
+}

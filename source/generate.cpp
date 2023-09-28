@@ -476,6 +476,24 @@ namespace generator {
             // next instruction
             workspace.p_instruction_count++;
         }
+
+        void write__boolean_not(workspace& workspace, runner::cell_ID source, runner::cell_ID destination) {
+            runner::instruction temp_instruction;
+
+            // create instruction
+            if (workspace.p_pass_type == pass_type::pass_build) {
+                // set type
+                temp_instruction.p_type = runner::instruction_type::boolean_not;
+                temp_instruction.p_input_0 = source;
+                temp_instruction.p_output_0 = destination;
+
+                // write instruction
+                workspace.p_program.p_instructions[workspace.p_instruction_count] = temp_instruction;
+            }
+
+            // next instruction
+            workspace.p_instruction_count++;
+        }
     }
 
     enum variable_type {
@@ -707,16 +725,22 @@ namespace generator {
                     write_instructions::write__file_to_buffer(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[1], abstraction));
 
                     break;
-                // wave.integer_add(2)(1)
+                // wave.integer.add(2)(1)
                 case runner::instruction_type::integer_add:
                     // write code
                     write_instructions::write__integer_add(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[1], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[0], abstraction));
 
                     break;
-                // wave.integer_within_range(3)(1)
+                // wave.integer.within_range(3)(1)
                 case runner::instruction_type::integer_within_range:
                     // write code
                     write_instructions::write__integer_within_range(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[1], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[2], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[0], abstraction));
+
+                    break;
+                // wave.boolean.not(1)(1)
+                case runner::instruction_type::boolean_not:
+                    // write code
+                    write_instructions::write__boolean_not(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[0], abstraction));
 
                     break;
                 // user defined statement call
