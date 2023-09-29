@@ -674,10 +674,10 @@ namespace accounter {
                 synthesize_header_only_abstraction("wave.jump_from_abstraction", 0, 0);
                 synthesize_header_only_abstraction("wave.jump", 2, 0);
                 synthesize_header_only_abstraction("wave.get_instruction_index", 0, 1);
-                synthesize_header_only_abstraction("wave.request_memory", 1, 1);
-                synthesize_header_only_abstraction("wave.return_memory", 1, 0);
-                synthesize_header_only_abstraction("wave.cell_to_address", 3, 0);
-                synthesize_header_only_abstraction("wave.address_to_cell", 2, 1);
+                synthesize_header_only_abstraction("wave.request_memory", 1, 3);
+                synthesize_header_only_abstraction("wave.return_memory", 2, 0);
+                synthesize_header_only_abstraction("wave.cell_to_address", 3, 1);
+                synthesize_header_only_abstraction("wave.address_to_cell", 2, 2);
                 synthesize_header_only_abstraction("wave.buffer_to_file", 2, 1);
                 synthesize_header_only_abstraction("wave.file_to_buffer", 1, 2);
                 synthesize_header_only_abstraction("wave.integer.add", 2, 1);

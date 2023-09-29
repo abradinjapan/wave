@@ -117,6 +117,79 @@ namespace runner {
         std::vector<cell> p_cells;
     };
 
+    class allocation {
+    public:
+        address p_start;
+        address p_end;
+
+        allocation(address start, address end) {
+            p_start = start;
+            p_end = end;
+        }
+    };
+
+    class allocations {
+    private:
+        std::vector<allocation> p_allocations;
+
+        uint64_t get_allocation_number(allocation data) {
+            for (uint64_t index = 0; index < p_allocations.size(); index++) {
+                if (p_allocations[index].p_start == data.p_start && p_allocations[index].p_start == data.p_end) {
+                    return index;
+                }
+            }
+
+            return p_allocations.size();
+        }
+
+    public:
+        bool allocation_exists(allocation data) {
+            if (get_allocation_number(data) < p_allocations.size()) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        void add_allocation(allocation data) {
+            if (allocation_exists(data) == false) {
+                p_allocations.push_back(data);
+            }
+        }
+
+        void remove_allocation(allocation data) {
+            if (allocation_exists(data)) {
+                p_allocations.erase(p_allocations.begin() + get_allocation_number(data));
+            }
+        }
+
+        bool is_address_valid(address pointer) {
+            for (uint64_t index = 0; index < p_allocations.size(); index++) {
+                // check address
+                if (p_allocations[index].p_start <= pointer && p_allocations[index].p_end >= pointer) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        bool is_address_range_valid(address start, address end) {
+            for (uint64_t index = 0; index < p_allocations.size(); index++) {
+                // check addresses
+                if ((p_allocations[index].p_start <= start && p_allocations[index].p_end >= start) && (p_allocations[index].p_start <= end && p_allocations[index].p_end >= end) && end <= start) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        bool is_address_and_length_valid(address pointer, uint64_t length) {
+            return is_address_range_valid(pointer, pointer + length - 1);
+        }
+    };
+
     class context {
     public:
         buffer p_cells;
@@ -177,6 +250,7 @@ namespace runner {
         cell_ID p_input_2;
         cell_ID p_output_0;
         cell_ID p_output_1;
+        cell_ID p_output_2;
         uint64_t p_instruction_ID;
 
         instruction() {
@@ -187,6 +261,7 @@ namespace runner {
             p_input_2 = 0;
             p_output_0 = 0;
             p_output_1 = 0;
+            p_output_2 = 0;
             p_instruction_ID = 0;
         }
     };
@@ -203,6 +278,7 @@ namespace runner {
         int current_instruction = 0;
         std::vector<context> context_stack;
         std::vector<int> return_stack;
+        allocations allocations;
         buffer inputs;
         buffer outputs;
 
@@ -341,6 +417,21 @@ namespace runner {
                 // perform allocation
                 context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = (uint64_t)malloc(context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0]);
 
+                // if allocation succeded
+                if (context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] != 0) {
+                    // setup outputs
+                    context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_1] = context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] + context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0] - 1;
+                    context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_2] = false;
+
+                    // remember allocation
+                    allocations.add_allocation(allocation((address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0], (address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_1]));
+                // if allocation failed
+                } else {
+                    // setup outputs
+                    context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_1] = 0;
+                    context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_2] = true;
+                }
+
                 // next instruction
                 current_instruction++;
 
@@ -349,21 +440,45 @@ namespace runner {
                 // return memory
                 free((void*)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0]);
 
+                // remove allocation marker
+                allocations.remove_allocation(allocation((address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0], (address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1]));
+
                 // next instruction
                 current_instruction++;
 
                 break;
             case instruction_type::cell_to_address:
-                // do write
-                write_buffer(context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0], context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1], (address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_2]);
+                // if valid request
+                if (allocations.is_address_and_length_valid((address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_2], context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1])) {
+                    // do write
+                    write_buffer(context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0], context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1], (address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_2]);
+
+                    // set error code
+                    context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = false;
+                // if invalid request
+                } else {
+                    // set error code
+                    context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = true;
+                }
 
                 // next instruction
                 current_instruction++;
 
                 break;
             case instruction_type::address_to_cell:
-                // do write
-                context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = read_buffer((address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0], context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1]);
+                // if valid request
+                if (allocations.is_address_and_length_valid((address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0], context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1])) {
+                    // do read
+                    context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = read_buffer((address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0], context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1]);
+
+                    // set error code
+                    context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_1] = false;
+                // if invalid request
+                } else {
+                    // set error code
+                    context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_1] = true;
+                }
+                
 
                 // next instruction
                 current_instruction++;

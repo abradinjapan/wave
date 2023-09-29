@@ -1,0 +1,90 @@
+main()() = {
+    test.allocating()()
+    test.memory_writing()()
+}
+
+print.result(number)() = {
+    [ setup variables ]
+    wave.set(wave.integer.10)(new_line)
+
+    [ print ]
+    wave.print.number(number)()
+    wave.print.character(new_line)()
+}
+
+print.write_result(address error)() = {
+    [ setup variables ]
+    wave.set(wave.integer.10)(new_line)
+    wave.set(wave.integer.32)(space)
+
+    [ print address ]
+    wave.print.number(address)()
+    wave.print.character(space)()
+
+    [ print error code ]
+    wave.print.number(error)()
+    wave.print.character(new_line)()
+}
+
+test.memory_writing()() = {
+    [ setup variables ]
+    wave.set(wave.integer.10)(size)
+    wave.set(wave.integer.123)(data)
+    wave.set(wave.integer.1)(data_size)
+    wave.set(wave.integer.1)(always)
+    wave.set(wave.integer.1)(increment)
+
+    [ setup allocation ]
+    wave.request_memory(size)(start end error)
+
+    [ setup loop to go out of bounds ]
+    wave.integer.add(end increment)(invalid_end)
+
+    [ setup loop current ]
+    wave.copy(start)(current)
+
+    [ loop start ]
+    @loop.start
+
+    [ check if loop should continue, and exit if needed ]
+    wave.integer.within_range(start current invalid_end)(continue)
+    wave.boolean.not(continue)(continue)
+    wave.jump(continue @loop.end)()
+
+    [ perform write ]
+    wave.cell_to_address(data data_size current)(error)
+
+    [ print current ]
+    print.write_result(current error)()
+
+    [ increment current ]
+    wave.integer.add(current increment)(current)
+
+    [ jump to loop start ]
+    wave.jump(always @loop.start)()
+
+    @loop.end
+
+    [ clean up ]
+    wave.return_memory(start end)()
+}
+
+test.allocating()() = {
+    [ setup variables ]
+    wave.set(wave.integer.100)(size)
+    wave.set(wave.integer.10)(new_line)
+
+    [ perform allocation ]
+    wave.request_memory(size)(start end error)
+
+    [ print values ]
+    print.result(start)()
+    print.result(end)()
+    print.result(error)()
+
+    [ return allocation ]
+    wave.return_memory(start end)()
+
+    [ print new line ]
+    wave.print.character(new_line)()
+}
