@@ -246,7 +246,7 @@ namespace parser {
                 return output;
             }
         // get offset marker
-        } else if (lexlings.p_lexlings[lexling_index].p_type == lexer::type::offset_marker && lexlings.p_lexlings[lexling_index + 1].p_type == lexer::type::name) {
+        } else if ((lexlings.count() > (lexling_index + 1)) && (lexlings.p_lexlings[lexling_index].p_type == lexer::type::offset_marker && lexlings.p_lexlings[lexling_index + 1].p_type == lexer::type::name)) {
             // mark type
             output.p_type = statement_type::is_offset_declaration;
 
@@ -255,11 +255,8 @@ namespace parser {
 
             // next lexling
             lexling_index += 2;
-        /*// get string literal
-        } else if (lexlings.p_lexlings[lexling_index].p_type == lexer::type::string_literal) {
-            
         // error
-        */} else {
+        } else {
             // mark type
             output.p_type = statement_type::is_not_valid;
 

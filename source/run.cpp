@@ -39,11 +39,15 @@ namespace runner {
     }
 
     // create file from buffer
-    void move_buffer_to_file(bool* error, address data, uint64_t length, address null_terminated_file_name) {
+    void move_buffer_to_file(bool& error, address start, address end, address null_terminated_file_name) {
         FILE* file_handle;
+        uint64_t file_length;
 
         // setup error to no error to start
-        *error = false;
+        error = false;
+
+        // calculate file length
+        file_length = (uint64_t)start - (uint64_t)end + 1;
 
         // open file
         file_handle = fopen((const char*)null_terminated_file_name, "w+b");
@@ -51,24 +55,22 @@ namespace runner {
         // check if the file opened
         if (file_handle == 0) {
             // if not, return error
-            *error = true;
+            error = true;
 
             return;
         }
 
         // write buffer to file
-        fwrite(data, length, 1, file_handle);
+        fwrite(start, file_length, 1, file_handle);
 
         // close file handle
         fclose(file_handle);
 
-        // return
         return;
     }
 
     // create buffer from file
-    address move_file_to_buffer(address null_terminated_file_name, uint64_t* output_length) {
-        address output;
+    void move_file_to_buffer(bool& error_occured, address null_terminated_file_name, address* output_start, address* output_end) {
         FILE* file_handle;
         uint64_t file_size;
 
@@ -77,8 +79,14 @@ namespace runner {
 
         // check if the file opened
         if (file_handle == 0) {
-            // if not, return empty buffer
-            return 0;
+            // if not, set error
+            error_occured = true;
+
+            // return empty buffer
+            *output_start = 0;
+            *output_end = 0;
+
+            return;
         }
 
         // get file size
@@ -87,29 +95,36 @@ namespace runner {
         fseek(file_handle, 0, SEEK_SET);
 
         // allocate buffer
-        output = malloc(file_size);
+        *output_start = malloc(file_size);
 
         // check if buffer allocated
-        if (output == 0) {
+        if (*output_start == 0) {
+            // if not, set error
+            error_occured = true;
+
             // close file handle
             fclose(file_handle);
 
             // return empty buffer
-            *output_length = 0;
+            *output_end = 0;
 
-            return output;
+            return;
+        // buffer allocated
+        } else {
+            // set buffer end
+            *output_end = output_start + file_size - 1;
         }
 
         // read file into buffer
-        fread(output, file_size, 1, file_handle);
+        fread(*output_start, file_size, 1, file_handle);
 
         // close file handle
         fclose(file_handle);
 
-        // return buffer
-        *output_length = file_size;
+        // set error code to no error
+        error_occured = false;
 
-        return output;
+        return;
     }
 
     class buffer {
@@ -281,6 +296,7 @@ namespace runner {
         allocations allocations;
         buffer inputs;
         buffer outputs;
+        bool file_error_occured;
 
         // process instructions
         while (running == true) {
@@ -314,6 +330,9 @@ namespace runner {
                 // print
                 std::cout << context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0];
 
+                // clear cache
+                fflush(stdout);
+
                 // next instruction
                 current_instruction++;
 
@@ -321,6 +340,9 @@ namespace runner {
             case instruction_type::print_cell_as_character:
                 // print
                 putchar((char)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0]);
+
+                // clear cache
+                fflush(stdout);
 
                 // next instruction
                 current_instruction++;
@@ -449,7 +471,7 @@ namespace runner {
                 break;
             case instruction_type::cell_to_address:
                 // if valid request
-                if (allocations.is_address_and_length_valid((address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_2], context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1])) {
+                if (allocations.is_address_valid((address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_2])) {//, (runner::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1])) {
                     // do write
                     write_buffer(context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0], context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1], (address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_2]);
 
@@ -467,7 +489,7 @@ namespace runner {
                 break;
             case instruction_type::address_to_cell:
                 // if valid request
-                if (allocations.is_address_and_length_valid((address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0], context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1])) {
+                if (allocations.is_address_valid((address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0])) {//, (runner::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1])) {
                     // do read
                     context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = read_buffer((address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0], context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1]);
 
@@ -486,7 +508,10 @@ namespace runner {
                 break;
             case instruction_type::buffer_to_file:
                 // write a buffer to a file
-                move_buffer_to_file(&error_occured, (runner::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0], context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1], (runner::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_2]);
+                move_buffer_to_file(file_error_occured, (runner::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0], (runner::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1], (runner::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_2]);
+
+                // write error variable
+                context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = file_error_occured;
 
                 // next instruction
                 current_instruction++;
@@ -494,7 +519,10 @@ namespace runner {
                 break;
             case instruction_type::file_to_buffer:
                 // write a file to a buffer
-                context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = (runner::cell)move_file_to_buffer((runner::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0], (uint64_t*)&(context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1]));
+                move_file_to_buffer(file_error_occured, (runner::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0], (runner::address*)&(context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0]), (runner::address*)&(context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_1]));
+
+                // write error variable
+                context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_2] = file_error_occured;
 
                 // next instruction
                 current_instruction++;

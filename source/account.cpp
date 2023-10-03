@@ -104,6 +104,9 @@ namespace accounter {
             for (uint64_t j = 0; j < program.p_abstractions[i].p_scope.size(); j++) {
                 // check header
                 if (program.p_abstractions[i].p_scope[j].p_name.p_name_type == parser::name_type::is_abstraction_name && header_table.header_registered(header(program.p_abstractions[i].p_scope[j].p_name.p_name_value, program.p_abstractions[i].p_scope[j].p_inputs.size(), program.p_abstractions[i].p_scope[j].p_outputs.size())) == false) {
+                    // inform user of error
+                    std::cout << "Accouting error, a header was not found during a header lookup: " << program.p_abstractions[i].p_scope[j].p_name.p_name_value << std::endl;
+
                     // header not registered, error
                     return false;
                 }
@@ -678,8 +681,8 @@ namespace accounter {
                 synthesize_header_only_abstraction("wave.return_memory", 2, 0);
                 synthesize_header_only_abstraction("wave.cell_to_address", 3, 1);
                 synthesize_header_only_abstraction("wave.address_to_cell", 2, 2);
-                synthesize_header_only_abstraction("wave.buffer_to_file", 2, 1);
-                synthesize_header_only_abstraction("wave.file_to_buffer", 1, 2);
+                synthesize_header_only_abstraction("wave.buffer_to_file", 3, 1);
+                synthesize_header_only_abstraction("wave.file_to_buffer", 1, 3);
                 synthesize_header_only_abstraction("wave.integer.add", 2, 1);
                 synthesize_header_only_abstraction("wave.integer.subtract", 2, 1);
                 synthesize_header_only_abstraction("wave.integer.multiply", 2, 1);

@@ -1,0 +1,140 @@
+print.new_line()() = {
+    wave.set(wave.integer.10)(new_line)
+    wave.print.character(new_line)()
+}
+
+string.write_character(character input.address)(output.address) = {
+    [ setup variables ]
+    wave.set(wave.integer.1)(character_size)
+
+    [ write data ]
+    wave.cell_to_address(character character_size input.address)(error)
+
+    [ advance to next character ]
+    wave.integer.add(input.address character_size)(output.address)
+}
+
+string.print(start end)() = {
+    [ setup variables ]
+    wave.set(wave.integer.1)(character_size)
+    wave.set(wave.integer.1)(always)
+    wave.set(wave.integer.32)(space)
+
+    [ DEBUG ]
+    print.new_line()()
+    wave.print.number(start)()
+    print.new_line()()
+    wave.print.number(end)()
+    print.new_line()()
+
+    [ setup current ]
+    wave.copy(start)(current)
+
+    [ loop start ]
+    @print_character
+
+    [ check if loop should quit ]
+    wave.integer.within_range(start current end)(continue)
+    wave.boolean.not(continue)(quit)
+    wave.jump(quit @exit)()
+
+    [ get character ]
+    wave.address_to_cell(current character_size)(character error)
+
+    [ next character ]
+    wave.integer.add(current character_size)(current)
+
+    [ print character ]
+    wave.print.character(character)()
+    [ DEBUG ]
+    [ wave.print.number(character)()
+    wave.print.character(space)() ]
+
+    [ jump to loop start ]
+    wave.jump(always @print_character)()
+
+    [ loop end ]
+    @exit
+
+    [ print new line ]
+    print.new_line()()
+}
+
+string.create.file_path.makefile()(output.start output.end filler1) = {
+    [ setup variables ]
+    wave.set(wave.integer.9)(length)
+    wave.set(wave.integer.109)(m)
+    wave.set(wave.integer.97)(a)
+    wave.set(wave.integer.107)(k)
+    wave.set(wave.integer.101)(e)
+    wave.set(wave.integer.102)(f)
+    wave.set(wave.integer.105)(i)
+    wave.set(wave.integer.108)(l)
+    wave.set(wave.integer.0)(null_termination)
+
+    [ setup allocation ]
+    wave.request_memory(length)(start end error)
+
+    [ setup current ]
+    wave.copy(start)(current)
+
+    [ write the file path "makefile" ]
+    string.write_character(m current)(current)
+    string.write_character(a current)(current)
+    string.write_character(k current)(current)
+    string.write_character(e current)(current)
+    string.write_character(f current)(current)
+    string.write_character(i current)(current)
+    string.write_character(l current)(current)
+    string.write_character(e current)(current)
+    string.write_character(null_termination current)(current)
+
+    [ print buffer ]
+    string.print(start end)()
+    print.new_line()()
+
+    [ setup outputs ]
+    wave.copy(start)(output.start)
+    wave.copy(end)(output.end)
+}
+
+test.buffer_creation()() = {
+    wave.set(wave.integer.5)(buffer_size)
+    wave.set(wave.integer.97)(a)
+    wave.set(wave.integer.98)(b)
+    wave.set(wave.integer.99)(c)
+    wave.set(wave.integer.100)(d)
+
+    wave.request_memory(buffer_size)(start end error)
+
+    wave.copy(start)(current)
+
+    string.write_character(a current)(current)
+    string.write_character(a current)(current)
+    string.write_character(b current)(current)
+    string.write_character(c current)(current)
+    string.write_character(d current)(current)
+
+    string.print(start end)()
+
+    wave.return_memory(start end)()
+}
+
+main()() = {
+    [ debug ]
+    test.buffer_creation()()
+
+    [ get file name string ]
+    string.create.file_path.makefile()(path_start path_end filler1)
+    string.print(path_start path_end)()
+
+    [ open file ]
+    wave.file_to_buffer(path_start)(file_start file_end error)
+
+    [ print buffer ]
+    string.print(file_start file_end)()
+
+    [ clean up buffers ]
+    wave.return_memory(path_start path_end)()
+    wave.return_memory(file_start file_end)()
+}

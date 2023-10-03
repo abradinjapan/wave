@@ -1,0 +1,27 @@
+print.new_line()() = {
+    wave.set(wave.integer.10)(new_line)
+    wave.print.character(new_line)()
+}
+
+test.io()(c d) = {
+    wave.set(wave.integer.100)(g)
+    wave.set(wave.integer.200)(h)
+
+    wave.copy(g)(a)
+    wave.copy(h)(b)
+
+    wave.copy(a)(c)
+    wave.copy(b)(d)
+}
+
+main()() = {
+    wave.set(wave.integer.10)(w)
+    wave.set(wave.integer.20)(x)
+
+    test.io()(y z)
+
+    wave.print.number(y)()
+    print.new_line()()
+    wave.print.number(z)()
+    print.new_line()()
+}

@@ -143,6 +143,8 @@ int main() {
     user_code_file_paths.push_back("programs/booleans.wave");
     user_code_file_paths.push_back("programs/math.wave");
     user_code_file_paths.push_back("programs/memory.wave");
+    user_code_file_paths.push_back("programs/io.wave");
+    user_code_file_paths.push_back("programs/files.wave");
 
     // run compiler for each file
     for (uint64_t file_ID = 0; file_ID < user_code_file_paths.size(); file_ID++) {
