@@ -74,6 +74,9 @@ namespace runner {
         FILE* file_handle;
         uint64_t file_size;
 
+        // set error code to no error
+        error_occured = false;
+
         // open file
         file_handle = fopen((const char*)null_terminated_file_name, "rb");
 
@@ -112,7 +115,7 @@ namespace runner {
         // buffer allocated
         } else {
             // set buffer end
-            *output_end = output_start + file_size - 1;
+            *output_end = (*output_start) + (file_size - 1);
         }
 
         // read file into buffer
@@ -121,8 +124,12 @@ namespace runner {
         // close file handle
         fclose(file_handle);
 
-        // set error code to no error
-        error_occured = false;
+        /*// DEBUG
+        printf("File was found as: \n");
+        for (address current = *output_start; current < *output_end; current = current + sizeof(char)) {
+            putchar(*((char*)current));
+        }
+        putchar('\n');*/
 
         return;
     }
@@ -296,6 +303,8 @@ namespace runner {
         allocations allocations;
         buffer inputs;
         buffer outputs;
+        runner::address file_start;
+        runner::address file_end;
         bool file_error_occured;
 
         // process instructions
@@ -500,7 +509,6 @@ namespace runner {
                     // set error code
                     context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_1] = true;
                 }
-                
 
                 // next instruction
                 current_instruction++;
@@ -519,10 +527,22 @@ namespace runner {
                 break;
             case instruction_type::file_to_buffer:
                 // write a file to a buffer
-                move_file_to_buffer(file_error_occured, (runner::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0], (runner::address*)&(context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0]), (runner::address*)&(context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_1]));
+                move_file_to_buffer(file_error_occured, (runner::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0], &file_start, &file_end);
 
-                // write error variable
+                // write output variables
+                context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = (runner::cell)file_start;
+                context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_1] = (runner::cell)file_end;
                 context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_2] = file_error_occured;
+
+                // register buffer with allocations
+                allocations.add_allocation(runner::allocation(file_start, file_end));
+
+                /*// DEBUG
+                printf("File:\n");
+                for (address current = file_start; current < file_end; current = current + sizeof(char)) {
+                    putchar(*(char*)current);
+                }
+                putchar('\n');*/
 
                 // next instruction
                 current_instruction++;

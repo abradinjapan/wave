@@ -3,6 +3,11 @@ print.new_line()() = {
     wave.print.character(new_line)()
 }
 
+print.space()() = {
+    wave.set(wave.integer.32)(space)
+    wave.print.character(space)()
+}
+
 string.write_character(character input.address)(output.address) = {
     [ setup variables ]
     wave.set(wave.integer.1)(character_size)
@@ -18,10 +23,8 @@ string.print(start end)() = {
     [ setup variables ]
     wave.set(wave.integer.1)(character_size)
     wave.set(wave.integer.1)(always)
-    wave.set(wave.integer.32)(space)
 
     [ DEBUG ]
-    print.new_line()()
     wave.print.number(start)()
     print.new_line()()
     wave.print.number(end)()
@@ -46,9 +49,6 @@ string.print(start end)() = {
 
     [ print character ]
     wave.print.character(character)()
-    [ DEBUG ]
-    [ wave.print.number(character)()
-    wave.print.character(space)() ]
 
     [ jump to loop start ]
     wave.jump(always @print_character)()
@@ -60,7 +60,7 @@ string.print(start end)() = {
     print.new_line()()
 }
 
-string.create.file_path.makefile()(output.start output.end filler1) = {
+string.create.file_path.makefile()(output.start output.end) = {
     [ setup variables ]
     wave.set(wave.integer.9)(length)
     wave.set(wave.integer.109)(m)
@@ -89,47 +89,22 @@ string.create.file_path.makefile()(output.start output.end filler1) = {
     string.write_character(e current)(current)
     string.write_character(null_termination current)(current)
 
-    [ print buffer ]
-    string.print(start end)()
-    print.new_line()()
-
     [ setup outputs ]
     wave.copy(start)(output.start)
     wave.copy(end)(output.end)
 }
 
-test.buffer_creation()() = {
-    wave.set(wave.integer.5)(buffer_size)
-    wave.set(wave.integer.97)(a)
-    wave.set(wave.integer.98)(b)
-    wave.set(wave.integer.99)(c)
-    wave.set(wave.integer.100)(d)
-
-    wave.request_memory(buffer_size)(start end error)
-
-    wave.copy(start)(current)
-
-    string.write_character(a current)(current)
-    string.write_character(a current)(current)
-    string.write_character(b current)(current)
-    string.write_character(c current)(current)
-    string.write_character(d current)(current)
-
-    string.print(start end)()
-
-    wave.return_memory(start end)()
-}
-
 main()() = {
-    [ debug ]
-    test.buffer_creation()()
-
     [ get file name string ]
-    string.create.file_path.makefile()(path_start path_end filler1)
+    string.create.file_path.makefile()(path_start path_end)
     string.print(path_start path_end)()
 
     [ open file ]
     wave.file_to_buffer(path_start)(file_start file_end error)
+
+    [ print error code ]
+    wave.print.number(error)()
+    print.new_line()()
 
     [ print buffer ]
     string.print(file_start file_end)()

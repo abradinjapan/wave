@@ -639,6 +639,14 @@ namespace generator {
                             // constant is an offset, write code
                             write_instructions::write__write_cell(workspace, workspace.p_abstraction_offsets[abstraction_ID].p_code_defined_offsets[abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0].p_ID].p_instruction_ID, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[0], abstraction));
                         }
+                    } else {
+                        // set error
+                        error_occured = true;
+
+                        // print error message
+                        printf("Generation error, write_cell has an invalid argument.");
+
+                        return;
                     }
 
                     break;
