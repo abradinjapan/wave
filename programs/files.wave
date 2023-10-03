@@ -24,12 +24,6 @@ string.print(start end)() = {
     wave.set(wave.integer.1)(character_size)
     wave.set(wave.integer.1)(always)
 
-    [ DEBUG ]
-    wave.print.number(start)()
-    print.new_line()()
-    wave.print.number(end)()
-    print.new_line()()
-
     [ setup current ]
     wave.copy(start)(current)
 
