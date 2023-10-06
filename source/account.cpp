@@ -667,6 +667,7 @@ namespace accounter {
                 synthesize_header_only_abstraction("wave.copy", 1, 1);
                 synthesize_header_only_abstraction("wave.print.number", 1, 0);
                 synthesize_header_only_abstraction("wave.print.character", 1, 0);
+                synthesize_header_only_abstraction("wave.get_console_input", 0, 2);
                 synthesize_header_only_abstraction("wave.create_new_context", 1, 0);
                 synthesize_header_only_abstraction("wave.restore_old_context", 0, 0);
                 synthesize_header_only_abstraction("wave.pass_input", 1, 0);
@@ -681,8 +682,8 @@ namespace accounter {
                 synthesize_header_only_abstraction("wave.return_memory", 2, 0);
                 synthesize_header_only_abstraction("wave.cell_to_address", 3, 1);
                 synthesize_header_only_abstraction("wave.address_to_cell", 2, 2);
-                synthesize_header_only_abstraction("wave.buffer_to_file", 3, 1);
-                synthesize_header_only_abstraction("wave.file_to_buffer", 1, 3);
+                synthesize_header_only_abstraction("wave.buffer_to_file", 4, 1);
+                synthesize_header_only_abstraction("wave.file_to_buffer", 2, 3);
                 synthesize_header_only_abstraction("wave.integer.add", 2, 1);
                 synthesize_header_only_abstraction("wave.integer.subtract", 2, 1);
                 synthesize_header_only_abstraction("wave.integer.multiply", 2, 1);

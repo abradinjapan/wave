@@ -10,6 +10,8 @@ namespace runner {
     typedef uint64_t cell_ID;
     typedef void* address;
 
+    #define console_input_buffer_length 2048
+
     // read buffer
     uint64_t read_buffer(address source, uint64_t byte_amount) {
         uint64_t output;
@@ -124,13 +126,6 @@ namespace runner {
         // close file handle
         fclose(file_handle);
 
-        /*// DEBUG
-        printf("File was found as: \n");
-        for (address current = *output_start; current < *output_end; current = current + sizeof(char)) {
-            putchar(*((char*)current));
-        }
-        putchar('\n');*/
-
         return;
     }
 
@@ -238,6 +233,7 @@ namespace runner {
         copy_cell,
         print_cell_as_number,
         print_cell_as_character,
+        get_console_input,
         create_new_context,
         restore_old_context,
         pass_input,
@@ -270,6 +266,7 @@ namespace runner {
         cell_ID p_input_0;
         cell_ID p_input_1;
         cell_ID p_input_2;
+        cell_ID p_input_3;
         cell_ID p_output_0;
         cell_ID p_output_1;
         cell_ID p_output_2;
@@ -281,6 +278,7 @@ namespace runner {
             p_input_0 = 0;
             p_input_1 = 0;
             p_input_2 = 0;
+            p_input_3 = 0;
             p_output_0 = 0;
             p_output_1 = 0;
             p_output_2 = 0;
@@ -306,6 +304,8 @@ namespace runner {
         runner::address file_start;
         runner::address file_end;
         bool file_error_occured;
+        char console_buffer[console_input_buffer_length];
+        uint64_t console_buffer_length;
 
         // process instructions
         while (running == true) {
@@ -352,6 +352,52 @@ namespace runner {
 
                 // clear cache
                 fflush(stdout);
+
+                // next instruction
+                current_instruction++;
+
+                break;
+            case instruction_type::get_console_input:
+                // clear console input
+                for (uint64_t character = 0; character < console_input_buffer_length; character++) {
+                    // clear one byte
+                    console_buffer[character] = 0;
+                }
+
+                // get console input
+                fgets((char*)&console_buffer, console_input_buffer_length, stdin);
+
+                // get string length
+                console_buffer_length = 0;
+                while (console_buffer_length < console_input_buffer_length - 1 && console_buffer[console_buffer_length] != 0) {
+                    // next character
+                    console_buffer_length += sizeof(char);
+                }
+
+                // allocate new buffer
+                context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = (runner::cell)malloc(console_buffer_length + 1);
+
+                // if allocation succeded
+                if (context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] != 0) {
+                    // setup buffer end
+                    context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_1] = context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] + console_buffer_length;
+
+                    // register buffer with allocations
+                    allocations.add_allocation(allocation((runner::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0], (runner::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_1]));
+
+                    // copy string to new buffer
+                    for (uint64_t i = 0; i < console_buffer_length; i++) {
+                        // copy byte
+                        ((char*)(context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0]))[i] = console_buffer[i];
+                    }
+
+                    // setup null termination
+                    ((char*)(context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0]))[console_buffer_length] = 0;
+                // if allocation failed
+                } else {
+                    // setup null buffer
+                    context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_1] = 0;
+                }
 
                 // next instruction
                 current_instruction++;
@@ -480,7 +526,7 @@ namespace runner {
                 break;
             case instruction_type::cell_to_address:
                 // if valid request
-                if (allocations.is_address_valid((address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_2])) {//, (runner::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1])) {
+                if (allocations.is_address_valid((address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_2])) {
                     // do write
                     write_buffer(context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0], context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1], (address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_2]);
 
@@ -498,7 +544,7 @@ namespace runner {
                 break;
             case instruction_type::address_to_cell:
                 // if valid request
-                if (allocations.is_address_valid((address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0])) {//, (runner::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1])) {
+                if (allocations.is_address_valid((address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0])) {
                     // do read
                     context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = read_buffer((address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0], context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1]);
 

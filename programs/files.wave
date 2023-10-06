@@ -94,7 +94,7 @@ main()() = {
     string.print(path_start path_end)()
 
     [ open file ]
-    wave.file_to_buffer(path_start)(file_start file_end error)
+    wave.file_to_buffer(path_start path_end)(file_start file_end error)
 
     [ print error code ]
     wave.print.number(error)()

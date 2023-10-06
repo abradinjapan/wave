@@ -148,6 +148,24 @@ namespace generator {
             workspace.p_instruction_count++;
         }
 
+        void write__get_console_input(workspace& workspace, runner::cell_ID start, runner::cell_ID end) {
+            runner::instruction temp_instruction;
+
+            // create instruction
+            if (workspace.p_pass_type == pass_type::pass_build) {
+                // set type
+                temp_instruction.p_type = runner::instruction_type::get_console_input;
+                temp_instruction.p_output_0 = start;
+                temp_instruction.p_output_1 = end;
+
+                // write instruction
+                workspace.p_program.p_instructions[workspace.p_instruction_count] = temp_instruction;
+            }
+
+            // next instruction
+            workspace.p_instruction_count++;
+        }
+
         void write__create_new_context(workspace& workspace, runner::cell cell_count) {
             runner::instruction temp_instruction;
 
@@ -395,7 +413,7 @@ namespace generator {
             workspace.p_instruction_count++;
         }
 
-        void write__buffer_to_file(workspace& workspace, runner::cell_ID source_start, runner::cell_ID source_end, runner::cell_ID null_terminated_file_path, runner::cell_ID error_code) {
+        void write__buffer_to_file(workspace& workspace, runner::cell_ID source_start, runner::cell_ID source_end, runner::cell_ID null_terminated_file_path_start, runner::cell_ID null_terminated_file_path_end, runner::cell_ID error_code) {
             runner::instruction temp_instruction;
 
             // create instruction
@@ -404,7 +422,8 @@ namespace generator {
                 temp_instruction.p_type = runner::instruction_type::buffer_to_file;
                 temp_instruction.p_input_0 = source_start;
                 temp_instruction.p_input_1 = source_end;
-                temp_instruction.p_input_2 = null_terminated_file_path;
+                temp_instruction.p_input_2 = null_terminated_file_path_start;
+                temp_instruction.p_input_3 = null_terminated_file_path_end;
                 temp_instruction.p_output_0 = error_code;
 
                 // write instruction
@@ -415,14 +434,15 @@ namespace generator {
             workspace.p_instruction_count++;
         }
 
-        void write__file_to_buffer(workspace& workspace, runner::cell_ID null_terminated_file_path, runner::cell_ID source_start, runner::cell_ID source_end, runner::cell_ID error_code) {
+        void write__file_to_buffer(workspace& workspace, runner::cell_ID null_terminated_file_path_start, runner::cell_ID null_terminated_file_path_end, runner::cell_ID source_start, runner::cell_ID source_end, runner::cell_ID error_code) {
             runner::instruction temp_instruction;
 
             // create instruction
             if (workspace.p_pass_type == pass_type::pass_build) {
                 // set type
                 temp_instruction.p_type = runner::instruction_type::file_to_buffer;
-                temp_instruction.p_input_0 = null_terminated_file_path;
+                temp_instruction.p_input_0 = null_terminated_file_path_start;
+                temp_instruction.p_input_1 = null_terminated_file_path_end;
                 temp_instruction.p_output_0 = source_start;
                 temp_instruction.p_output_1 = source_end;
                 temp_instruction.p_output_2 = error_code;
@@ -668,6 +688,12 @@ namespace generator {
                     write_instructions::write__print_cell_as_character(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction));
 
                     break;
+                // wave.get_console_input(0)(2)
+                case runner::instruction_type::get_console_input:
+                    // write code
+                    write_instructions::write__get_console_input(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[1], abstraction));
+
+                    break;
                 // wave.create_new_context(1)(0)
                 case runner::instruction_type::create_new_context:
                     // set error
@@ -783,16 +809,16 @@ namespace generator {
                     write_instructions::write__address_to_cell(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[1], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[1], abstraction));
 
                     break;
-                // wave.buffer_to_file(3)(1)
+                // wave.buffer_to_file(4)(1)
                 case runner::instruction_type::buffer_to_file:
                     // write code
-                    write_instructions::write__buffer_to_file(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[1], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[2], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[0], abstraction));
+                    write_instructions::write__buffer_to_file(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[1], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[2], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[3], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[0], abstraction));
 
                     break;
-                // wave.file_to_buffer(1)(3)
+                // wave.file_to_buffer(2)(3)
                 case runner::instruction_type::file_to_buffer:
                     // write code
-                    write_instructions::write__file_to_buffer(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[1], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[2], abstraction));
+                    write_instructions::write__file_to_buffer(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[1], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[1], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[2], abstraction));
 
                     break;
                 // wave.integer.add(2)(1)

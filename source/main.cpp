@@ -145,6 +145,7 @@ int main() {
     user_code_file_paths.push_back("programs/memory.wave");
     user_code_file_paths.push_back("programs/io.wave");
     user_code_file_paths.push_back("programs/files.wave");
+    user_code_file_paths.push_back("programs/compiler/compiler.wave");
 
     // run compiler for each file
     for (uint64_t file_ID = 0; file_ID < user_code_file_paths.size(); file_ID++) {
