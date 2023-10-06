@@ -6,7 +6,6 @@
 #include "account.cpp"
 #include "generate.cpp"
 #include "run.cpp"
-#include "test-runner.cpp"
 
 std::string load_file(std::string file_path) {
     std::ifstream file(file_path);
@@ -133,35 +132,31 @@ void compile_and_run(std::string user_code) {
     std::cout << "----------" << std::endl;
 }
 
-int main() {
+int main(int argc, char** argv) {
     std::cout << "Starting up compiler." << std::endl;
-    std::vector<std::string> user_code_file_paths;
+    std::string file_path;
+    std::string file_data;
 
-    // load file paths
-    user_code_file_paths.push_back("programs/hello_world.wave");
-    user_code_file_paths.push_back("programs/loop.wave");
-    user_code_file_paths.push_back("programs/booleans.wave");
-    user_code_file_paths.push_back("programs/math.wave");
-    user_code_file_paths.push_back("programs/memory.wave");
-    user_code_file_paths.push_back("programs/io.wave");
-    user_code_file_paths.push_back("programs/files.wave");
-    user_code_file_paths.push_back("programs/compiler/compiler.wave");
+    // get file from arguments
+    if (argc > 1) {
+        // get file path
+        file_path = std::string(argv[1]);
 
-    // run compiler for each file
-    for (uint64_t file_ID = 0; file_ID < user_code_file_paths.size(); file_ID++) {
-        std::string user_code;
+        // get file data
+        file_data = load_file(file_path);
 
-        // load file
-        user_code = load_file(user_code_file_paths[file_ID]);
-
-        if (user_code != "") {
-            // compile
-            compile_and_run(user_code);
+        // run if file found
+        if (file_data != "") {
+            // run compiler
+            compile_and_run(file_data);
+        // if file not found
+        } else {
+            std::cout << "Invalid file path: " << file_path << std::endl;
         }
+    // if file name is missing
+    } else {
+        std::cout << "Missing file name." << std::endl;
     }
-
-    // test runner
-    //test_runner::test_runner();
 
     return 0;
 }
