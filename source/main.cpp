@@ -100,7 +100,7 @@ runner::program compile(std::string user_code, bool& compilation_error, bool pri
     return output;
 }
 
-void compile_and_run(std::string user_code) {
+void compile_and_run(std::string user_code, bool debug) {
     runner::program program;
     bool compilation_error = false;
     bool run_time_error = false;
@@ -108,11 +108,14 @@ void compile_and_run(std::string user_code) {
     // inform user of compilation start
     std::cout << "\n\n\n----------\n" << "Compiling code." << std::endl;
 
-    // print original file
-    std::cout << "Original File:" << std::endl << user_code << std::endl;
+    // if debug enabled
+    if (debug) {
+        // print original file
+        std::cout << "Original File:" << std::endl << user_code << std::endl;
+    }
 
     // compile program
-    program = compile(user_code, compilation_error, false);
+    program = compile(user_code, compilation_error, debug);
 
     // run if no errors occured
     if (compilation_error == false) {
@@ -148,7 +151,7 @@ int main(int argc, char** argv) {
         // run if file found
         if (file_data != "") {
             // run compiler
-            compile_and_run(file_data);
+            compile_and_run(file_data, false);
         // if file not found
         } else {
             std::cout << "Invalid file path: " << file_path << std::endl;
