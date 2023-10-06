@@ -106,7 +106,7 @@ void compile_and_run(std::string user_code, bool debug) {
     bool run_time_error = false;
 
     // inform user of compilation start
-    std::cout << "\n\n\n----------\n" << "Compiling code." << std::endl;
+    std::cout << "----------\n" << "Compiling code." << std::endl;
 
     // if debug enabled
     if (debug) {
