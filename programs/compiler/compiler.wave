@@ -105,7 +105,13 @@ main()() = {
     wave.get_console_input()(file_path.start file_path.end)
 
     [ load file ]
+    string.print(file_path.start file_path.end)()
     wave.file_to_buffer(file_path.start file_path.end)(file.start file.end error)
+
+    [ print file ]
+    wave.print.number(error)()
+    print.new_line()()
+    string.print(file.start file.end)()
 
     [ lex file ]
     compiler.lex(file.start file.end)(lexlings.start lexlings.end)

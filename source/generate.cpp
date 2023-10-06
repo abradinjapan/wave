@@ -413,7 +413,7 @@ namespace generator {
             workspace.p_instruction_count++;
         }
 
-        void write__buffer_to_file(workspace& workspace, runner::cell_ID source_start, runner::cell_ID source_end, runner::cell_ID null_terminated_file_path_start, runner::cell_ID null_terminated_file_path_end, runner::cell_ID error_code) {
+        void write__buffer_to_file(workspace& workspace, runner::cell_ID source_start, runner::cell_ID source_end, runner::cell_ID file_path_start, runner::cell_ID file_path_end, runner::cell_ID error_code) {
             runner::instruction temp_instruction;
 
             // create instruction
@@ -422,8 +422,8 @@ namespace generator {
                 temp_instruction.p_type = runner::instruction_type::buffer_to_file;
                 temp_instruction.p_input_0 = source_start;
                 temp_instruction.p_input_1 = source_end;
-                temp_instruction.p_input_2 = null_terminated_file_path_start;
-                temp_instruction.p_input_3 = null_terminated_file_path_end;
+                temp_instruction.p_input_2 = file_path_start;
+                temp_instruction.p_input_3 = file_path_end;
                 temp_instruction.p_output_0 = error_code;
 
                 // write instruction
@@ -434,15 +434,15 @@ namespace generator {
             workspace.p_instruction_count++;
         }
 
-        void write__file_to_buffer(workspace& workspace, runner::cell_ID null_terminated_file_path_start, runner::cell_ID null_terminated_file_path_end, runner::cell_ID source_start, runner::cell_ID source_end, runner::cell_ID error_code) {
+        void write__file_to_buffer(workspace& workspace, runner::cell_ID file_path_start, runner::cell_ID file_path_end, runner::cell_ID source_start, runner::cell_ID source_end, runner::cell_ID error_code) {
             runner::instruction temp_instruction;
 
             // create instruction
             if (workspace.p_pass_type == pass_type::pass_build) {
                 // set type
                 temp_instruction.p_type = runner::instruction_type::file_to_buffer;
-                temp_instruction.p_input_0 = null_terminated_file_path_start;
-                temp_instruction.p_input_1 = null_terminated_file_path_end;
+                temp_instruction.p_input_0 = file_path_start;
+                temp_instruction.p_input_1 = file_path_end;
                 temp_instruction.p_output_0 = source_start;
                 temp_instruction.p_output_1 = source_end;
                 temp_instruction.p_output_2 = error_code;

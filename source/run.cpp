@@ -40,19 +40,45 @@ namespace runner {
         return;
     }
 
+    // open null terminated file name from file name buffer
+    char* file_name_buffer_to_file_name_null_terminated(address start, address end) {
+        char* output;
+        uint64_t string_size;
+
+        // calculate size
+        string_size = (uint64_t)end - (uint64_t)start + 1;
+
+        // allocate output
+        output = (char*)malloc(string_size + 1);
+
+        // copy string
+        for (uint64_t i = 0; i < string_size; i++) {
+            output[i] = ((char*)start)[i];
+        }
+
+        // setup null termination
+        output[string_size] = 0;
+
+        return output;
+    }
+
     // create file from buffer
-    void move_buffer_to_file(bool& error, address start, address end, address null_terminated_file_name) {
+    void move_buffer_to_file(bool& error, address start, address end, address file_path_start, address file_path_end) {
         FILE* file_handle;
         uint64_t file_length;
+        char* temp_file_name;
 
         // setup error to no error to start
         error = false;
+
+        // setup file name
+        temp_file_name = file_name_buffer_to_file_name_null_terminated(start, end);
 
         // calculate file length
         file_length = (uint64_t)start - (uint64_t)end + 1;
 
         // open file
-        file_handle = fopen((const char*)null_terminated_file_name, "w+b");
+        file_handle = fopen((const char*)temp_file_name, "w+b");
 
         // check if the file opened
         if (file_handle == 0) {
@@ -65,22 +91,27 @@ namespace runner {
         // write buffer to file
         fwrite(start, file_length, 1, file_handle);
 
-        // close file handle
+        // clean up
+        free(temp_file_name);
         fclose(file_handle);
 
         return;
     }
 
     // create buffer from file
-    void move_file_to_buffer(bool& error_occured, address null_terminated_file_name, address* output_start, address* output_end) {
+    void move_file_to_buffer(bool& error_occured, address file_name_start, address file_name_end, address* output_start, address* output_end) {
         FILE* file_handle;
+        char* temp_file_name;
         uint64_t file_size;
 
         // set error code to no error
         error_occured = false;
 
+        // setup null terminated file name
+        temp_file_name = file_name_buffer_to_file_name_null_terminated(file_name_start, file_name_end);
+
         // open file
-        file_handle = fopen((const char*)null_terminated_file_name, "rb");
+        file_handle = fopen((const char*)temp_file_name, "rb");
 
         // check if the file opened
         if (file_handle == 0) {
@@ -123,7 +154,8 @@ namespace runner {
         // read file into buffer
         fread(*output_start, file_size, 1, file_handle);
 
-        // close file handle
+        // clean up
+        free(temp_file_name);
         fclose(file_handle);
 
         return;
@@ -369,7 +401,7 @@ namespace runner {
 
                 // get string length
                 console_buffer_length = 0;
-                while (console_buffer_length < console_input_buffer_length - 1 && console_buffer[console_buffer_length] != 0) {
+                while (console_buffer_length < console_input_buffer_length - 1 && console_buffer[console_buffer_length] != '\n') {
                     // next character
                     console_buffer_length += sizeof(char);
                 }
@@ -562,7 +594,7 @@ namespace runner {
                 break;
             case instruction_type::buffer_to_file:
                 // write a buffer to a file
-                move_buffer_to_file(file_error_occured, (runner::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0], (runner::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1], (runner::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_2]);
+                move_buffer_to_file(file_error_occured, (runner::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0], (runner::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1], (runner::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_2], (runner::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_3]);
 
                 // write error variable
                 context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = file_error_occured;
@@ -573,7 +605,7 @@ namespace runner {
                 break;
             case instruction_type::file_to_buffer:
                 // write a file to a buffer
-                move_file_to_buffer(file_error_occured, (runner::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0], &file_start, &file_end);
+                move_file_to_buffer(file_error_occured, (runner::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0], (runner::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1], &file_start, &file_end);
 
                 // write output variables
                 context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = (runner::cell)file_start;
@@ -581,7 +613,9 @@ namespace runner {
                 context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_2] = file_error_occured;
 
                 // register buffer with allocations
-                allocations.add_allocation(runner::allocation(file_start, file_end));
+                if (file_start != 0) {
+                    allocations.add_allocation(runner::allocation(file_start, file_end));
+                }
 
                 /*// DEBUG
                 printf("File:\n");
