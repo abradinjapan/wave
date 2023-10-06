@@ -82,6 +82,9 @@ namespace runner {
 
         // check if the file opened
         if (file_handle == 0) {
+            // clean up
+            free(temp_file_name);
+
             // if not, return error
             error = true;
 
@@ -115,6 +118,9 @@ namespace runner {
 
         // check if the file opened
         if (file_handle == 0) {
+            // clean up
+            free(temp_file_name);
+            
             // if not, set error
             error_occured = true;
 
