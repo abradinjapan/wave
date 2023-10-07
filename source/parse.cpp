@@ -1,7 +1,9 @@
 #pragma once
 
 #include <iostream>
+
 #include "lex.cpp"
+#include "basic.cpp"
 
 namespace parser {
     enum name_type {
@@ -109,7 +111,7 @@ namespace parser {
         }
 
         // check each character
-        for (uint64_t i = 0; i < starts_with.length(); i++) {
+        for (basic::u64 i = 0; i < starts_with.length(); i++) {
             // check if character is invalid
             if (starts_with[i] != string[i]) {
                 // not a match
@@ -121,7 +123,7 @@ namespace parser {
         return true;
     }
 
-    bool string_contains_at(std::string& string, uint64_t offset, std::string contains) {
+    bool string_contains_at(std::string& string, basic::u64 offset, std::string contains) {
         return string.substr(offset, contains.length()) == contains;
     }
 
@@ -401,7 +403,7 @@ namespace parser {
     // print arguments
     void print_inputs(int tab_depth, std::vector<name>& arguments) {
         // print arguments
-        for (uint64_t i = 0; i < arguments.size(); i++) {
+        for (basic::u64 i = 0; i < arguments.size(); i++) {
             // print tabs
             for (int64_t  i = 0; i < tab_depth; i++) {
                 std::cout << "\t";
@@ -442,7 +444,7 @@ namespace parser {
     // print arguments
     void print_outputs(int tab_depth, std::vector<name>& arguments) {
         // print arguments
-        for (uint64_t i = 0; i < arguments.size(); i++) {
+        for (basic::u64 i = 0; i < arguments.size(); i++) {
             // print tabs
             for (int64_t  i = 0; i < tab_depth; i++) {
                 std::cout << "\t";

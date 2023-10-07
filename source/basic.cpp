@@ -15,4 +15,6 @@ namespace basic {
     typedef int64_t s64;
 
     typedef void* address;
+
+    typedef char character;
 }

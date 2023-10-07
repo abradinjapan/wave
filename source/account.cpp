@@ -1,6 +1,7 @@
 #pragma once
 
 #include "parse.cpp"
+#include "basic.cpp"
 
 #include <vector>
 
@@ -37,7 +38,7 @@ namespace accounter {
         // check to see if a header is registered
         bool header_registered(header header) {
             // check each header
-            for (uint64_t i = 0; i < p_headers.size(); i++) {
+            for (basic::u64 i = 0; i < p_headers.size(); i++) {
                 // check header for match
                 if (match_headers(p_headers[i], header) == true) {
                     // match found
@@ -67,7 +68,7 @@ namespace accounter {
 
     void get_header_table(parser::program& program, header_table& headers, bool& error_occured) {
         // add abstractions to header table
-        for (uint64_t i = 0; i < program.p_abstractions.size(); i++) {
+        for (basic::u64 i = 0; i < program.p_abstractions.size(); i++) {
             // try to add a header
             if (headers.try_register_header(header(program.p_abstractions[i].p_header.p_name.p_name_value, program.p_abstractions[i].p_header.p_inputs.size(), program.p_abstractions[i].p_header.p_outputs.size())) == false) {
                 // error, header re-registered
@@ -87,7 +88,7 @@ namespace accounter {
         std::cout << "Header Table:" << std::endl;
 
         // print each header
-        for (uint64_t i = 0; i < table.p_headers.size(); i++) {
+        for (basic::u64 i = 0; i < table.p_headers.size(); i++) {
             // print header
             std::cout << "\tHeader: " << table.p_headers[i].p_name << "(" << table.p_headers[i].p_input_count << ")(" << table.p_headers[i].p_output_count << ")" << std::endl;
         }
@@ -99,9 +100,9 @@ namespace accounter {
     // verifies that all statements match a header
     bool verify_all_headers(header_table header_table, parser::program& program) {
         // for each abstraction
-        for (uint64_t i = 0; i < program.p_abstractions.size(); i++) {
+        for (basic::u64 i = 0; i < program.p_abstractions.size(); i++) {
             // for each statement in each abstraction
-            for (uint64_t j = 0; j < program.p_abstractions[i].p_scope.size(); j++) {
+            for (basic::u64 j = 0; j < program.p_abstractions[i].p_scope.size(); j++) {
                 // check header
                 if (program.p_abstractions[i].p_scope[j].p_name.p_name_type == parser::name_type::is_abstraction_name && header_table.header_registered(header(program.p_abstractions[i].p_scope[j].p_name.p_name_value, program.p_abstractions[i].p_scope[j].p_inputs.size(), program.p_abstractions[i].p_scope[j].p_outputs.size())) == false) {
                     // inform user of error
@@ -120,9 +121,9 @@ namespace accounter {
     class variable {
     public:
         std::string p_name;
-        uint64_t p_declaration_index;
+        basic::u64 p_declaration_index;
 
-        variable(std::string name, uint64_t declaration_index) {
+        variable(std::string name, basic::u64 declaration_index) {
             p_name = name;
             p_declaration_index = declaration_index;
         }
@@ -140,7 +141,7 @@ namespace accounter {
         // checks if the input list has a specific input
         bool table_contains_input(std::string name) {
             // for each variable
-            for (uint64_t input_ID = 0; input_ID < p_inputs.size(); input_ID++) {
+            for (basic::u64 input_ID = 0; input_ID < p_inputs.size(); input_ID++) {
                 // check if it is a match
                 if (p_inputs[input_ID].p_name == name) {
                     // match found, return found as true
@@ -155,7 +156,7 @@ namespace accounter {
         // checks if the output list has a specific output
         bool table_contains_output(std::string name) {
             // for each variable
-            for (uint64_t output_ID = 0; output_ID < p_outputs.size(); output_ID++) {
+            for (basic::u64 output_ID = 0; output_ID < p_outputs.size(); output_ID++) {
                 // check if it is a match
                 if (p_outputs[output_ID].p_name == name) {
                     // match found, return found as true
@@ -170,7 +171,7 @@ namespace accounter {
         // checks if the variable list has a specific variable
         bool table_contains_variable(std::string name) {
             // for each variable
-            for (uint64_t variable_ID = 0; variable_ID < p_variables.size(); variable_ID++) {
+            for (basic::u64 variable_ID = 0; variable_ID < p_variables.size(); variable_ID++) {
                 // check if it is a match
                 if (p_variables[variable_ID].p_name == name) {
                     // match found, return found as true
@@ -229,7 +230,7 @@ namespace accounter {
         variable_table output;
 
         // register the input variables
-        for (uint64_t input_ID = 0; input_ID < abstraction.p_header.p_inputs.size(); input_ID++) {
+        for (basic::u64 input_ID = 0; input_ID < abstraction.p_header.p_inputs.size(); input_ID++) {
             // try to register input
             if (output.try_register_input(variable(abstraction.p_header.p_inputs[input_ID].p_name_value, declared_as_input)) == false) {
                 // duplicate header argument error occured
@@ -244,7 +245,7 @@ namespace accounter {
         }
 
         // register the output variables
-        for (uint64_t output_ID = 0; output_ID < abstraction.p_header.p_outputs.size(); output_ID++) {
+        for (basic::u64 output_ID = 0; output_ID < abstraction.p_header.p_outputs.size(); output_ID++) {
             // try to register output
             if (output.try_register_output(variable(abstraction.p_header.p_outputs[output_ID].p_name_value, declared_as_output)) == false) {
                 // duplicate header argument error occured
@@ -259,11 +260,11 @@ namespace accounter {
         }
 
         // in each statement
-        for (uint64_t statement_ID = 0; statement_ID < abstraction.p_scope.size(); statement_ID++) {
+        for (basic::u64 statement_ID = 0; statement_ID < abstraction.p_scope.size(); statement_ID++) {
             // ensure statement is an abstraction call
             if (abstraction.p_scope[statement_ID].p_type == parser::statement_type::is_abstraction_call) {
                 // get variables
-                for (uint64_t output_ID = 0; output_ID < abstraction.p_scope[statement_ID].p_outputs.size(); output_ID++) {
+                for (basic::u64 output_ID = 0; output_ID < abstraction.p_scope[statement_ID].p_outputs.size(); output_ID++) {
                     // check to be sure that the name is a variable name
                     if (abstraction.p_scope[statement_ID].p_outputs[output_ID].p_name_type == parser::name_type::is_value_name) {
                         // try to add variable to variable list
@@ -280,9 +281,9 @@ namespace accounter {
     class offset {
     public:
         std::string p_name;
-        uint64_t p_statement_index;
+        basic::u64 p_statement_index;
 
-        offset(std::string name, uint64_t statement_index) {
+        offset(std::string name, basic::u64 statement_index) {
             p_name = name;
             p_statement_index = statement_index;
         }
@@ -294,7 +295,7 @@ namespace accounter {
 
         bool contains_offset(std::string name) {
             // check for offset
-            for (uint64_t i = 0; i < p_offsets.size(); i++) {
+            for (basic::u64 i = 0; i < p_offsets.size(); i++) {
                 // check for match
                 if (p_offsets[i].p_name == name) {
                     // found match
@@ -309,11 +310,11 @@ namespace accounter {
 
     offset_table get_offset_table(parser::abstraction& abstraction, bool& error_occured) {
         offset_table output;
-        uint64_t abstraction_call_ID = 0;
-        uint64_t offset_ID = 0;
+        basic::u64 abstraction_call_ID = 0;
+        basic::u64 offset_ID = 0;
 
         // for each statement
-        for (uint64_t statement_ID = 0; statement_ID < abstraction.p_scope.size(); statement_ID++) {
+        for (basic::u64 statement_ID = 0; statement_ID < abstraction.p_scope.size(); statement_ID++) {
             // check to see if statement type is offset
             if (abstraction.p_scope[statement_ID].p_type == parser::statement_type::is_offset_declaration) {
                 // check to see if offset is already declared
@@ -353,7 +354,7 @@ namespace accounter {
     public:
         std::string p_name;
         literal_type p_type;
-        uint64_t p_integer_value;
+        basic::u64 p_integer_value;
         int p_statement_ID;
         int p_argument_ID;
 
@@ -405,11 +406,11 @@ namespace accounter {
 
         // scan for literals
         // for each statement
-        for (uint64_t statement_ID = 0; statement_ID < abstraction.p_scope.size(); statement_ID++) {
+        for (basic::u64 statement_ID = 0; statement_ID < abstraction.p_scope.size(); statement_ID++) {
             // check to see if statement is abstraction call type
             if (abstraction.p_scope[statement_ID].p_type == parser::statement_type::is_abstraction_call) {
                 // check statement inputs for literals
-                for (uint64_t input_ID = 0; input_ID < abstraction.p_scope[statement_ID].p_inputs.size(); input_ID++) {
+                for (basic::u64 input_ID = 0; input_ID < abstraction.p_scope[statement_ID].p_inputs.size(); input_ID++) {
                     // check statement type
                     if (abstraction.p_scope[statement_ID].p_inputs[input_ID].p_name_type == parser::name_type::is_integer_literal || abstraction.p_scope[statement_ID].p_inputs[input_ID].p_name_type == parser::name_type::is_boolean_literal) {
                         // add literal
@@ -418,7 +419,7 @@ namespace accounter {
                 }
 
                 // check statement outputs for illegal literals (literals cannot be outputs)
-                for (uint64_t output_ID = 0; output_ID < abstraction.p_scope[statement_ID].p_outputs.size(); output_ID++) {
+                for (basic::u64 output_ID = 0; output_ID < abstraction.p_scope[statement_ID].p_outputs.size(); output_ID++) {
                     // check for literal
                     if (abstraction.p_scope[statement_ID].p_outputs[output_ID].p_name_type != parser::name_type::is_value_name) {
                         // inform user of error
@@ -496,7 +497,7 @@ namespace accounter {
             // lookup variable in variable table
             argument lookup_variable_by_name(std::string name_value, bool& error_occured) {
                 // check for match from inputs
-                for (uint64_t input_ID = 0; input_ID < p_variables.p_inputs.size(); input_ID++) {
+                for (basic::u64 input_ID = 0; input_ID < p_variables.p_inputs.size(); input_ID++) {
                     // check for variable name
                     if (p_variables.p_inputs[input_ID].p_name == name_value) {
                         // match found
@@ -505,7 +506,7 @@ namespace accounter {
                 }
 
                 // check for match from outputs
-                for (uint64_t output_ID = 0; output_ID < p_variables.p_outputs.size(); output_ID++) {
+                for (basic::u64 output_ID = 0; output_ID < p_variables.p_outputs.size(); output_ID++) {
                     // check for variable name
                     if (p_variables.p_outputs[output_ID].p_name == name_value) {
                         // match found
@@ -514,7 +515,7 @@ namespace accounter {
                 }
 
                 // check for match from variables
-                for (uint64_t variable_ID = 0; variable_ID < p_variables.p_variables.size(); variable_ID++) {
+                for (basic::u64 variable_ID = 0; variable_ID < p_variables.p_variables.size(); variable_ID++) {
                     // check for variable name
                     if (p_variables.p_variables[variable_ID].p_name == name_value) {
                         // match found
@@ -535,7 +536,7 @@ namespace accounter {
             // lookup offset in offset table
             argument lookup_offset_by_name(std::string name, bool& error_occured) {
                 // lookup offset
-                for (uint64_t offset_ID = 0; offset_ID < p_offsets.p_offsets.size(); offset_ID++) {
+                for (basic::u64 offset_ID = 0; offset_ID < p_offsets.p_offsets.size(); offset_ID++) {
                     // check for match
                     if (p_offsets.p_offsets[offset_ID].p_name == name) {
                         // match found
@@ -566,7 +567,7 @@ namespace accounter {
 
             argument lookup_literal_by_ID(int statement_ID, int io_ID, bool& error_occured) {
                 // lookup literal
-                for (uint64_t literal_ID = 0; literal_ID < p_literals.p_literals.size(); literal_ID++) {
+                for (basic::u64 literal_ID = 0; literal_ID < p_literals.p_literals.size(); literal_ID++) {
                     // check for match
                     if (p_literals.p_literals[literal_ID].p_statement_ID == statement_ID && p_literals.p_literals[literal_ID].p_argument_ID == io_ID) {
                         // return match
@@ -606,7 +607,7 @@ namespace accounter {
                 }
 
                 // get abstractions from file
-                for (uint64_t i = 0; i < program.p_abstractions.size(); i++) {
+                for (basic::u64 i = 0; i < program.p_abstractions.size(); i++) {
                     // create new abstraction
                     p_abstractions.push_back(abstraction());
 
@@ -669,7 +670,7 @@ namespace accounter {
                 print_header_table(p_header_table);
 
                 // print all abstractions
-                for (uint64_t abstraction_ID = 0; abstraction_ID < p_abstractions.size(); abstraction_ID++) {
+                for (basic::u64 abstraction_ID = 0; abstraction_ID < p_abstractions.size(); abstraction_ID++) {
                     // print abstraction name for clarity
                     std::cout << "Abstraction: " << p_header_table.p_headers[abstraction_ID].p_name << std::endl;
 
@@ -743,7 +744,7 @@ namespace accounter {
             // lookup header in header table
             int lookup_header_by_name(std::string header_name, bool& error_occured) {
                 // lookup header
-                for (uint64_t header_ID = 0; header_ID < p_header_table.p_headers.size(); header_ID++) {
+                for (basic::u64 header_ID = 0; header_ID < p_header_table.p_headers.size(); header_ID++) {
                     // match found
                     if (p_header_table.p_headers[header_ID].p_name == header_name) {
                         return header_ID;
@@ -765,7 +766,7 @@ namespace accounter {
                 std::vector<call> output;
 
                 // get each abstraction call statement
-                for (uint64_t statement_ID = 0; statement_ID < abstraction.p_scope.size(); statement_ID++) {
+                for (basic::u64 statement_ID = 0; statement_ID < abstraction.p_scope.size(); statement_ID++) {
                     // make sure that the statement is an abstraction call
                     if (abstraction.p_scope[statement_ID].p_type == parser::statement_type::is_abstraction_call) {
                         // create new abstraction call statement
@@ -780,7 +781,7 @@ namespace accounter {
                         }
 
                         // get inputs
-                        for (uint64_t input_ID = 0; input_ID < abstraction.p_scope[statement_ID].p_inputs.size(); input_ID++) {
+                        for (basic::u64 input_ID = 0; input_ID < abstraction.p_scope[statement_ID].p_inputs.size(); input_ID++) {
                             // get argument by type
                             switch (abstraction.p_scope[statement_ID].p_inputs[input_ID].p_name_type) {
                             // is variable
@@ -837,7 +838,7 @@ namespace accounter {
                         }
 
                         // get outputs
-                        for (uint64_t output_ID = 0; output_ID < abstraction.p_scope[statement_ID].p_outputs.size(); output_ID++) {
+                        for (basic::u64 output_ID = 0; output_ID < abstraction.p_scope[statement_ID].p_outputs.size(); output_ID++) {
                             // get argument by type
                             switch (abstraction.p_scope[statement_ID].p_outputs[output_ID].p_name_type) {
                             // is variable
@@ -867,11 +868,11 @@ namespace accounter {
             // get statement map
             std::vector<statement> get_statement_map(parser::abstraction& parser_abstraction, bool& error_occured) {
                 std::vector<statement> output;
-                uint64_t call_index = 0;
-                uint64_t offset_index = 0;
+                basic::u64 call_index = 0;
+                basic::u64 offset_index = 0;
 
                 // get each statement type
-                for (uint64_t statement_ID = 0; statement_ID < parser_abstraction.p_scope.size(); statement_ID++) {
+                for (basic::u64 statement_ID = 0; statement_ID < parser_abstraction.p_scope.size(); statement_ID++) {
                     // check for the statement type
                     if (parser_abstraction.p_scope[statement_ID].p_type == parser::statement_type::is_abstraction_call) {
                         // add the call statement
@@ -907,19 +908,19 @@ namespace accounter {
 
                 // print inputs
                 std::cout << "\t\tAbstraction Inputs:" << std::endl;
-                for (uint64_t i = 0; i < table.p_inputs.size(); i++) {
+                for (basic::u64 i = 0; i < table.p_inputs.size(); i++) {
                     std::cout << "\t\t\tInput: " << table.p_inputs[i].p_name << " [ " << (long long)table.p_inputs[i].p_declaration_index << " ]" << std::endl;
                 }
 
                 // print outputs
                 std::cout << "\t\tAbstraction Outputs:" << std::endl;
-                for (uint64_t i = 0; i < table.p_outputs.size(); i++) {
+                for (basic::u64 i = 0; i < table.p_outputs.size(); i++) {
                     std::cout << "\t\t\tOutput: " << table.p_outputs[i].p_name << " [ " << (long long)table.p_outputs[i].p_declaration_index << " ]" << std::endl;
                 }
 
                 // print variables
                 std::cout << "\t\tAbstraction Variables:" << std::endl;
-                for (uint64_t i = 0; i < table.p_variables.size(); i++) {
+                for (basic::u64 i = 0; i < table.p_variables.size(); i++) {
                     std::cout << "\t\t\tVariable: " << table.p_variables[i].p_name << " [ " << (long long)table.p_variables[i].p_declaration_index << " ]" << std::endl;
                 }
             }
@@ -930,7 +931,7 @@ namespace accounter {
                 std::cout << "\tOffset Table:" << std::endl;
 
                 // print offsets
-                for (uint64_t i = 0; i < table.p_offsets.size(); i++) {
+                for (basic::u64 i = 0; i < table.p_offsets.size(); i++) {
                     // print offset
                     std::cout << "\t\t" << table.p_offsets[i].p_name << " [ " << table.p_offsets[i].p_statement_index << " ]" << std::endl;
                 }
@@ -942,7 +943,7 @@ namespace accounter {
                 std::cout << "\tLiteral Table:" << std::endl;
         
                 // print literals
-                for (uint64_t i = 0; i < table.p_literals.size(); i++) {
+                for (basic::u64 i = 0; i < table.p_literals.size(); i++) {
                     // print literal
                     std::cout << "\t\t" << table.p_literals[i].p_name << " ( " << table.p_literals[i].p_integer_value << " ); Found At: [ " << table.p_literals[i].p_statement_ID << " " << table.p_literals[i].p_argument_ID << " ]" << std::endl;
                 }
@@ -954,12 +955,12 @@ namespace accounter {
                 std::cout << "\tCall Table:" << std::endl;
 
                 // print statements
-                for (uint64_t i = 0; i < table.size(); i++) {
+                for (basic::u64 i = 0; i < table.size(); i++) {
                     // print statement header
                     std::cout << "\t\t" << table[i].p_header_ID << " : ";
 
                     // print inputs
-                    for (uint64_t j = 0; j < table[i].p_inputs.size(); j++) {
+                    for (basic::u64 j = 0; j < table[i].p_inputs.size(); j++) {
                         // start input
                         std::cout << "[ ";
 
@@ -1001,7 +1002,7 @@ namespace accounter {
                     std::cout << " : ";
 
                     // print outputs
-                    for (uint64_t j = 0; j < table[i].p_outputs.size(); j++) {
+                    for (basic::u64 j = 0; j < table[i].p_outputs.size(); j++) {
                         // start output
                         std::cout << "[ ";
 
@@ -1040,7 +1041,7 @@ namespace accounter {
                 std::cout << "\tStatement Map:" << std::endl;
 
                 // print statements
-                for (uint64_t statement_ID = 0; statement_ID < statements.size(); statement_ID++) {
+                for (basic::u64 statement_ID = 0; statement_ID < statements.size(); statement_ID++) {
                     // print indentation
                     std::cout << "\t\t";
 

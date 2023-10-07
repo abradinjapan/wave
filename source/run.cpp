@@ -15,14 +15,14 @@ namespace runner {
     #define console_input_buffer_length 2048
 
     // read buffer
-    basic::u64 read_buffer(basic::address source, uint64_t byte_amount) {
-        uint64_t output;
+    basic::u64 read_buffer(basic::address source, basic::u64 byte_amount) {
+        basic::u64 output;
 
         // setup output
         output = 0;
 
         // read buffer
-        for (uint64_t byte_index = 0; byte_index < byte_amount; byte_index += 1) {
+        for (basic::u64 byte_index = 0; byte_index < byte_amount; byte_index += 1) {
             // get byte
             ((uint8_t*)&output)[byte_index] = ((uint8_t*)source)[byte_index];
         }
@@ -32,9 +32,9 @@ namespace runner {
     }
 
     // write buffer
-    void write_buffer(uint64_t source, uint64_t byte_amount, basic::address destination) {
+    void write_buffer(basic::u64 source, basic::u64 byte_amount, basic::address destination) {
         // write data to buffer
-        for (uint64_t byte_index = 0; byte_index < byte_amount; byte_index += 1) {
+        for (basic::u64 byte_index = 0; byte_index < byte_amount; byte_index += 1) {
             // write byte
             ((uint8_t*)destination)[byte_index] = ((uint8_t*)&source)[byte_index];
         }
@@ -43,19 +43,19 @@ namespace runner {
     }
 
     // open null terminated file name from file name buffer
-    char* file_name_buffer_to_file_name_null_terminated(basic::address start, basic::address end) {
-        char* output;
-        uint64_t string_size;
+    basic::character* file_name_buffer_to_file_name_null_terminated(basic::address start, basic::address end) {
+        basic::character* output;
+        basic::u64 string_size;
 
         // calculate size
-        string_size = (uint64_t)end - (uint64_t)start + 1;
+        string_size = (basic::u64)end - (basic::u64)start + 1;
 
         // allocate output
-        output = (char*)malloc(string_size + 1);
+        output = (basic::character*)malloc(string_size + 1);
 
         // copy string
-        for (uint64_t i = 0; i < string_size; i++) {
-            output[i] = ((char*)start)[i];
+        for (basic::u64 i = 0; i < string_size; i++) {
+            output[i] = ((basic::character*)start)[i];
         }
 
         // setup null termination
@@ -67,8 +67,8 @@ namespace runner {
     // create file from buffer
     void move_buffer_to_file(bool& error, basic::address start, basic::address end, basic::address file_path_start, basic::address file_path_end) {
         FILE* file_handle;
-        uint64_t file_length;
-        char* temp_file_name;
+        basic::u64 file_length;
+        basic::character* temp_file_name;
 
         // setup error to no error to start
         error = false;
@@ -77,10 +77,10 @@ namespace runner {
         temp_file_name = file_name_buffer_to_file_name_null_terminated(file_path_start, file_path_end);
 
         // calculate file length
-        file_length = (uint64_t)start - (uint64_t)end + 1;
+        file_length = (basic::u64)start - (basic::u64)end + 1;
 
         // open file
-        file_handle = fopen((const char*)temp_file_name, "w+b");
+        file_handle = fopen((const basic::character*)temp_file_name, "w+b");
 
         // check if the file opened
         if (file_handle == 0) {
@@ -106,8 +106,8 @@ namespace runner {
     // create buffer from file
     void move_file_to_buffer(bool& error_occured, basic::address file_name_start, basic::address file_name_end, basic::address* output_start, basic::address* output_end) {
         FILE* file_handle;
-        char* temp_file_name;
-        uint64_t file_size;
+        basic::character* temp_file_name;
+        basic::u64 file_size;
 
         // set error code to no error
         error_occured = false;
@@ -116,7 +116,7 @@ namespace runner {
         temp_file_name = file_name_buffer_to_file_name_null_terminated(file_name_start, file_name_end);
 
         // open file
-        file_handle = fopen((const char*)temp_file_name, "rb");
+        file_handle = fopen((const basic::character*)temp_file_name, "rb");
 
         // check if the file opened
         if (file_handle == 0) {
@@ -156,7 +156,7 @@ namespace runner {
         // buffer allocated
         } else {
             // set buffer end
-            *output_end = (basic::address)((uint64_t)(*output_start) + (file_size - 1));
+            *output_end = (basic::address)((basic::u64)(*output_start) + (file_size - 1));
         }
 
         // read file into buffer
@@ -189,8 +189,8 @@ namespace runner {
     private:
         std::vector<allocation> p_allocations;
 
-        uint64_t get_allocation_number(allocation data) {
-            for (uint64_t index = 0; index < p_allocations.size(); index++) {
+        basic::u64 get_allocation_number(allocation data) {
+            for (basic::u64 index = 0; index < p_allocations.size(); index++) {
                 if (p_allocations[index].p_start == data.p_start && p_allocations[index].p_start == data.p_end) {
                     return index;
                 }
@@ -221,7 +221,7 @@ namespace runner {
         }
 
         bool is_address_valid(basic::address pointer) {
-            for (uint64_t index = 0; index < p_allocations.size(); index++) {
+            for (basic::u64 index = 0; index < p_allocations.size(); index++) {
                 // check address
                 if (p_allocations[index].p_start <= pointer && p_allocations[index].p_end >= pointer) {
                     return true;
@@ -232,7 +232,7 @@ namespace runner {
         }
 
         bool is_address_range_valid(basic::address start, basic::address end) {
-            for (uint64_t index = 0; index < p_allocations.size(); index++) {
+            for (basic::u64 index = 0; index < p_allocations.size(); index++) {
                 // check addresses
                 if ((p_allocations[index].p_start <= start && p_allocations[index].p_end >= start) && (p_allocations[index].p_start <= end && p_allocations[index].p_end >= end) && end <= start) {
                     return true;
@@ -242,8 +242,8 @@ namespace runner {
             return false;
         }
 
-        bool is_address_and_length_valid(basic::address pointer, uint64_t length) {
-            return is_address_range_valid(pointer, (basic::address)((uint64_t)pointer + length - 1));
+        bool is_address_and_length_valid(basic::address pointer, basic::u64 length) {
+            return is_address_range_valid(pointer, (basic::address)((basic::u64)pointer + length - 1));
         }
     };
 
@@ -310,7 +310,7 @@ namespace runner {
         cell_ID p_output_0;
         cell_ID p_output_1;
         cell_ID p_output_2;
-        uint64_t p_instruction_ID;
+        basic::u64 p_instruction_ID;
 
         instruction() {
             p_type = instruction_type::quit;
@@ -345,7 +345,7 @@ namespace runner {
         basic::address file_end;
         bool file_error_occured;
         char console_buffer[console_input_buffer_length];
-        uint64_t console_buffer_length;
+        basic::u64 console_buffer_length;
 
         // process instructions
         while (running == true) {
@@ -399,13 +399,13 @@ namespace runner {
                 break;
             case instruction_type::get_console_input:
                 // clear console input
-                for (uint64_t character = 0; character < console_input_buffer_length; character++) {
+                for (basic::u64 character = 0; character < console_input_buffer_length; character++) {
                     // clear one byte
                     console_buffer[character] = 0;
                 }
 
                 // get console input
-                fgets((char*)&console_buffer, console_input_buffer_length, stdin);
+                fgets((basic::character*)&console_buffer, console_input_buffer_length, stdin);
 
                 // get string length
                 console_buffer_length = 0;
@@ -426,13 +426,13 @@ namespace runner {
                     allocations.add_allocation(allocation((basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0], (basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_1]));
 
                     // copy string to new buffer
-                    for (uint64_t i = 0; i < console_buffer_length; i++) {
+                    for (basic::u64 i = 0; i < console_buffer_length; i++) {
                         // copy byte
-                        ((char*)(context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0]))[i] = console_buffer[i];
+                        ((basic::character*)(context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0]))[i] = console_buffer[i];
                     }
 
                     // setup null termination
-                    ((char*)(context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0]))[console_buffer_length] = 0;
+                    ((basic::character*)(context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0]))[console_buffer_length] = 0;
                 // if allocation failed
                 } else {
                     // setup null buffer
@@ -532,7 +532,7 @@ namespace runner {
                 break;
             case instruction_type::request_memory:
                 // perform allocation
-                context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = (uint64_t)malloc(context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0]);
+                context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = (basic::u64)malloc(context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0]);
 
                 // if allocation succeded
                 if (context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] != 0) {
@@ -628,7 +628,7 @@ namespace runner {
                 /*// DEBUG
                 printf("File:\n");
                 for (address current = file_start; current < file_end; current = current + sizeof(char)) {
-                    putchar(*(char*)current);
+                    putchar(*(basic::character*)current);
                 }
                 putchar('\n');*/
 
@@ -698,7 +698,7 @@ namespace runner {
                 break;
             case instruction_type::integer_within_range:
                 // perform range check
-                context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = (cell)(uint64_t)((context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1] >= context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0]) && (context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1] <= context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_2]));
+                context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = (cell)(basic::u64)((context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1] >= context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0]) && (context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1] <= context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_2]));
 
                 // next instruction
                 current_instruction++;
@@ -706,7 +706,7 @@ namespace runner {
                 break;
             case instruction_type::boolean_not:
                 // perform inversion
-                context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = (cell)!((uint64_t)(context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0]));
+                context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = (cell)!((basic::u64)(context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0]));
 
                 // next instruction
                 current_instruction++;
@@ -730,7 +730,7 @@ namespace runner {
         std::cout << "Instructions:" << std::endl;
 
         // print instructions
-        for (uint64_t i = 0; i < program.p_instructions.size(); i++) {
+        for (basic::u64 i = 0; i < program.p_instructions.size(); i++) {
             // print instruction
             std::cout << "\t" << program.p_instructions[i].p_type << std::endl;
         }

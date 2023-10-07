@@ -4,6 +4,8 @@
 #include <vector>
 #include <string>
 
+#include "basic.cpp"
+
 /* Code */
 namespace lexer {
     // lexling types
@@ -55,7 +57,7 @@ namespace lexer {
     };
 
     // check if a character falls within a certain range
-    bool check_character_range(char low, char character, char high) {
+    bool check_character_range(basic::character low, basic::character character, basic::character high) {
         return (low <= character) && (character <= high);
     }
 

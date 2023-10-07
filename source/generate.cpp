@@ -4,11 +4,12 @@
 
 #include "account.cpp"
 #include "run.cpp"
+#include "basic.cpp"
 
 namespace generator {
     class offset {
     public:
-        uint64_t p_instruction_ID;
+        basic::u64 p_instruction_ID;
 
         offset() {
             p_instruction_ID = 0;
@@ -34,10 +35,10 @@ namespace generator {
     public:
         runner::program p_program;
         std::vector<offsets> p_abstraction_offsets;
-        uint64_t p_instruction_count;
+        basic::u64 p_instruction_count;
         pass_type p_pass_type;
 
-        void start_pass_measure(uint64_t abstraction_count) {
+        void start_pass_measure(basic::u64 abstraction_count) {
             p_abstraction_offsets.resize(abstraction_count);
             p_pass_type = pass_type::pass_measure;
             p_instruction_count = 0;
@@ -56,7 +57,7 @@ namespace generator {
             return;
         }
 
-        uint64_t get_offset() {
+        basic::u64 get_offset() {
             return p_instruction_count;
         }
     };
@@ -300,7 +301,7 @@ namespace generator {
             workspace.p_instruction_count++;
         }
 
-        void write__jump(workspace& workspace, runner::cell_ID condition, uint64_t instruction_ID) {
+        void write__jump(workspace& workspace, runner::cell_ID condition, basic::u64 instruction_ID) {
             runner::instruction temp_instruction;
 
             // create instruction
@@ -591,7 +592,7 @@ namespace generator {
         }
     }
 
-    uint64_t calculate_variable_index(accounter::skeleton::argument argument, accounter::skeleton::abstraction& abstraction) {
+    basic::u64 calculate_variable_index(accounter::skeleton::argument argument, accounter::skeleton::abstraction& abstraction) {
         switch (argument.p_type) {
         case accounter::skeleton::argument_type::is_input:
             return argument.p_ID;
@@ -607,8 +608,8 @@ namespace generator {
         }
     }
 
-    void generate_abstraction(workspace& workspace, accounter::skeleton::abstraction& abstraction, uint64_t abstraction_ID, bool& error_occured) {
-        uint64_t variable_count;
+    void generate_abstraction(workspace& workspace, accounter::skeleton::abstraction& abstraction, basic::u64 abstraction_ID, bool& error_occured) {
+        basic::u64 variable_count;
 
         // determine variable count
         variable_count = calculate_variable_index(accounter::skeleton::argument(accounter::skeleton::argument_type::is_invalid, 0), abstraction);
@@ -626,13 +627,13 @@ namespace generator {
         write_instructions::write__create_new_context(workspace, variable_count);
 
         // get inputs
-        for (uint64_t input_ID = abstraction.p_variables.p_inputs.size(); input_ID > 0; input_ID--) {
+        for (basic::u64 input_ID = abstraction.p_variables.p_inputs.size(); input_ID > 0; input_ID--) {
             // get input
             write_instructions::write__get_input(workspace, calculate_variable_index(accounter::skeleton::argument(accounter::skeleton::argument_type::is_input, input_ID - 1), abstraction));
         }
 
         // generate function body
-        for (uint64_t statement_ID = 0; statement_ID < abstraction.p_statement_map.size(); statement_ID++) {
+        for (basic::u64 statement_ID = 0; statement_ID < abstraction.p_statement_map.size(); statement_ID++) {
             // generate statement
             if (abstraction.p_statement_map[statement_ID].p_type == accounter::skeleton::statement_type::is_call_statement) {
                 // write code (NOTE: make sure that the switch cases are aligned with their respective run.cpp instructions!)
@@ -866,7 +867,7 @@ namespace generator {
                 // user defined statement call
                 default:
                     // pass inputs
-                    for (uint64_t input_ID = 0; input_ID < abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs.size(); input_ID++) {
+                    for (basic::u64 input_ID = 0; input_ID < abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs.size(); input_ID++) {
                         write_instructions::write__pass_input(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[input_ID], abstraction));
                     }
 
@@ -875,7 +876,7 @@ namespace generator {
                     write_instructions::write__jump_to_abstraction(workspace, calculate_variable_index(accounter::skeleton::argument(accounter::skeleton::argument_type::is_offset, 0), abstraction));
 
                     // get outputs
-                    for (uint64_t output_ID = abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs.size(); output_ID > 0; output_ID--) {
+                    for (basic::u64 output_ID = abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs.size(); output_ID > 0; output_ID--) {
                         write_instructions::write__get_output(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[output_ID - 1], abstraction));
                     }
 
@@ -892,7 +893,7 @@ namespace generator {
 
         // create function epilogue
         // pass outputs
-        for (uint64_t output_ID = 0; output_ID < abstraction.p_variables.p_outputs.size(); output_ID++) {
+        for (basic::u64 output_ID = 0; output_ID < abstraction.p_variables.p_outputs.size(); output_ID++) {
             // pass outputs
             write_instructions::write__pass_output(workspace, calculate_variable_index(accounter::skeleton::argument(accounter::skeleton::argument_type::is_output, output_ID), abstraction));
         }
@@ -904,7 +905,7 @@ namespace generator {
         write_instructions::write__jump_from_abstraction(workspace);
     }
 
-    void generate_kickstarter(workspace& workspace, uint64_t start_function_ID) {
+    void generate_kickstarter(workspace& workspace, basic::u64 start_function_ID) {
         write_instructions::write__create_new_context(workspace, 1);
         write_instructions::write__write_cell(workspace, workspace.p_abstraction_offsets[start_function_ID].p_start.p_instruction_ID, 0);
         write_instructions::write__jump_to_abstraction(workspace, 0);
@@ -914,7 +915,7 @@ namespace generator {
     // generate code from a program
     runner::program generate_program(accounter::skeleton::skeleton& skeleton, bool& error_occured) {
         workspace workspace;
-        uint64_t main_function_ID;
+        basic::u64 main_function_ID;
 
         // start pass
         workspace.start_pass_measure(skeleton.p_abstractions.size());
@@ -931,7 +932,7 @@ namespace generator {
         generate_kickstarter(workspace, main_function_ID);
 
         // measure each abstraction
-        for (uint64_t abstraction_ID = 0; abstraction_ID < skeleton.p_abstractions.size(); abstraction_ID++) {
+        for (basic::u64 abstraction_ID = 0; abstraction_ID < skeleton.p_abstractions.size(); abstraction_ID++) {
             // check if abstraction has scope
             if (skeleton.p_abstractions[abstraction_ID].p_has_scope) {
                 // turn into function
@@ -959,7 +960,7 @@ namespace generator {
         }
 
         // measure each abstraction
-        for (uint64_t abstraction_ID = 0; abstraction_ID < skeleton.p_abstractions.size(); abstraction_ID++) {
+        for (basic::u64 abstraction_ID = 0; abstraction_ID < skeleton.p_abstractions.size(); abstraction_ID++) {
             // check if abstraction has scope
             if (skeleton.p_abstractions[abstraction_ID].p_has_scope) {
                 // turn into function
