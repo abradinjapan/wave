@@ -4,6 +4,7 @@
 
 #include "lex.cpp"
 #include "basic.cpp"
+#include "run.cpp"
 
 namespace parser {
     enum name_type {
@@ -67,18 +68,6 @@ namespace parser {
         }
     };
 
-    /*class header {
-    public:
-        std::string p_name;
-        runner::cell_count p_input_count;
-        runner::cell_count p_output_count;
-    };
-
-    class import {
-    public:
-
-    };*/
-
     enum abstraction_type {
         is_undefined,
         is_code_defined,
@@ -90,7 +79,6 @@ namespace parser {
         abstraction_type p_type;
         statement p_header;
         std::vector<statement> p_scope;
-        //std::vector<import> p_imports;
 
         abstraction() {
             p_type = is_undefined;
