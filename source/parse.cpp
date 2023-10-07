@@ -10,6 +10,7 @@ namespace parser {
         is_integer_literal,
         is_abstraction_name,
         is_offset,
+        is_boolean_literal,
     };
 
     class name {
@@ -107,9 +108,16 @@ namespace parser {
         return true;
     }
 
+    bool string_contains_at(std::string& string, uint64_t offset, std::string contains) {
+        return string.substr(offset, contains.length()) == contains;
+    }
+
     // parse arguments
     std::vector<name> parse_arguments(lexer::lexlings& lexlings, int& lexling_index, bool& error_occured) {
         std::vector<name> output;
+        std::string boolean_prefix = "wave.boolean.";
+        std::string true_suffix = "true";
+        std::string false_suffix = "false";
 
         // check for opener
         if (lexlings.p_lexlings[lexling_index].p_type == lexer::type::left_parenthesis) {
@@ -129,6 +137,13 @@ namespace parser {
                 } else if (string_starts_with(lexlings.p_lexlings[lexling_index].p_value, "wave.integer.") == true) {
                     // add argument
                     output.push_back(name(name_type::is_integer_literal, lexlings.p_lexlings[lexling_index].p_value));
+
+                    // next argument
+                    lexling_index++;
+                // check for boolean literal
+                } else if (string_starts_with(lexlings.p_lexlings[lexling_index].p_value, "wave.boolean.") == true && ((string_contains_at(lexlings.p_lexlings[lexling_index].p_value, boolean_prefix.length(), true_suffix) && boolean_prefix.length() + true_suffix.length() == lexlings.p_lexlings[lexling_index].p_value.length()) || (string_contains_at(lexlings.p_lexlings[lexling_index].p_value, boolean_prefix.length(), false_suffix) && boolean_prefix.length() + false_suffix.length() == lexlings.p_lexlings[lexling_index].p_value.length()))) {
+                    // add argument
+                    output.push_back(name(name_type::is_boolean_literal, lexlings.p_lexlings[lexling_index].p_value));
 
                     // next argument
                     lexling_index++;
@@ -397,6 +412,9 @@ namespace parser {
             case name_type::is_integer_literal:
                 std::cout << "integer_literal_name";
                 break;
+            case name_type::is_boolean_literal:
+                std::cout << "boolean_literal_name";
+                break;
             case name_type::is_abstraction_name:
                 std::cout << "abstraction_name";
                 break;
@@ -434,6 +452,9 @@ namespace parser {
                 break;
             case name_type::is_integer_literal:
                 std::cout << "integer_literal_name";
+                break;
+            case name_type::is_boolean_literal:
+                std::cout << "boolean_literal_name";
                 break;
             case name_type::is_abstraction_name:
                 std::cout << "abstraction_name";

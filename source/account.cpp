@@ -343,21 +343,53 @@ namespace accounter {
         return output;
     }
 
+    enum literal_type {
+        is_integer_literal,
+        is_boolean_literal,
+        is_invalid,
+    };
+
     class literal {
     public:
         std::string p_name;
+        literal_type p_type;
         uint64_t p_integer_value;
         int p_statement_ID;
         int p_argument_ID;
 
-        literal(std::string name, int statement_ID, int argument_ID) {
-            std::string prefix = "wave.integer.";
-
+        literal(std::string name, parser::name_type type, int statement_ID, int argument_ID, bool error_occured) {
             // set properties
             p_name = name;
-            p_integer_value = std::stoi(name.substr(prefix.length(), name.length() - prefix.length()));
             p_statement_ID = statement_ID;
             p_argument_ID = argument_ID;
+
+            // set final type
+            determine_literal_type(type, error_occured);
+        }
+
+        void determine_literal_type(parser::name_type type, bool& error_occured) {
+            std::string integer_prefix = "wave.integer.";
+            std::string boolean_prefix = "wave.boolean.";
+
+            if (type == parser::name_type::is_integer_literal) {
+                p_integer_value = std::stoi(p_name.substr(integer_prefix.length(), p_name.length() - integer_prefix.length()));
+
+                p_type = literal_type::is_integer_literal;
+            } else if (type == parser::name_type::is_boolean_literal) {
+                if (parser::string_contains_at(p_name, boolean_prefix.length(), "false")) {
+                    p_integer_value = 0;
+                } else if (parser::string_contains_at(p_name, boolean_prefix.length(), "true")) {
+                    p_integer_value = 1;
+                } else {
+                    // error
+                    std::cout << "Internal error, unrecognized literal type: " << p_name << std::endl;
+                    p_integer_value = -1;
+                }
+
+                p_type = literal_type::is_boolean_literal;
+            } else {
+                p_integer_value = -1;
+            }
         }
     };
 
@@ -376,19 +408,19 @@ namespace accounter {
             if (abstraction.p_scope[statement_ID].p_type == parser::statement_type::is_abstraction_call) {
                 // check statement inputs for literals
                 for (uint64_t input_ID = 0; input_ID < abstraction.p_scope[statement_ID].p_inputs.size(); input_ID++) {
-                    // check for literal
-                    if (abstraction.p_scope[statement_ID].p_inputs[input_ID].p_name_type == parser::name_type::is_integer_literal) {
+                    // check statement type
+                    if (abstraction.p_scope[statement_ID].p_inputs[input_ID].p_name_type == parser::name_type::is_integer_literal || abstraction.p_scope[statement_ID].p_inputs[input_ID].p_name_type == parser::name_type::is_boolean_literal) {
                         // add literal
-                        output.p_literals.push_back(literal(abstraction.p_scope[statement_ID].p_inputs[input_ID].p_name_value, statement_ID, input_ID));
+                        output.p_literals.push_back(literal(abstraction.p_scope[statement_ID].p_inputs[input_ID].p_name_value, abstraction.p_scope[statement_ID].p_inputs[input_ID].p_name_type, statement_ID, input_ID, error_occured));
                     }
                 }
 
                 // check statement outputs for illegal literals (literals cannot be outputs)
                 for (uint64_t output_ID = 0; output_ID < abstraction.p_scope[statement_ID].p_outputs.size(); output_ID++) {
                     // check for literal
-                    if (abstraction.p_scope[statement_ID].p_outputs[output_ID].p_name_type == parser::name_type::is_integer_literal) {
+                    if (abstraction.p_scope[statement_ID].p_outputs[output_ID].p_name_type != parser::name_type::is_value_name) {
                         // inform user of error
-                        std::cout << "Accouting error, an integer literal was found in the outputs of an abstraction call.: " << abstraction.p_scope[statement_ID].p_outputs[output_ID].p_name_value << std::endl;
+                        std::cout << "Accouting error, an non variable name was found in the outputs of an abstraction call.: " << abstraction.p_scope[statement_ID].p_outputs[output_ID].p_name_value << std::endl;
                         
                         // set error
                         error_occured = true;
@@ -412,6 +444,7 @@ namespace accounter {
             is_variable,
             is_integer_literal,
             is_offset,
+            is_boolean_literal,
         };
 
         class argument {
@@ -518,13 +551,24 @@ namespace accounter {
                 return argument(argument_type::is_invalid, -1);
             }
 
+            argument_type convert_literal_type_to_argument_type(literal_type type) {
+                switch (type) {
+                case literal_type::is_integer_literal:
+                    return argument_type::is_integer_literal;
+                case literal_type::is_boolean_literal:
+                    return argument_type::is_boolean_literal;
+                default:
+                    return argument_type::is_invalid;
+                }
+            }
+
             argument lookup_literal_by_ID(int statement_ID, int io_ID, bool& error_occured) {
                 // lookup literal
                 for (uint64_t literal_ID = 0; literal_ID < p_literals.p_literals.size(); literal_ID++) {
                     // check for match
                     if (p_literals.p_literals[literal_ID].p_statement_ID == statement_ID && p_literals.p_literals[literal_ID].p_argument_ID == io_ID) {
                         // return match
-                        return argument(argument_type::is_integer_literal, literal_ID);
+                        return argument(convert_literal_type_to_argument_type(p_literals.p_literals[literal_ID].p_type), literal_ID);
                     }
                 }
 
@@ -759,8 +803,19 @@ namespace accounter {
                                 }
 
                                 break;
-                            // is literal
+                            // is integer literal
                             case parser::name_type::is_integer_literal:
+                                // lookup literal
+                                output[output.size() - 1].p_inputs.push_back(p_abstractions[abstraction_ID].lookup_literal_by_ID(statement_ID, input_ID, error_occured));
+
+                                // check for error
+                                if (error_occured) {
+                                    return output;
+                                }
+
+                                break;
+                            // is boolean literal
+                            case parser::name_type::is_boolean_literal:
                                 // lookup literal
                                 output[output.size() - 1].p_inputs.push_back(p_abstractions[abstraction_ID].lookup_literal_by_ID(statement_ID, input_ID, error_occured));
 
@@ -773,6 +828,8 @@ namespace accounter {
                             // not valid
                             default:
                                 std::cout << "Accouting error, an illegal name type was found in statement inputs." << std::endl;
+                                error_occured = true;
+
                                 return output;
                             }
                         }
@@ -921,6 +978,9 @@ namespace accounter {
                         case argument_type::is_integer_literal:
                             std::cout << "is_integer_literal" << " -> " << table[i].p_inputs[j].p_ID;
                             break;
+                        case argument_type::is_boolean_literal:
+                            std::cout << "is_boolean_literal" << " -> " << table[i].p_inputs[j].p_ID;
+                            break;
                         default:
                             std::cout << "is_invalid" << " -> " << table[i].p_inputs[j].p_ID;
                             break;
@@ -952,12 +1012,6 @@ namespace accounter {
                             break;
                         case argument_type::is_variable:
                             std::cout << "is_variable" << " -> " << table[i].p_outputs[j].p_ID;
-                            break;
-                        case argument_type::is_offset:
-                            std::cout << "is_offset" << " -> " << table[i].p_outputs[j].p_ID;
-                            break;
-                        case argument_type::is_integer_literal:
-                            std::cout << "is_integer_literal" << " -> " << table[i].p_outputs[j].p_ID;
                             break;
                         default:
                             std::cout << "is_invalid" << " -> " << table[i].p_outputs[j].p_ID;

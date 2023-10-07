@@ -55,11 +55,6 @@ runner::program compile(std::string user_code, bool& compilation_error, bool pri
     // parse file
     parse_tree = parser::parse_file(lexlings, parse_error);
 
-    // print parse tree
-    if (print_debug) {
-        parser::print_program(parse_tree);
-    }
-
     // do not proceed if error occured
     if (parse_error) {
         compilation_error = true;
@@ -67,19 +62,24 @@ runner::program compile(std::string user_code, bool& compilation_error, bool pri
         return output;
     }
 
+    // print parse tree
+    if (print_debug) {
+        parser::print_program(parse_tree);
+    }
+
     // account program
     skeleton.get_skeleton(parse_tree, accounting_error);
-
-    // print program
-    if (print_debug) {
-        skeleton.print_skeleton();
-    }
 
     // do not proceed if error occured
     if (accounting_error) {
         compilation_error = true;
 
         return output;
+    }
+
+    // print program
+    if (print_debug) {
+        skeleton.print_skeleton();
     }
 
     // generate program code
@@ -151,7 +151,7 @@ int main(int argc, char** argv) {
         // run if file found
         if (file_data != "") {
             // run compiler
-            compile_and_run(file_data, false);
+            compile_and_run(file_data, true);
         // if file not found
         } else {
             std::cout << "Invalid file path: " << file_path << std::endl;

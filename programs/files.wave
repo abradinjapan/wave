@@ -22,7 +22,7 @@ string.write_character(character input.address)(output.address) = {
 string.print(start end)() = {
     [ setup variables ]
     wave.set(wave.integer.1)(character_size)
-    wave.set(wave.integer.1)(always)
+    wave.set(wave.boolean.true)(always)
 
     [ setup current ]
     wave.copy(start)(current)

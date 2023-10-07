@@ -27,6 +27,11 @@ test.boolean.not()() = {
     wave.print.character(new_line)()
 }
 
+test.boolean.literals()() = {
+    wave.set(wave.boolean.true)(true)
+    wave.set(wave.boolean.false)(false)
+}
+
 main()() = {
     test.boolean.not()()
 }
