@@ -4,16 +4,18 @@
 #include <vector>
 #include <stdint.h>
 
+#include "basic.cpp"
+
 namespace runner {
     // defines
-    typedef uint64_t cell; // register
-    typedef uint64_t cell_ID;
-    typedef void* address;
+    typedef basic::u64 cell; // register
+    typedef basic::u64 cell_ID;
+    typedef cell cell_count;
 
     #define console_input_buffer_length 2048
 
     // read buffer
-    uint64_t read_buffer(address source, uint64_t byte_amount) {
+    basic::u64 read_buffer(basic::address source, uint64_t byte_amount) {
         uint64_t output;
 
         // setup output
@@ -30,7 +32,7 @@ namespace runner {
     }
 
     // write buffer
-    void write_buffer(uint64_t source, uint64_t byte_amount, address destination) {
+    void write_buffer(uint64_t source, uint64_t byte_amount, basic::address destination) {
         // write data to buffer
         for (uint64_t byte_index = 0; byte_index < byte_amount; byte_index += 1) {
             // write byte
@@ -41,7 +43,7 @@ namespace runner {
     }
 
     // open null terminated file name from file name buffer
-    char* file_name_buffer_to_file_name_null_terminated(address start, address end) {
+    char* file_name_buffer_to_file_name_null_terminated(basic::address start, basic::address end) {
         char* output;
         uint64_t string_size;
 
@@ -63,7 +65,7 @@ namespace runner {
     }
 
     // create file from buffer
-    void move_buffer_to_file(bool& error, address start, address end, address file_path_start, address file_path_end) {
+    void move_buffer_to_file(bool& error, basic::address start, basic::address end, basic::address file_path_start, basic::address file_path_end) {
         FILE* file_handle;
         uint64_t file_length;
         char* temp_file_name;
@@ -72,7 +74,7 @@ namespace runner {
         error = false;
 
         // setup file name
-        temp_file_name = file_name_buffer_to_file_name_null_terminated(start, end);
+        temp_file_name = file_name_buffer_to_file_name_null_terminated(file_path_start, file_path_end);
 
         // calculate file length
         file_length = (uint64_t)start - (uint64_t)end + 1;
@@ -102,7 +104,7 @@ namespace runner {
     }
 
     // create buffer from file
-    void move_file_to_buffer(bool& error_occured, address file_name_start, address file_name_end, address* output_start, address* output_end) {
+    void move_file_to_buffer(bool& error_occured, basic::address file_name_start, basic::address file_name_end, basic::address* output_start, basic::address* output_end) {
         FILE* file_handle;
         char* temp_file_name;
         uint64_t file_size;
@@ -154,7 +156,7 @@ namespace runner {
         // buffer allocated
         } else {
             // set buffer end
-            *output_end = (*output_start) + (file_size - 1);
+            *output_end = (basic::address)((uint64_t)(*output_start) + (file_size - 1));
         }
 
         // read file into buffer
@@ -174,10 +176,10 @@ namespace runner {
 
     class allocation {
     public:
-        address p_start;
-        address p_end;
+        basic::address p_start;
+        basic::address p_end;
 
-        allocation(address start, address end) {
+        allocation(basic::address start, basic::address end) {
             p_start = start;
             p_end = end;
         }
@@ -218,7 +220,7 @@ namespace runner {
             }
         }
 
-        bool is_address_valid(address pointer) {
+        bool is_address_valid(basic::address pointer) {
             for (uint64_t index = 0; index < p_allocations.size(); index++) {
                 // check address
                 if (p_allocations[index].p_start <= pointer && p_allocations[index].p_end >= pointer) {
@@ -229,7 +231,7 @@ namespace runner {
             return false;
         }
 
-        bool is_address_range_valid(address start, address end) {
+        bool is_address_range_valid(basic::address start, basic::address end) {
             for (uint64_t index = 0; index < p_allocations.size(); index++) {
                 // check addresses
                 if ((p_allocations[index].p_start <= start && p_allocations[index].p_end >= start) && (p_allocations[index].p_start <= end && p_allocations[index].p_end >= end) && end <= start) {
@@ -240,8 +242,8 @@ namespace runner {
             return false;
         }
 
-        bool is_address_and_length_valid(address pointer, uint64_t length) {
-            return is_address_range_valid(pointer, pointer + length - 1);
+        bool is_address_and_length_valid(basic::address pointer, uint64_t length) {
+            return is_address_range_valid(pointer, (basic::address)((uint64_t)pointer + length - 1));
         }
     };
 
@@ -339,8 +341,8 @@ namespace runner {
         allocations allocations;
         buffer inputs;
         buffer outputs;
-        runner::address file_start;
-        runner::address file_end;
+        basic::address file_start;
+        basic::address file_end;
         bool file_error_occured;
         char console_buffer[console_input_buffer_length];
         uint64_t console_buffer_length;
@@ -421,7 +423,7 @@ namespace runner {
                     context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_1] = context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] + console_buffer_length;
 
                     // register buffer with allocations
-                    allocations.add_allocation(allocation((runner::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0], (runner::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_1]));
+                    allocations.add_allocation(allocation((basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0], (basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_1]));
 
                     // copy string to new buffer
                     for (uint64_t i = 0; i < console_buffer_length; i++) {
@@ -539,7 +541,7 @@ namespace runner {
                     context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_2] = false;
 
                     // remember allocation
-                    allocations.add_allocation(allocation((address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0], (address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_1]));
+                    allocations.add_allocation(allocation((basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0], (basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_1]));
                 // if allocation failed
                 } else {
                     // setup outputs
@@ -556,7 +558,7 @@ namespace runner {
                 free((void*)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0]);
 
                 // remove allocation marker
-                allocations.remove_allocation(allocation((address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0], (address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1]));
+                allocations.remove_allocation(allocation((basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0], (basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1]));
 
                 // next instruction
                 current_instruction++;
@@ -564,9 +566,9 @@ namespace runner {
                 break;
             case instruction_type::cell_to_address:
                 // if valid request
-                if (allocations.is_address_valid((address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_2])) {
+                if (allocations.is_address_valid((basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_2])) {
                     // do write
-                    write_buffer(context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0], context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1], (address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_2]);
+                    write_buffer(context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0], context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1], (basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_2]);
 
                     // set error code
                     context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = false;
@@ -582,9 +584,9 @@ namespace runner {
                 break;
             case instruction_type::address_to_cell:
                 // if valid request
-                if (allocations.is_address_valid((address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0])) {
+                if (allocations.is_address_valid((basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0])) {
                     // do read
-                    context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = read_buffer((address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0], context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1]);
+                    context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = read_buffer((basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0], context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1]);
 
                     // set error code
                     context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_1] = false;
@@ -600,7 +602,7 @@ namespace runner {
                 break;
             case instruction_type::buffer_to_file:
                 // write a buffer to a file
-                move_buffer_to_file(file_error_occured, (runner::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0], (runner::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1], (runner::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_2], (runner::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_3]);
+                move_buffer_to_file(file_error_occured, (basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0], (basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1], (basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_2], (basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_3]);
 
                 // write error variable
                 context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = file_error_occured;
@@ -611,7 +613,7 @@ namespace runner {
                 break;
             case instruction_type::file_to_buffer:
                 // write a file to a buffer
-                move_file_to_buffer(file_error_occured, (runner::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0], (runner::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1], &file_start, &file_end);
+                move_file_to_buffer(file_error_occured, (basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0], (basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1], &file_start, &file_end);
 
                 // write output variables
                 context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = (runner::cell)file_start;

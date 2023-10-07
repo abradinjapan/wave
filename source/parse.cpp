@@ -65,10 +65,22 @@ namespace parser {
         }
     };
 
+    /*class header {
+    public:
+        std::string p_name;
+        runner::cell_count p_input_count;
+        runner::cell_count p_output_count;
+    };
+
+    class import {
+    public:
+
+    };*/
+
     enum abstraction_type {
         is_undefined,
-        is_compiler_defined,
         is_code_defined,
+        is_compiler_defined,
     };
 
     class abstraction {
@@ -76,6 +88,7 @@ namespace parser {
         abstraction_type p_type;
         statement p_header;
         std::vector<statement> p_scope;
+        //std::vector<import> p_imports;
 
         abstraction() {
             p_type = is_undefined;
@@ -120,14 +133,14 @@ namespace parser {
         std::string false_suffix = "false";
 
         // check for opener
-        if (lexlings.p_lexlings[lexling_index].p_type == lexer::type::left_parenthesis) {
+        if (lexlings.p_lexlings[lexling_index].p_type == lexer::lexling_type::left_parenthesis) {
             // next lexling
             lexling_index++;
 
             // get arguments until end of arguments
             while (lexling_index < lexlings.count()) {
                 // check for offset
-                if (lexlings.p_lexlings[lexling_index].p_type == lexer::type::offset_marker && lexlings.p_lexlings[lexling_index + 1].p_type == lexer::type::name) {
+                if (lexlings.p_lexlings[lexling_index].p_type == lexer::lexling_type::offset_marker && lexlings.p_lexlings[lexling_index + 1].p_type == lexer::lexling_type::name) {
                     // add argument
                     output.push_back(name(name_type::is_offset, lexlings.p_lexlings[lexling_index + 1].p_value));
 
@@ -148,7 +161,7 @@ namespace parser {
                     // next argument
                     lexling_index++;
                 // check for name
-                } else if (lexlings.p_lexlings[lexling_index].p_type == lexer::type::name) {
+                } else if (lexlings.p_lexlings[lexling_index].p_type == lexer::lexling_type::name) {
                     // add argument
                     output.push_back(name(name_type::is_value_name, lexlings.p_lexlings[lexling_index].p_value));
 
@@ -161,7 +174,7 @@ namespace parser {
             }
 
             // skip past ending parenthesis
-            if (lexlings.p_lexlings[lexling_index].p_type == lexer::type::right_parenthesis) {
+            if (lexlings.p_lexlings[lexling_index].p_type == lexer::lexling_type::right_parenthesis) {
                 lexling_index++;
             } else {
                 // display error
@@ -184,21 +197,21 @@ namespace parser {
         std::vector<name> output;
 
         // check for opener
-        if (lexlings.p_lexlings[lexling_index].p_type == lexer::type::left_parenthesis) {
+        if (lexlings.p_lexlings[lexling_index].p_type == lexer::lexling_type::left_parenthesis) {
             // next lexling
             lexling_index++;
 
             // get arguments until end of arguments
             while (lexling_index < lexlings.count()) {
                 // check for name
-                if (lexlings.p_lexlings[lexling_index].p_type == lexer::type::name) {
+                if (lexlings.p_lexlings[lexling_index].p_type == lexer::lexling_type::name) {
                     // add argument
                     output.push_back(name(name_type::is_value_name, lexlings.p_lexlings[lexling_index].p_value));
 
                     // next lexling
                     lexling_index++;
                 // end of arguments, quit loop
-                } else if (lexlings.p_lexlings[lexling_index].p_type == lexer::type::right_parenthesis) {
+                } else if (lexlings.p_lexlings[lexling_index].p_type == lexer::lexling_type::right_parenthesis) {
                     break;
                 // invalid argument lexling, raise error
                 } else {
@@ -214,7 +227,7 @@ namespace parser {
             }
 
             // skip past ending parenthesis
-            if (lexlings.p_lexlings[lexling_index].p_type == lexer::type::right_parenthesis) {
+            if (lexlings.p_lexlings[lexling_index].p_type == lexer::lexling_type::right_parenthesis) {
                 lexling_index++;
             } else {
                 // display error
@@ -237,7 +250,7 @@ namespace parser {
         statement output;
 
         // get abstraction call
-        if (lexlings.p_lexlings[lexling_index].p_type == lexer::type::name) {
+        if (lexlings.p_lexlings[lexling_index].p_type == lexer::lexling_type::name) {
             // mark type
             output.p_type = statement_type::is_abstraction_call;
 
@@ -261,7 +274,7 @@ namespace parser {
                 return output;
             }
         // get offset marker
-        } else if ((lexlings.count() > (lexling_index + 1)) && (lexlings.p_lexlings[lexling_index].p_type == lexer::type::offset_marker && lexlings.p_lexlings[lexling_index + 1].p_type == lexer::type::name)) {
+        } else if ((lexlings.count() > (lexling_index + 1)) && (lexlings.p_lexlings[lexling_index].p_type == lexer::lexling_type::offset_marker && lexlings.p_lexlings[lexling_index + 1].p_type == lexer::lexling_type::name)) {
             // mark type
             output.p_type = statement_type::is_offset_declaration;
 
@@ -290,7 +303,7 @@ namespace parser {
         statement output;
 
         // get abstraction call
-        if (lexlings.p_lexlings[lexling_index].p_type == lexer::type::name) {
+        if (lexlings.p_lexlings[lexling_index].p_type == lexer::lexling_type::name) {
             // assign name
             output.p_name = name(name_type::is_abstraction_name, lexlings.p_lexlings[lexling_index].p_value);
             lexling_index++;
@@ -329,7 +342,7 @@ namespace parser {
         output.p_header = parse_abstraction_header(lexlings, lexling_index, error_occured);
 
         // parse abstraction marker for abstraction
-        if (lexlings.p_lexlings[lexling_index].p_type == lexer::type::abstraction_marker) {
+        if (lexlings.p_lexlings[lexling_index].p_type == lexer::lexling_type::abstraction_marker) {
             // set type
             output.p_type = abstraction_type::is_code_defined;
 
@@ -337,12 +350,12 @@ namespace parser {
             lexling_index++;
 
             // get scope
-            if (lexlings.p_lexlings[lexling_index].p_type == lexer::type::left_curly_bracket) {
+            if (lexlings.p_lexlings[lexling_index].p_type == lexer::lexling_type::left_curly_bracket) {
                 // next scope
                 lexling_index++;
 
                 // get all statements
-                while (lexlings.p_lexlings[lexling_index].p_type != lexer::type::right_curly_bracket) {
+                while (lexlings.p_lexlings[lexling_index].p_type != lexer::lexling_type::right_curly_bracket) {
                     // parse statement
                     output.p_scope.push_back(parse_statement(lexlings, lexling_index, error_occured));
 
@@ -361,13 +374,6 @@ namespace parser {
                 // set error
                 error_occured = true;
             }
-        // parse abstraction marker for instruction
-        } else if (lexlings.p_lexlings[lexling_index].p_type == lexer::type::instruction_marker) {
-            // set type
-            output.p_type = abstraction_type::is_compiler_defined;
-            
-            // nothing else to be done as instructions do not have a scope, so next lexling
-            lexling_index++;
         }
 
         return output;

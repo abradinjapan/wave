@@ -383,12 +383,14 @@ namespace accounter {
                 } else {
                     // error
                     std::cout << "Internal error, unrecognized literal type: " << p_name << std::endl;
+                    error_occured = true;
                     p_integer_value = -1;
                 }
 
                 p_type = literal_type::is_boolean_literal;
             } else {
                 p_integer_value = -1;
+                error_occured = true;
             }
         }
     };

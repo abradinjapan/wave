@@ -7,7 +7,7 @@
 /* Code */
 namespace lexer {
     // lexling types
-    enum type {
+    enum lexling_type {
         no_type,
         name,
         string_literal,
@@ -16,24 +16,23 @@ namespace lexer {
         left_curly_bracket,
         right_curly_bracket,
         offset_marker,
-        instruction_marker,
         abstraction_marker,
     };
 
     // lexling
     class lexling {
     public:
-        type p_type;
+        lexling_type p_type;
         std::string p_value;
 
         // default constructor
         lexling() {
-            p_type = type::no_type;
+            p_type = lexling_type::no_type;
             p_value = "";
         }
 
         // constructor
-        lexling(type type, std::string value) {
+        lexling(lexling_type type, std::string value) {
             p_type = type;
             p_value = value;
         }
@@ -123,53 +122,46 @@ namespace lexer {
                     }
 
                     // add lexling
-                    output.p_lexlings.push_back(lexling(type::name, user_code.substr(index - length, length)));
+                    output.p_lexlings.push_back(lexling(lexling_type::name, user_code.substr(index - length, length)));
                 // check for left parenthesis
                 } else if (user_code[index] == '(') {
                     // add lexling
-                    output.p_lexlings.push_back(lexling(type::left_parenthesis, "("));
+                    output.p_lexlings.push_back(lexling(lexling_type::left_parenthesis, "("));
 
                     // next index
                     index++;
                 // check for right parenthesis
                 } else if (user_code[index] == ')') {
                     // add lexling
-                    output.p_lexlings.push_back(lexling(type::right_parenthesis, ")"));
+                    output.p_lexlings.push_back(lexling(lexling_type::right_parenthesis, ")"));
 
                     // next index
                     index++;
                 // check for left curly bracket
                 } else if (user_code[index] == '{') {
                     // add lexling
-                    output.p_lexlings.push_back(lexling(type::left_curly_bracket, "{"));
+                    output.p_lexlings.push_back(lexling(lexling_type::left_curly_bracket, "{"));
 
                     // next index
                     index++;
                 // check for right curly bracket
                 } else if (user_code[index] == '}') {
                     // add lexling
-                    output.p_lexlings.push_back(lexling(type::right_curly_bracket, "}"));
+                    output.p_lexlings.push_back(lexling(lexling_type::right_curly_bracket, "}"));
 
                     // next index
                     index++;
                 // check for offset marker
                 } else if (user_code[index] == '@') {
                     // add lexling
-                    output.p_lexlings.push_back(lexling(type::offset_marker, "@"));
-
-                    // next index
-                    index++;
-                // check for instruction marker
-                } else if (user_code[index] == '!') {
-                    // add lexling
-                    output.p_lexlings.push_back(lexling(type::instruction_marker, "!"));
+                    output.p_lexlings.push_back(lexling(lexling_type::offset_marker, "@"));
 
                     // next index
                     index++;
                 // check for instruction marker
                 } else if (user_code[index] == '=') {
                     // add lexling
-                    output.p_lexlings.push_back(lexling(type::abstraction_marker, "="));
+                    output.p_lexlings.push_back(lexling(lexling_type::abstraction_marker, "="));
 
                     // next index
                     index++;
@@ -209,7 +201,7 @@ namespace lexer {
                     }
 
                     // push back string
-                    output.p_lexlings.push_back(lexling(type::string_literal, user_code.substr(string_start + 2, (index - 2) - (string_start + 2))));
+                    output.p_lexlings.push_back(lexling(lexling_type::string_literal, user_code.substr(string_start + 2, (index - 2) - (string_start + 2))));
 
                     // next index
                     index++;
