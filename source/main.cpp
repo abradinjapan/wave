@@ -151,7 +151,7 @@ int main(int argc, char** argv) {
         // run if file found
         if (file_data != "") {
             // run compiler
-            compile_and_run(file_data, true);
+            compile_and_run(file_data, false);
         // if file not found
         } else {
             std::cout << "Invalid file path: " << file_path << std::endl;
