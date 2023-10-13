@@ -211,6 +211,9 @@ namespace runner {
         void add_allocation(allocation data) {
             if (allocation_exists(data) == false) {
                 p_allocations.push_back(data);
+
+                // DEBUG
+                printf("Added allocation: [ %lu, %lu ]\n", data.p_start, data.p_end);
             }
         }
 
@@ -220,6 +223,7 @@ namespace runner {
             }
         }
 
+        // warning, do not use if reading more than one byte!
         bool is_address_valid(basic::address pointer) {
             for (basic::u64 index = 0; index < p_allocations.size(); index++) {
                 // check address
@@ -234,7 +238,7 @@ namespace runner {
         bool is_address_range_valid(basic::address start, basic::address end) {
             for (basic::u64 index = 0; index < p_allocations.size(); index++) {
                 // check addresses
-                if ((p_allocations[index].p_start <= start && p_allocations[index].p_end >= start) && (p_allocations[index].p_start <= end && p_allocations[index].p_end >= end) && end <= start) {
+                if ((p_allocations[index].p_start <= start && p_allocations[index].p_end >= start) && (p_allocations[index].p_start <= end && p_allocations[index].p_end >= end) && start <= end) {
                     return true;
                 }
             }
@@ -565,15 +569,24 @@ namespace runner {
 
                 break;
             case instruction_type::cell_to_address:
+                // DEBUG
+                printf("Writing allocation: [ %lu, %lu ]\n", context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_2], context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1]);
+
                 // if valid request
-                if (allocations.is_address_valid((basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_2])) {
+                if (allocations.is_address_and_length_valid((basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_2], context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1])) {
                     // do write
                     write_buffer(context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0], context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1], (basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_2]);
+
+                    // DEBUG
+                    printf("Allocation write, value: [ %lu ]\n", context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0]);
 
                     // set error code
                     context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = false;
                 // if invalid request
                 } else {
+                    // DEBUG
+                    printf("Allocation not written. Values: [ %lu, %lu ]\n", context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_2], context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1]);
+
                     // set error code
                     context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = true;
                 }
@@ -583,15 +596,24 @@ namespace runner {
 
                 break;
             case instruction_type::address_to_cell:
+                // DEBUG
+                printf("Reading allocation: [ %lu, %lu ]\n", context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0], context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1]);
+
                 // if valid request
-                if (allocations.is_address_valid((basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0])) {
+                if (allocations.is_address_and_length_valid((basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0], context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1])) {
                     // do read
                     context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = read_buffer((basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0], context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1]);
+
+                    // DEBUG
+                    printf("Allocation read, value: [ %lu ]\n", context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0]);
 
                     // set error code
                     context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_1] = false;
                 // if invalid request
                 } else {
+                    // DEBUG
+                    printf("Allocation not read.\n");
+
                     // set error code
                     context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_1] = true;
                 }
@@ -624,13 +646,6 @@ namespace runner {
                 if (file_start != 0) {
                     allocations.add_allocation(runner::allocation(file_start, file_end));
                 }
-
-                /*// DEBUG
-                printf("File:\n");
-                for (address current = file_start; current < file_end; current = current + sizeof(char)) {
-                    putchar(*(basic::character*)current);
-                }
-                putchar('\n');*/
 
                 // next instruction
                 current_instruction++;
