@@ -211,9 +211,6 @@ namespace runner {
         void add_allocation(allocation data) {
             if (allocation_exists(data) == false) {
                 p_allocations.push_back(data);
-
-                // DEBUG
-                printf("Added allocation: [ %lu, %lu ]\n", data.p_start, data.p_end);
             }
         }
 
@@ -570,7 +567,7 @@ namespace runner {
                 break;
             case instruction_type::cell_to_address:
                 // DEBUG
-                printf("Writing allocation: [ %lu, %lu ]\n", context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_2], context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1]);
+                //printf("Writing allocation: [ %lu, %lu ]\n", context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_2], context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1]);
 
                 // if valid request
                 if (allocations.is_address_and_length_valid((basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_2], context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1])) {
@@ -578,14 +575,14 @@ namespace runner {
                     write_buffer(context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0], context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1], (basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_2]);
 
                     // DEBUG
-                    printf("Allocation write, value: [ %lu ]\n", context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0]);
+                    //printf("Allocation write, value: [ %lu ]\n", context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0]);
 
                     // set error code
                     context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = false;
                 // if invalid request
                 } else {
                     // DEBUG
-                    printf("Allocation not written. Values: [ %lu, %lu ]\n", context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_2], context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1]);
+                    //printf("Allocation not written. Values: [ %lu, %lu ]\n", context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_2], context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1]);
 
                     // set error code
                     context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = true;
@@ -597,7 +594,7 @@ namespace runner {
                 break;
             case instruction_type::address_to_cell:
                 // DEBUG
-                printf("Reading allocation: [ %lu, %lu ]\n", context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0], context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1]);
+                //printf("Reading allocation: [ %lu, %lu ]\n", context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0], context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1]);
 
                 // if valid request
                 if (allocations.is_address_and_length_valid((basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0], context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1])) {
@@ -605,14 +602,14 @@ namespace runner {
                     context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = read_buffer((basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0], context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1]);
 
                     // DEBUG
-                    printf("Allocation read, value: [ %lu ]\n", context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0]);
+                    //printf("Allocation read, value: [ %lu ]\n", context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0]);
 
                     // set error code
                     context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_1] = false;
                 // if invalid request
                 } else {
                     // DEBUG
-                    printf("Allocation not read.\n");
+                    //printf("Allocation not read.\n");
 
                     // set error code
                     context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_1] = true;
