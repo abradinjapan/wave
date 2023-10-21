@@ -1,6 +1,4 @@
-from("'./files.wave'") = {
-    import wave(0)(1) as wave(0)(1)
-}
+include "'./programs/files.wave'"
 
 main()() = {
 
