@@ -755,8 +755,103 @@ namespace runner {
 
         // print instructions
         for (basic::u64 i = 0; i < program.p_instructions.size(); i++) {
-            // print instruction
-            std::cout << "\t" << program.p_instructions[i].p_type << std::endl;
+            // print instruction name
+            std::cout << "\t";
+            switch (program.p_instructions[i].p_type) {
+            case runner::instruction_type::quit:
+                std::cout << "quit";
+                break;
+            case runner::instruction_type::write_cell:
+                std::cout << "write_cell";
+                break;
+            case runner::instruction_type::copy_cell:
+                std::cout << "copy_cell";
+                break;
+            case runner::instruction_type::print_cell_as_number:
+                std::cout << "print_cell_as_number";
+                break;
+            case runner::instruction_type::print_cell_as_character:
+                std::cout << "print_cell_as_character";
+                break;
+            case runner::instruction_type::get_console_input:
+                std::cout << "get_console_input";
+                break;
+            case runner::instruction_type::create_new_context:
+                std::cout << "create_new_context";
+                break;
+            case runner::instruction_type::restore_old_context:
+                std::cout << "restore_old_context";
+                break;
+            case runner::instruction_type::pass_input:
+                std::cout << "pass_input";
+                break;
+            case runner::instruction_type::get_input:
+                std::cout << "get_input";
+                break;
+            case runner::instruction_type::pass_output:
+                std::cout << "pass_output";
+                break;
+            case runner::instruction_type::get_output:
+                std::cout << "get_output";
+                break;
+            case runner::instruction_type::jump_to_abstraction:
+                std::cout << "jump_to_abstraction";
+                break;
+            case runner::instruction_type::jump_from_abstraction:
+                std::cout << "jump_from_abstraction";
+                break;
+            case runner::instruction_type::jump:
+                std::cout << "jump";
+                break;
+            case runner::instruction_type::get_instruction_index:
+                std::cout << "get_instruction_index";
+                break;
+            case runner::instruction_type::request_memory:
+                std::cout << "request_memory";
+                break;
+            case runner::instruction_type::return_memory:
+                std::cout << "return_memory";
+                break;
+            case runner::instruction_type::cell_to_address:
+                std::cout << "cell_to_address";
+                break;
+            case runner::instruction_type::address_to_cell:
+                std::cout << "address_to_cell";
+                break;
+            case runner::instruction_type:: buffer_to_file:
+                std::cout << "buffer_to_file";
+                break;
+            case runner::instruction_type::file_to_buffer:
+                std::cout << "file_to_buffer";
+                break;
+            case runner::instruction_type::integer_add:
+                std::cout << "integer_add";
+                break;
+            case runner::instruction_type::integer_subtract:
+                std::cout << "integer_subtract";
+                break;
+            case runner::instruction_type::integer_multiply:
+                std::cout << "integer_multiply";
+                break;
+            case runner::instruction_type::integer_divide:
+                std::cout << "integer_divide";
+                break;
+            case runner::instruction_type::integer_modulous:
+                std::cout << "integer_modulous";
+                break;
+            case runner::instruction_type::integer_within_range:
+                std::cout << "integer_within_range";
+                break;
+            case runner::instruction_type::boolean_not:
+                std::cout << "boolean_not";
+                break;
+            default:
+                std::cout << "[ invalid instruction ]";
+                break;
+            }
+
+            // print instruction ID
+            std::cout << "[" << program.p_instructions[i].p_type << ']' << std::endl;
         }
 
         return;

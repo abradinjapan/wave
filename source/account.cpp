@@ -678,17 +678,17 @@ namespace accounter {
             }
 
             void print_skeleton() {
-                // print header table
-                print_header_table(p_header_table);
+                // print skeleton
+                std::cout << "Skeletons:" << std::endl;
 
                 // print all abstractions
                 for (basic::u64 abstraction_ID = 0; abstraction_ID < p_abstractions.size(); abstraction_ID++) {
                     // print abstraction name for clarity
-                    std::cout << "Abstraction: " << p_header_table.p_headers[abstraction_ID].p_name << std::endl;
+                    std::cout << "\tAbstraction [ " << abstraction_ID << " ] " << p_header_table.p_headers[abstraction_ID].p_name << "(" << p_header_table.p_headers[abstraction_ID].p_input_count << ")" << "(" << p_header_table.p_headers[abstraction_ID].p_output_count << "):" << std::endl;
 
                     // print tables
-                    print_variable_table(p_abstractions[abstraction_ID].p_variables);
                     if (p_abstractions[abstraction_ID].p_has_scope) {
+                        print_variable_table(p_abstractions[abstraction_ID].p_variables);
                         print_offset_table(p_abstractions[abstraction_ID].p_offsets);
                         print_literal_table(p_abstractions[abstraction_ID].p_literals);
                         print_call_table(p_abstractions[abstraction_ID].p_calls);
@@ -916,60 +916,48 @@ namespace accounter {
             // print variable table
             void print_variable_table(variable_table& table) {
                 // start information
-                std::cout << "\tVariable Table:" << std::endl;
-
-                // print inputs
-                std::cout << "\t\tAbstraction Inputs:" << std::endl;
-                for (basic::u64 i = 0; i < table.p_inputs.size(); i++) {
-                    std::cout << "\t\t\tInput: " << table.p_inputs[i].p_name << " [ " << (long long)table.p_inputs[i].p_declaration_index << " ]" << std::endl;
-                }
-
-                // print outputs
-                std::cout << "\t\tAbstraction Outputs:" << std::endl;
-                for (basic::u64 i = 0; i < table.p_outputs.size(); i++) {
-                    std::cout << "\t\t\tOutput: " << table.p_outputs[i].p_name << " [ " << (long long)table.p_outputs[i].p_declaration_index << " ]" << std::endl;
-                }
+                std::cout << "\t\tVariable Table:" << std::endl;
 
                 // print variables
-                std::cout << "\t\tAbstraction Variables:" << std::endl;
+                std::cout << "\t\t\tAbstraction Variables:" << std::endl;
                 for (basic::u64 i = 0; i < table.p_variables.size(); i++) {
-                    std::cout << "\t\t\tVariable: " << table.p_variables[i].p_name << " [ " << (long long)table.p_variables[i].p_declaration_index << " ]" << std::endl;
+                    std::cout << "\t\t\t\tVariable: " << table.p_variables[i].p_name << " [ " << (long long)table.p_variables[i].p_declaration_index << " ]" << std::endl;
                 }
             }
 
             // print offset table
             void print_offset_table(offset_table& table) {
                 // print header
-                std::cout << "\tOffset Table:" << std::endl;
+                std::cout << "\t\tOffset Table:" << std::endl;
 
                 // print offsets
                 for (basic::u64 i = 0; i < table.p_offsets.size(); i++) {
                     // print offset
-                    std::cout << "\t\t" << table.p_offsets[i].p_name << " [ " << table.p_offsets[i].p_statement_index << " ]" << std::endl;
+                    std::cout << "\t\t\t" << table.p_offsets[i].p_name << " [ " << table.p_offsets[i].p_statement_index << " ]" << std::endl;
                 }
             }
 
             // print literal table
             void print_literal_table(literal_table& table) {
                 // print header
-                std::cout << "\tLiteral Table:" << std::endl;
+                std::cout << "\t\tLiteral Table:" << std::endl;
         
                 // print literals
                 for (basic::u64 i = 0; i < table.p_literals.size(); i++) {
                     // print literal
-                    std::cout << "\t\t" << table.p_literals[i].p_name << " ( " << table.p_literals[i].p_integer_value << " ); Found At: [ " << table.p_literals[i].p_statement_ID << " " << table.p_literals[i].p_argument_ID << " ]" << std::endl;
+                    std::cout << "\t\t\t" << table.p_literals[i].p_name << " ( " << table.p_literals[i].p_integer_value << " ); Found At: [ " << table.p_literals[i].p_statement_ID << " " << table.p_literals[i].p_argument_ID << " ]" << std::endl;
                 }
             }
 
             // print call table
             void print_call_table(std::vector<call>& table) {
                 // print header
-                std::cout << "\tCall Table:" << std::endl;
+                std::cout << "\t\tCall Table:" << std::endl;
 
                 // print statements
                 for (basic::u64 i = 0; i < table.size(); i++) {
                     // print statement header
-                    std::cout << "\t\t" << table[i].p_header_ID << " : ";
+                    std::cout << "\t\t\t" << table[i].p_header_ID << " : ";
 
                     // print inputs
                     for (basic::u64 j = 0; j < table[i].p_inputs.size(); j++) {
@@ -1050,12 +1038,12 @@ namespace accounter {
             // print statement map
             void print_statement_map(std::vector<statement>& statements) {
                 // print header
-                std::cout << "\tStatement Map:" << std::endl;
+                std::cout << "\t\tStatement Map:" << std::endl;
 
                 // print statements
                 for (basic::u64 statement_ID = 0; statement_ID < statements.size(); statement_ID++) {
                     // print indentation
-                    std::cout << "\t\t";
+                    std::cout << "\t\t\t";
 
                     // print statement based on type
                     if (statements[statement_ID].p_type == accounter::skeleton::statement_type::is_call_statement) {
