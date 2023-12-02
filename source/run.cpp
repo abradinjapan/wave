@@ -183,6 +183,11 @@ namespace runner {
             p_start = start;
             p_end = end;
         }
+
+        allocation() {
+            p_start = 0;
+            p_end = 0;
+        }
     };
 
     class allocations {
@@ -332,14 +337,13 @@ namespace runner {
         std::vector<instruction> p_instructions;
     };
 
-    // run a program
-    buffer run_program(program program, bool& error_occured) {
-        buffer output;
+    // run code
+    allocation run_code(program program, allocation input, allocations& allocations, bool& error_occured) {
+        allocation output;
         bool running = true;
         int current_instruction = 0;
         std::vector<context> context_stack;
         std::vector<int> return_stack;
-        allocations allocations;
         buffer inputs;
         buffer outputs;
         basic::address file_start;
@@ -734,6 +738,14 @@ namespace runner {
         }
 
         return output;
+    }
+
+    // run a program
+    allocation run_program(program program, allocation input, bool& error_occured) {
+        allocations allocations;
+
+        // run program and return result
+        return run_code(program, input, allocations, error_occured);
     }
 
     // print program

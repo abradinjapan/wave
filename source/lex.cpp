@@ -223,4 +223,16 @@ namespace lexer {
 
         return output;
     }
+
+    void print_lexlings(lexlings& lexlings) {
+        // print header
+        std::cout << "Lexlings:" << std::endl;
+
+        // print lexling
+        for (unsigned int i = 0; i < lexlings.p_lexlings.size(); i++) {
+            std::cout << "\tType: " << lexlings.p_lexlings[i].p_type << " Value: " << lexlings.p_lexlings[i].p_value << std::endl;
+        }
+
+        return;
+    }
 }

@@ -7,19 +7,6 @@
 #include "run.cpp"
 
 namespace parser {
-    class include {
-    public:
-        std::string p_path_string;
-
-        include(std::string path_string) {
-            p_path_string = path_string;
-        }
-
-        include() {
-            p_path_string = "";
-        }
-    };
-
     enum name_type {
         is_uninitialized,
         is_value_name,
@@ -102,7 +89,6 @@ namespace parser {
 
     class program {
     public:
-        std::vector<include> p_includes;
         std::vector<abstraction> p_abstractions;
     };
 
@@ -127,19 +113,6 @@ namespace parser {
 
     bool string_contains_at(std::string& string, basic::u64 offset, std::string contains) {
         return string.substr(offset, contains.length()) == contains;
-    }
-
-    // parse includes
-    include parse_include(lexer::lexlings& lexlings, int& lexling_index, bool& error_occured) {
-        include output;
-
-        // setup output
-        output.p_path_string = lexlings.p_lexlings[lexling_index + 1].p_value;
-
-        // next lexlings
-        lexling_index += 2;
-
-        return output;
     }
 
     // parse arguments
@@ -404,15 +377,8 @@ namespace parser {
 
         // get abstractions and includes
         while (lexling_index < lexlings.count()) {
-            // if it is an include
-            if (lexling_index + 1 < lexlings.count() && lexlings.p_lexlings[lexling_index].p_value == "include" && lexlings.p_lexlings[lexling_index + 1].p_type == lexer::lexling_type::string_literal) {
-                // parse include
-                output.p_includes.push_back(parse_include(lexlings, lexling_index, error_occured));
-            // otherwise it is an abstraction
-            } else {
-                // new abstraction
-                output.p_abstractions.push_back(parse_abstraction(lexlings, lexling_index, error_occured));
-            }
+            // new abstraction
+            output.p_abstractions.push_back(parse_abstraction(lexlings, lexling_index, error_occured));
 
             // check error
             if (error_occured) {
@@ -509,12 +475,6 @@ namespace parser {
     void print_program(program program) {
         // print header
         std::cout << "Parse Tree:" << std::endl;
-
-        // print includes
-        for (uint64_t include = 0; include < program.p_includes.size(); include++) {
-            // print include
-            std::cout << "Include: " << program.p_includes[include].p_path_string << std::endl;
-        }
 
         // print all abstractions
         for (unsigned int abstraction = 0; abstraction < program.p_abstractions.size(); abstraction++) {
