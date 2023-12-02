@@ -390,83 +390,24 @@ namespace parser {
     }
 
     // print arguments
-    void print_inputs(int tab_depth, std::vector<name>& arguments) {
+    void print_arguments(std::vector<name>& arguments) {
+        // print starter
+        std::cout << "(";
+
         // print arguments
         for (basic::u64 i = 0; i < arguments.size(); i++) {
-            // print tabs
-            for (int64_t  i = 0; i < tab_depth; i++) {
-                std::cout << "\t";
+            // if not the first argument
+            if (i > 0) {
+                // print the separator
+                std::cout << " ";
             }
 
-            // print starter
-            std::cout << "Input[ " << i << " ] : ";
-
-            // print argument type
-            switch (arguments[i].p_name_type) {
-            case name_type::is_value_name:
-                std::cout << "value_name";
-                break;
-            case name_type::is_integer_literal:
-                std::cout << "integer_literal_name";
-                break;
-            case name_type::is_boolean_literal:
-                std::cout << "boolean_literal_name";
-                break;
-            case name_type::is_abstraction_name:
-                std::cout << "abstraction_name";
-                break;
-            case name_type::is_offset:
-                std::cout << "offset_name";
-                break;
-            default:
-                std::cout << "UNINITIALIZED_name";
-                break;
-            }
-
-            // print the rest
-            std::cout << " : " << arguments[i].p_name_value << std::endl;
+            // print the name
+            std::cout << arguments[i].p_name_value;
         }
 
-        return;
-    }
-
-    // print arguments
-    void print_outputs(int tab_depth, std::vector<name>& arguments) {
-        // print arguments
-        for (basic::u64 i = 0; i < arguments.size(); i++) {
-            // print tabs
-            for (int64_t  i = 0; i < tab_depth; i++) {
-                std::cout << "\t";
-            }
-
-            // print starter
-            std::cout << "Output[ " << i << " ] : ";
-
-            // print argument type
-            switch (arguments[i].p_name_type) {
-            case name_type::is_value_name:
-                std::cout << "value_name";
-                break;
-            case name_type::is_integer_literal:
-                std::cout << "integer_literal_name";
-                break;
-            case name_type::is_boolean_literal:
-                std::cout << "boolean_literal_name";
-                break;
-            case name_type::is_abstraction_name:
-                std::cout << "abstraction_name";
-                break;
-            case name_type::is_offset:
-                std::cout << "offset_name";
-                break;
-            default:
-                std::cout << "UNINITIALIZED_name";
-                break;
-            }
-
-            // print the rest
-            std::cout << " : " << arguments[i].p_name_value << std::endl;
-        }
+        // print closer
+        std::cout << ")";
 
         return;
     }
@@ -478,30 +419,27 @@ namespace parser {
 
         // print all abstractions
         for (unsigned int abstraction = 0; abstraction < program.p_abstractions.size(); abstraction++) {
-            // print abstraction name
-            std::cout << "Abstraction Name: " << program.p_abstractions[abstraction].p_header.p_name.p_name_value << std::endl;
-
             // print abstraction type
-            std::cout << "\tAbstraction Type: ";
+            std::cout << "Abstraction ";
             switch (program.p_abstractions[abstraction].p_type) {
             case abstraction_type::is_code_defined:
                 std::cout << "Function";
                 break;
             case abstraction_type::is_compiler_defined:
-                std::cout << "Instruction";
+                std::cout << "Instruction\n";
                 break;
             default:
-                std::cout << "Undefined";
+                std::cout << "Undefined\n";
                 break;
             }
-            std::cout << std::endl;
+            std::cout << ": " << program.p_abstractions[abstraction].p_header.p_name.p_name_value;
 
             // print abstraction io
-            print_inputs(1, program.p_abstractions[abstraction].p_header.p_inputs);
-            print_outputs(1, program.p_abstractions[abstraction].p_header.p_outputs);
+            print_arguments(program.p_abstractions[abstraction].p_header.p_inputs);
+            print_arguments(program.p_abstractions[abstraction].p_header.p_outputs);
 
             // print statements header
-            std::cout << "\tStatements:" << std::endl;
+            std::cout << "\nStatements:" << std::endl;
 
             // print abstraction statements
             for (unsigned int statement = 0; statement < program.p_abstractions[abstraction].p_scope.size(); statement++) {
@@ -511,11 +449,14 @@ namespace parser {
                     std::cout << "\t\tOffset Name: " << program.p_abstractions[abstraction].p_scope[statement].p_name.p_name_value << std::endl;
                 } else {
                     // print name
-                    std::cout << "\t\tStatement Name: " << program.p_abstractions[abstraction].p_scope[statement].p_name.p_name_value << std::endl;
+                    std::cout << "\t" << program.p_abstractions[abstraction].p_scope[statement].p_name.p_name_value;
 
                     // print io
-                    print_inputs(3, program.p_abstractions[abstraction].p_scope[statement].p_inputs);
-                    print_outputs(3, program.p_abstractions[abstraction].p_scope[statement].p_outputs);
+                    print_arguments(program.p_abstractions[abstraction].p_scope[statement].p_inputs);
+                    print_arguments(program.p_abstractions[abstraction].p_scope[statement].p_outputs);
+
+                    // print new line
+                    std::cout << std::endl;
                 }
             }
         }
