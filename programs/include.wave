@@ -1,5 +1,0 @@
-include "'./programs/files.wave'"
-
-main()() = {
-
-}
