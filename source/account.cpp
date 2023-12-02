@@ -98,18 +98,23 @@ namespace accounter {
     }
 
     // verifies that all statements match a header
-    bool verify_all_headers(header_table header_table, parser::program& program) {
-        // for each abstraction
-        for (basic::u64 i = 0; i < program.p_abstractions.size(); i++) {
-            // for each statement in each abstraction
-            for (basic::u64 j = 0; j < program.p_abstractions[i].p_scope.size(); j++) {
-                // check header
-                if (program.p_abstractions[i].p_scope[j].p_name.p_name_type == parser::name_type::is_abstraction_name && header_table.header_registered(header(program.p_abstractions[i].p_scope[j].p_name.p_name_value, program.p_abstractions[i].p_scope[j].p_inputs.size(), program.p_abstractions[i].p_scope[j].p_outputs.size())) == false) {
-                    // inform user of error
-                    std::cout << "Accouting error, a header was not found during a header lookup: " << program.p_abstractions[i].p_scope[j].p_name.p_name_value << std::endl;
+    bool verify_all_headers(header_table header_table, std::vector<parser::program>& programs) {
+        // for each program
+        for (basic::u64 program = 0; program < programs.size(); program++) {
+            parser::program temp_program = programs[program];
 
-                    // header not registered, error
-                    return false;
+            // for each abstraction
+            for (basic::u64 abstraction = 0; abstraction < temp_program.p_abstractions.size(); abstraction++) {
+                // for each statement in each abstraction
+                for (basic::u64 statement = 0; statement < temp_program.p_abstractions[abstraction].p_scope.size(); statement++) {
+                    // check header
+                    if (temp_program.p_abstractions[abstraction].p_scope[statement].p_name.p_name_type == parser::name_type::is_abstraction_name && header_table.header_registered(header(temp_program.p_abstractions[abstraction].p_scope[statement].p_name.p_name_value, temp_program.p_abstractions[abstraction].p_scope[statement].p_inputs.size(), temp_program.p_abstractions[abstraction].p_scope[statement].p_outputs.size())) == false) {
+                        // inform user of error
+                        std::cout << "Accouting error, a header was not found during a header lookup: " << temp_program.p_abstractions[abstraction].p_scope[statement].p_name.p_name_value << std::endl;
+
+                        // header not registered, error
+                        return false;
+                    }
                 }
             }
         }
@@ -591,73 +596,80 @@ namespace accounter {
             header_table p_header_table;
             std::vector<abstraction> p_abstractions;
 
-            void get_skeleton(parser::program& program, bool& error_occured) {
+            void get_skeleton(std::vector<parser::program>& programs, bool& error_occured) {
                 // get predefined abstractions
                 add_predefined_abstractions();
 
-                // get header table from file
-                get_header_table(program, p_header_table, error_occured);
+                // get header table from all files
+                for (basic::u64 parse_tree = 0; parse_tree < programs.size(); parse_tree++) {
+                    get_header_table(programs[parse_tree], p_header_table, error_occured);
+                }
 
                 // verify header table
-                if (verify_all_headers(p_header_table, program) == false) {
+                if (verify_all_headers(p_header_table, programs) == false) {
                     std::cout << "Accouting error, headers and statements do not all match." << std::endl;
                     error_occured = true;
 
                     return;
                 }
 
-                // get abstractions from file
-                for (basic::u64 i = 0; i < program.p_abstractions.size(); i++) {
-                    // create new abstraction
-                    p_abstractions.push_back(abstraction());
+                // get all the programs from each file
+                for (basic::u64 i = 0; i < programs.size(); i++) {
+                    parser::program program = programs[i];
+                    
+                    // get abstractions from file
+                    for (basic::u64 j = 0; j < program.p_abstractions.size(); j++) {
+                        // create new abstraction
+                        p_abstractions.push_back(abstraction());
 
-                    // check for scope
-                    if (program.p_abstractions[i].p_type == parser::abstraction_type::is_code_defined) {
-                        p_abstractions[p_abstractions.size() - 1].p_has_scope = true;
-                    } else {
-                        p_abstractions[p_abstractions.size() - 1].p_has_scope = false;
-                    }
+                        // check for scope
+                        if (program.p_abstractions[j].p_type == parser::abstraction_type::is_code_defined) {
+                            p_abstractions[p_abstractions.size() - 1].p_has_scope = true;
+                        } else {
+                            p_abstractions[p_abstractions.size() - 1].p_has_scope = false;
+                        }
 
-                    // get variable table
-                    p_abstractions[p_abstractions.size() - 1].p_variables = get_variable_table(program.p_abstractions[i], error_occured);
-
-                    // check for error
-                    if (error_occured) {
-                        return;
-                    }
-
-                    // get abstraction body
-                    if (p_abstractions[p_abstractions.size() - 1].p_has_scope == true) {
-                        // get offset table
-                        p_abstractions[p_abstractions.size() - 1].p_offsets = get_offset_table(program.p_abstractions[i], error_occured);
+                        // get variable table
+                        p_abstractions[p_abstractions.size() - 1].p_variables = get_variable_table(program.p_abstractions[j], error_occured);
 
                         // check for error
                         if (error_occured) {
                             return;
                         }
 
-                        // get literal table
-                        p_abstractions[p_abstractions.size() - 1].p_literals = get_literal_table(program.p_abstractions[i], error_occured);
+                        // get abstraction body
+                        if (p_abstractions[p_abstractions.size() - 1].p_has_scope == true) {
+                            // get offset table
+                            p_abstractions[p_abstractions.size() - 1].p_offsets = get_offset_table(program.p_abstractions[j], error_occured);
 
-                        // check for error
-                        if (error_occured) {
-                            return;
-                        }
+                            // check for error
+                            if (error_occured) {
+                                return;
+                            }
 
-                        // get call table
-                        p_abstractions[p_abstractions.size() - 1].p_calls = get_call_table(program.p_abstractions[i], p_abstractions.size() - 1, error_occured);
+                            // get literal table
+                            p_abstractions[p_abstractions.size() - 1].p_literals = get_literal_table(program.p_abstractions[j], error_occured);
 
-                        // check for error
-                        if (error_occured) {
-                            return;
-                        }
+                            // check for error
+                            if (error_occured) {
+                                return;
+                            }
 
-                        // get statement map
-                        p_abstractions[p_abstractions.size() - 1].p_statement_map = get_statement_map(program.p_abstractions[i], error_occured);
+                            // get call table
+                            p_abstractions[p_abstractions.size() - 1].p_calls = get_call_table(program.p_abstractions[j], p_abstractions.size() - 1, error_occured);
 
-                        // check for error
-                        if (error_occured) {
-                            return;
+                            // check for error
+                            if (error_occured) {
+                                return;
+                            }
+
+                            // get statement map
+                            p_abstractions[p_abstractions.size() - 1].p_statement_map = get_statement_map(program.p_abstractions[j], error_occured);
+
+                            // check for error
+                            if (error_occured) {
+                                return;
+                            }
                         }
                     }
                 }

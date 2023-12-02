@@ -1,0 +1,10 @@
+hello_world.message()() = {
+    wave.set(wave.integer.72)(character)
+    wave.print.character(character)()
+    wave.set(wave.integer.105)(character)
+    wave.print.character(character)()
+    wave.set(wave.integer.33)(character)
+    wave.print.character(character)()
+    wave.set(wave.integer.10)(new_line)
+    wave.print.character(new_line)()
+}

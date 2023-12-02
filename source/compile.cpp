@@ -31,37 +31,7 @@ namespace compiler {
         }
     }
 
-    class file {
-    public:
-        std::string p_name;
-        parser::program p_program;
-
-        file(std::string name, parser::program program) {
-            p_name = name;
-            p_program = program;
-        }
-    };
-
-    class collection {
-    public:
-        std::vector<file> p_files;
-
-        uint64_t get_file_index(std::string name) {
-            // browse all files
-            for (uint64_t i = 0; i < p_files.size(); i++) {
-                // check file
-                if (p_files[i].p_name == name) {
-                    // index found
-                    return i;
-                }
-            }
-
-            // index not found
-            return p_files.size();
-        }
-    };
-
-    runner::program compile_user_code(std::string user_code, bool& compilation_error, bool print_debug) {
+    /*runner::program compile_user_code(std::string user_code, bool& compilation_error, bool print_debug) {
         runner::program output;
         lexer::lexlings lexlings;
         parser::program parse_tree;
@@ -138,7 +108,16 @@ namespace compiler {
         }
 
         return output;
-    }
+    }*/
+
+    class compilation_unit {
+    public:
+        std::vector<std::string> p_files;
+        std::vector<parser::program> p_parse_trees;
+        accounter::skeleton::skeleton p_skeleton;
+        bool p_accouting_error;
+        bool p_generation_error;
+    };
 
     parser::program dissect_user_code(std::string user_code, bool& compilation_error, bool print_debug) {
         parser::program output;
@@ -179,40 +158,53 @@ namespace compiler {
         return output;
     }
 
-    collection find_all_files(std::string initial_file_path, bool& compilation_error, bool print_debug) {
-        collection output;
-        std::vector<std::string> unparsed_file_paths;
+    runner::program compile(std::vector<std::string> files, bool& compilation_error, bool print_debug) {
+        runner::program output;
+        compilation_unit unit;
 
-        // setup search
-        unparsed_file_paths.push_back(initial_file_path);
+        // setup errors
+        unit.p_accouting_error = false;
+        unit.p_generation_error = false;
 
-        // collect files until empty
-        while (unparsed_file_paths.size() > 0) {
-            // load file
-            std::string user_code = load_file(unparsed_file_paths[0]);
+        // add all files
+        unit.p_files = files;
 
-            // parse file
-            parser::program parse_tree = dissect_user_code(user_code, compilation_error, print_debug);
+        // dissect all files
+        for (basic::u64 file = 0; file < files.size(); file++) {
+            // dissect file
+            unit.p_parse_trees.push_back(dissect_user_code(files[file], compilation_error, print_debug));
+        }
 
-            // check for error
-            if (compilation_error) {
-                return output;
-            }
+        // account for all files
+        unit.p_skeleton.get_skeleton(unit.p_parse_trees, unit.p_accouting_error);
 
-            // append file
-            output.p_files.push_back(file(unparsed_file_paths[0], parse_tree));
+        // do not proceed if error occured
+        if (unit.p_accouting_error) {
+            compilation_error = true;
 
-            // remove parsed file path from list
-            unparsed_file_paths.erase(unparsed_file_paths.begin());
+            return output;
+        }
+
+        // print program
+        if (print_debug) {
+            unit.p_skeleton.print_skeleton();
+        }
+
+        // generate program code
+        output = generator::generate_program(unit.p_skeleton, unit.p_generation_error);
+
+        // do not proceed if error occured
+        if (unit.p_generation_error) {
+            compilation_error = true;
+            
+            return output;
+        }
+
+        // print code
+        if (print_debug) {
+            print_program(output);
         }
 
         return output;
-    }
-
-    runner::program compile(std::string initial_file_path, bool& compilation_error, bool print_debug) {
-        runner::program output;
-        collection file_collection;
-
-        file_collection = find_all_files(initial_file_path, compilation_error, print_debug);
     }
 }

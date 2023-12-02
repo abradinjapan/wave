@@ -3,7 +3,7 @@
 
 #include "compile.cpp"
 
-void compile_and_run(std::string user_code, bool debug) {
+void compile_and_run(std::vector<std::string> user_codes, bool debug) {
     runner::program program;
     bool compilation_error = false;
     bool run_time_error = false;
@@ -12,14 +12,8 @@ void compile_and_run(std::string user_code, bool debug) {
     // inform user of compilation start
     std::cout << "----------\n" << "Compiling code." << std::endl;
 
-    // if debug enabled
-    if (debug) {
-        // print original file
-        std::cout << "Original File:" << std::endl << user_code << std::endl;
-    }
-
     // compile program
-    program = compiler::compile_user_code(user_code, compilation_error, debug);
+    program = compiler::compile(user_codes, compilation_error, debug);
 
     // run if no errors occured
     if (compilation_error == false) {
@@ -40,28 +34,33 @@ void compile_and_run(std::string user_code, bool debug) {
 }
 
 int main(int argc, char** argv) {
-    std::string file_path;
-    std::string file_data;
+    std::vector<std::string> user_codes;
 
     // inform user of compilation start
     std::cout << "Starting up compiler." << std::endl;
 
     // get file from arguments
     if (argc > 1) {
-        // get file path
-        file_path = std::string(argv[1]);
+        // load files
+        for (basic::u64 file = 1; file < argc; file++) {
+            // get file paths
+            std::string file_path = std::string(argv[file]);
+                
+            // get file data
+            std::string file_data = compiler::load_file(file_path);
 
-        // get file data
-        file_data = compiler::load_file(file_path);
+            // append file
+            user_codes.push_back(file_data);
 
-        // run if file found
-        if (file_data != "") {
-            // run compiler
-            compile_and_run(file_data, true);
-        // if file not found
-        } else {
-            std::cout << "Invalid file path: " << file_path << std::endl;
+            // run if file found
+            if (file_data == "") {
+                // print error
+                std::cout << "Invalid file path or empty file: " << file_path << std::endl;
+            }
         }
+
+        // compile and run
+        compile_and_run(user_codes, true);
     // if file name is missing
     } else {
         std::cout << "Missing file name." << std::endl;
