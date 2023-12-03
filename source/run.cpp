@@ -303,6 +303,7 @@ namespace runner {
         integer_modulous,
         integer_within_range,
         boolean_not,
+        get_context_input,
     };
 
     class instruction {
@@ -728,6 +729,15 @@ namespace runner {
                 current_instruction++;
 
                 break;
+            case instruction_type::get_context_input:
+                // get data
+                context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = (cell)input.p_start;
+                context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_1] = (cell)input.p_end;
+
+                // next instruction
+                current_instruction++;
+
+                break;
             default:
                 std::cout << "Runner Error: Invalid Instruction ID" << std::endl;
 
@@ -743,6 +753,11 @@ namespace runner {
     // run a program
     allocation run_program(program program, allocation input, bool& error_occured) {
         allocations allocations;
+
+        // add the input buffer to the allocations
+        if (input.p_start != 0) {
+            allocations.add_allocation(input);
+        }
 
         // run program and return result
         return run_code(program, input, allocations, error_occured);
@@ -844,6 +859,9 @@ namespace runner {
                 break;
             case runner::instruction_type::boolean_not:
                 std::cout << "boolean_not";
+                break;
+            case runner::instruction_type::get_context_input:
+                std::cout << "get_context_input";
                 break;
             default:
                 std::cout << "[ invalid instruction ]";

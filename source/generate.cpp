@@ -590,6 +590,24 @@ namespace generator {
             // next instruction
             workspace.p_instruction_count++;
         }
+
+        void write__get_context_input(workspace& workspace, runner::cell_ID destination_start, runner::cell_ID destination_end) {
+            runner::instruction temp_instruction;
+
+            // create instruction
+            if (workspace.p_pass_type == pass_type::pass_build) {
+                // set type
+                temp_instruction.p_type = runner::instruction_type::get_context_input;
+                temp_instruction.p_output_0 = destination_start;
+                temp_instruction.p_output_1 = destination_end;
+
+                // write instruction
+                workspace.p_program.p_instructions[workspace.p_instruction_count] = temp_instruction;
+            }
+
+            // next instruction
+            workspace.p_instruction_count++;
+        }
     }
 
     basic::u64 calculate_variable_index(accounter::skeleton::argument argument, accounter::skeleton::abstraction& abstraction) {
@@ -862,6 +880,12 @@ namespace generator {
                 case runner::instruction_type::boolean_not:
                     // write code
                     write_instructions::write__boolean_not(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[0], abstraction));
+
+                    break;
+                // wave.get_context_input(0)(2)
+                case runner::instruction_type::get_context_input:
+                    // write code
+                    write_instructions::write__get_context_input(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[1], abstraction));
 
                     break;
                 // user defined statement call

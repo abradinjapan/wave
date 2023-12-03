@@ -1,5 +1,6 @@
 #include <iostream>
 #include <fstream>
+#include <string.h>
 
 #include "compile.cpp"
 
@@ -8,6 +9,7 @@ void compile_and_run(std::vector<std::string> user_codes, bool debug) {
     bool compilation_error = false;
     bool run_time_error = false;
     runner::allocation input;
+    const char* buffer = "Hello World!";
 
     // inform user of compilation start
     std::cout << "----------\n" << "Compiling code." << std::endl;
@@ -19,6 +21,9 @@ void compile_and_run(std::vector<std::string> user_codes, bool debug) {
     if (compilation_error == false) {
         // inform user of program start
         std::cout << "Starting program..." << std::endl;
+
+        // convert test buffer to program input
+        input = runner::allocation((basic::address)buffer, (basic::address)(buffer + strlen(buffer) - 1));
 
         // run code
         runner::run_program(program, input, run_time_error);

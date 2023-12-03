@@ -804,6 +804,7 @@ namespace accounter {
                 synthesize_header_only_abstraction("wave.integer.modulous", 2, 2);
                 synthesize_header_only_abstraction("wave.integer.within_range", 3, 1);
                 synthesize_header_only_abstraction("wave.boolean.not", 1, 1);
+                synthesize_header_only_abstraction("wave.get_context_input", 0, 2);
             }
 
         public:

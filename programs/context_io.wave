@@ -1,0 +1,44 @@
+print.new_line()() = {
+    wave.set(wave.integer.10)(new_line)
+    wave.print.character(new_line)()
+}
+
+string.print(start end)() = {
+    [ setup variables ]
+    wave.set(wave.integer.1)(character_size)
+    wave.set(wave.boolean.true)(always)
+
+    [ setup current ]
+    wave.copy(start)(current)
+
+    [ loop start ]
+    @print_character
+
+    [ check if loop should quit ]
+    wave.integer.within_range(start current end)(continue)
+    wave.boolean.not(continue)(quit)
+    wave.jump(quit @exit)()
+
+    [ get character ]
+    wave.address_to_cell(current character_size)(character error)
+
+    [ next character ]
+    wave.integer.add(current character_size)(current)
+
+    [ print character ]
+    wave.print.character(character)()
+
+    [ jump to loop start ]
+    wave.jump(always @print_character)()
+
+    [ loop end ]
+    @exit
+
+    [ print new line ]
+    print.new_line()()
+}
+
+main()() = {
+    wave.get_context_input()(start end)
+    string.print(start end)()    
+}
