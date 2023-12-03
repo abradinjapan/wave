@@ -54,7 +54,7 @@ int main(int argc, char** argv) {
     // get file from arguments
     if (argc > 1) {
         // load files
-        for (basic::u64 file = 1; file < argc; file++) {
+        for (basic::u64 file = 1; file < (basic::u64)argc; file++) {
             // get file paths
             std::string file_path = std::string(argv[file]);
                 

@@ -12,7 +12,7 @@ space()() = {
     wave.print.character(character)()
 }
 
-main()() = {
+debug.list_instruction_metadata()() = {
     wave.set(wave.instruction.type.offset)(value)
     wave.print.number(value)()
     space()()
@@ -82,4 +82,12 @@ main()() = {
     wave.set(wave.instruction.instruction_ID.size)(value)
     wave.print.number(value)()
     new_line()()
+}
+
+generate_instruction()() = {
+
+}
+
+main()() = {
+    debug.list_instruction_metadata()()
 }

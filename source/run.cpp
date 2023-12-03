@@ -198,7 +198,7 @@ namespace runner {
                 putchar(*(char*)current);
 
                 // next character
-                current = current + sizeof(char);
+                current = (char*)current + sizeof(char);
             }
         }
     };
@@ -318,6 +318,7 @@ namespace runner {
         boolean_not,
         get_context_input,
         pass_context_output,
+        run,
     };
 
     class instruction {
@@ -366,6 +367,13 @@ namespace runner {
         bool file_error_occured;
         char console_buffer[console_input_buffer_length];
         basic::u64 console_buffer_length;
+        
+        // run instruction variables
+        runner::program temp_program;
+        runner::allocation temp_code;
+        runner::allocation temp_input;
+        runner::allocation temp_result;
+        bool runner_error_occured;
 
         // process instructions
         while (running == true) {
@@ -760,6 +768,36 @@ namespace runner {
                 // next instruction
                 current_instruction++;
 
+                break;
+            case instruction_type::run:
+                // setup error
+                runner_error_occured = false;
+
+                // get code
+                temp_code.p_start = (basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0];
+                temp_code.p_end = (basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1];
+
+                // get input
+                temp_input.p_start = (basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_2];
+                temp_input.p_end = (basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_3];
+
+                // convert buffer to program
+                temp_program.p_instructions.insert(temp_program.p_instructions.begin(), (instruction*)temp_code.p_start, (instruction*)temp_code.p_end);
+
+                // run program
+                temp_result = run_code(temp_program, temp_input, allocations, runner_error_occured);
+
+                // setup outputs
+                context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = (runner::cell)temp_result.p_start;
+                context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_1] = (runner::cell)temp_result.p_end;
+                context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_2] = (runner::cell)runner_error_occured;
+
+                // clean up
+                temp_program.p_instructions.clear();
+
+                // next instruction
+                current_instruction++;
+            
                 break;
             default:
                 std::cout << "Runner Error: Invalid Instruction ID" << std::endl;

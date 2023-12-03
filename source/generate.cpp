@@ -626,6 +626,29 @@ namespace generator {
             // next instruction
             workspace.p_instruction_count++;
         }
+
+        void write__run(workspace& workspace, runner::cell_ID program_start, runner::cell_ID program_end, runner::cell_ID input_start, runner::cell_ID input_end, runner::cell_ID result_start, runner::cell_ID result_end, runner::cell_ID runner_error_occured) {
+            runner::instruction temp_instruction;
+
+            // create instruction
+            if (workspace.p_pass_type == pass_type::pass_build) {
+                // set type
+                temp_instruction.p_type = runner::instruction_type::run;
+                temp_instruction.p_input_0 = program_start;
+                temp_instruction.p_input_1 = program_end;
+                temp_instruction.p_input_2 = input_start;
+                temp_instruction.p_input_3 = input_end;
+                temp_instruction.p_output_0 = result_start;
+                temp_instruction.p_output_1 = result_end;
+                temp_instruction.p_output_2 = runner_error_occured;
+
+                // write instruction
+                workspace.p_program.p_instructions[workspace.p_instruction_count] = temp_instruction;
+            }
+
+            // next instruction
+            workspace.p_instruction_count++;
+        }
     }
 
     basic::u64 calculate_variable_index(accounter::skeleton::argument argument, accounter::skeleton::abstraction& abstraction) {
@@ -910,6 +933,12 @@ namespace generator {
                 case runner::instruction_type::pass_context_output:
                     // write code
                     write_instructions::write__pass_context_output(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[1], abstraction));
+
+                    break;
+                // wave.run(4)(3)
+                case runner::instruction_type::run:
+                    // write code
+                    write_instructions::write__run(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[1], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[2], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[3], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[1], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[2], abstraction));
 
                     break;
                 // user defined statement call
