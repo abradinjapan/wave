@@ -14,6 +14,7 @@ namespace parser {
         is_abstraction_name,
         is_offset,
         is_boolean_literal,
+        is_instruction_literal,
     };
 
     class name {
@@ -115,6 +116,79 @@ namespace parser {
         return string.substr(offset, contains.length()) == contains;
     }
 
+    bool string_is_instruction_literal(lexer::lexling& lexling) {
+        std::string instruction_prefix = "wave.instruction.";
+
+        // check for prefix
+        if (!string_contains_at(lexling.p_value, 0, instruction_prefix)) {
+            return false;
+        }
+
+        // check for suffixes
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "type.size")) {
+            return true;
+        }
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "type.offset")) {
+            return true;
+        }
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "write_register_value.size")) {
+            return true;
+        }
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "write_register_value.offset")) {
+            return true;
+        }
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "input_0.size")) {
+            return true;
+        }
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "input_0.offset")) {
+            return true;
+        }
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "input_1.size")) {
+            return true;
+        }
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "input_1.offset")) {
+            return true;
+        }
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "input_2.size")) {
+            return true;
+        }
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "input_2.offset")) {
+            return true;
+        }
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "input_3.size")) {
+            return true;
+        }
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "input_3.offset")) {
+            return true;
+        }
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "output_0.size")) {
+            return true;
+        }
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "output_0.offset")) {
+            return true;
+        }
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "output_1.size")) {
+            return true;
+        }
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "output_1.offset")) {
+            return true;
+        }
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "output_2.size")) {
+            return true;
+        }
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "output_2.offset")) {
+            return true;
+        }
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "instruction_ID.size")) {
+            return true;
+        }
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "instruction_ID.offset")) {
+            return true;
+        }
+
+        return false;
+    }
+
     // parse arguments
     std::vector<name> parse_arguments(lexer::lexlings& lexlings, int& lexling_index, bool& error_occured) {
         std::vector<name> output;
@@ -147,6 +221,13 @@ namespace parser {
                 } else if (string_starts_with(lexlings.p_lexlings[lexling_index].p_value, "wave.boolean.") == true && ((string_contains_at(lexlings.p_lexlings[lexling_index].p_value, boolean_prefix.length(), true_suffix) && boolean_prefix.length() + true_suffix.length() == lexlings.p_lexlings[lexling_index].p_value.length()) || (string_contains_at(lexlings.p_lexlings[lexling_index].p_value, boolean_prefix.length(), false_suffix) && boolean_prefix.length() + false_suffix.length() == lexlings.p_lexlings[lexling_index].p_value.length()))) {
                     // add argument
                     output.push_back(name(name_type::is_boolean_literal, lexlings.p_lexlings[lexling_index].p_value));
+
+                    // next argument
+                    lexling_index++;
+                // check for instruction literal
+                } else if (string_is_instruction_literal(lexlings.p_lexlings[lexling_index])) {
+                    // add argument
+                    output.push_back(name(name_type::is_instruction_literal, lexlings.p_lexlings[lexling_index].p_value));
 
                     // next argument
                     lexling_index++;

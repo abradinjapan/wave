@@ -1,0 +1,85 @@
+[
+    Main
+]
+
+new_line()() = {
+    wave.set(wave.integer.10)(character)
+    wave.print.character(character)()
+}
+
+space()() = {
+    wave.set(wave.integer.32)(character)
+    wave.print.character(character)()
+}
+
+main()() = {
+    wave.set(wave.instruction.type.offset)(value)
+    wave.print.number(value)()
+    space()()
+    wave.set(wave.instruction.type.size)(value)
+    wave.print.number(value)()
+    new_line()()
+
+    wave.set(wave.instruction.write_register_value.offset)(value)
+    wave.print.number(value)()
+    space()()
+    wave.set(wave.instruction.write_register_value.size)(value)
+    wave.print.number(value)()
+    new_line()()
+
+    wave.set(wave.instruction.input_0.offset)(value)
+    wave.print.number(value)()
+    space()()
+    wave.set(wave.instruction.input_0.size)(value)
+    wave.print.number(value)()
+    new_line()()
+
+    wave.set(wave.instruction.input_1.offset)(value)
+    wave.print.number(value)()
+    space()()
+    wave.set(wave.instruction.input_1.size)(value)
+    wave.print.number(value)()
+    new_line()()
+
+    wave.set(wave.instruction.input_2.offset)(value)
+    wave.print.number(value)()
+    space()()
+    wave.set(wave.instruction.input_2.size)(value)
+    wave.print.number(value)()
+    new_line()()
+
+    wave.set(wave.instruction.input_3.offset)(value)
+    wave.print.number(value)()
+    space()()
+    wave.set(wave.instruction.input_3.size)(value)
+    wave.print.number(value)()
+    new_line()()
+
+    wave.set(wave.instruction.output_0.offset)(value)
+    wave.print.number(value)()
+    space()()
+    wave.set(wave.instruction.output_0.size)(value)
+    wave.print.number(value)()
+    new_line()()
+
+    wave.set(wave.instruction.output_1.offset)(value)
+    wave.print.number(value)()
+    space()()
+    wave.set(wave.instruction.output_1.size)(value)
+    wave.print.number(value)()
+    new_line()()
+
+    wave.set(wave.instruction.output_2.offset)(value)
+    wave.print.number(value)()
+    space()()
+    wave.set(wave.instruction.output_2.size)(value)
+    wave.print.number(value)()
+    new_line()()
+
+    wave.set(wave.instruction.instruction_ID.offset)(value)
+    wave.print.number(value)()
+    space()()
+    wave.set(wave.instruction.instruction_ID.size)(value)
+    wave.print.number(value)()
+    new_line()()
+}

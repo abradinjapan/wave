@@ -352,6 +352,7 @@ namespace accounter {
     enum literal_type {
         is_integer_literal,
         is_boolean_literal,
+        is_instruction_literal,
         is_invalid,
     };
 
@@ -376,6 +377,7 @@ namespace accounter {
         void determine_literal_type(parser::name_type type, bool& error_occured) {
             std::string integer_prefix = "wave.integer.";
             std::string boolean_prefix = "wave.boolean.";
+            std::string instruction_prefix = "wave.instruction.";
 
             if (type == parser::name_type::is_integer_literal) {
                 p_integer_value = std::stoi(p_name.substr(integer_prefix.length(), p_name.length() - integer_prefix.length()));
@@ -388,12 +390,61 @@ namespace accounter {
                     p_integer_value = 1;
                 } else {
                     // error
-                    std::cout << "Internal error, unrecognized literal type: " << p_name << std::endl;
+                    std::cout << "Accounting error, unrecognized boolean literal type: " << p_name << std::endl;
                     error_occured = true;
                     p_integer_value = -1;
                 }
 
                 p_type = literal_type::is_boolean_literal;
+            } else if (type == parser::name_type::is_instruction_literal) {
+                if (parser::string_contains_at(p_name, instruction_prefix.length(), "type.size")) {
+                    p_integer_value = sizeof(runner::instruction::p_type);
+                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "type.offset")) {
+                    p_integer_value = offsetof(runner::instruction, runner::instruction::p_type);
+                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "write_register_value.size")) {
+                    p_integer_value = sizeof(runner::instruction::p_write_register_value);
+                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "write_register_value.offset")) {
+                    p_integer_value = offsetof(runner::instruction, runner::instruction::p_write_register_value);
+                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "input_0.size")) {
+                    p_integer_value = sizeof(runner::instruction::p_input_0);
+                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "input_0.offset")) {
+                    p_integer_value = offsetof(runner::instruction, runner::instruction::p_input_0);
+                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "input_1.size")) {
+                    p_integer_value = sizeof(runner::instruction::p_input_1);
+                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "input_1.offset")) {
+                    p_integer_value = offsetof(runner::instruction, runner::instruction::p_input_1);
+                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "input_2.size")) {
+                    p_integer_value = sizeof(runner::instruction::p_input_2);
+                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "input_2.offset")) {
+                    p_integer_value = offsetof(runner::instruction, runner::instruction::p_input_2);
+                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "input_3.size")) {
+                    p_integer_value = sizeof(runner::instruction::p_input_3);
+                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "input_3.offset")) {
+                    p_integer_value = offsetof(runner::instruction, runner::instruction::p_input_3);
+                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "output_0.size")) {
+                    p_integer_value = sizeof(runner::instruction::p_output_0);
+                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "output_0.offset")) {
+                    p_integer_value = offsetof(runner::instruction, runner::instruction::p_output_0);
+                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "output_1.size")) {
+                    p_integer_value = sizeof(runner::instruction::p_output_1);
+                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "output_1.offset")) {
+                    p_integer_value = offsetof(runner::instruction, runner::instruction::p_output_1);
+                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "output_2.size")) {
+                    p_integer_value = sizeof(runner::instruction::p_output_2);
+                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "output_2.offset")) {
+                    p_integer_value = offsetof(runner::instruction, runner::instruction::p_output_2);
+                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "instruction_ID.size")) {
+                    p_integer_value = sizeof(runner::instruction::p_instruction_ID);
+                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "instruction_ID.offset")) {
+                    p_integer_value = offsetof(runner::instruction, runner::instruction::p_instruction_ID);
+                } else {
+                    // error
+                    std::cout << "Accounting error, unrecognized instruction literal type: " << p_name << std::endl;
+                    error_occured = true;
+                    p_integer_value = -1;
+                }
+
+                p_type = literal_type::is_instruction_literal;
             } else {
                 p_integer_value = -1;
                 error_occured = true;
@@ -417,7 +468,7 @@ namespace accounter {
                 // check statement inputs for literals
                 for (basic::u64 input_ID = 0; input_ID < abstraction.p_scope[statement_ID].p_inputs.size(); input_ID++) {
                     // check statement type
-                    if (abstraction.p_scope[statement_ID].p_inputs[input_ID].p_name_type == parser::name_type::is_integer_literal || abstraction.p_scope[statement_ID].p_inputs[input_ID].p_name_type == parser::name_type::is_boolean_literal) {
+                    if (abstraction.p_scope[statement_ID].p_inputs[input_ID].p_name_type == parser::name_type::is_integer_literal || abstraction.p_scope[statement_ID].p_inputs[input_ID].p_name_type == parser::name_type::is_boolean_literal || abstraction.p_scope[statement_ID].p_inputs[input_ID].p_name_type == parser::name_type::is_instruction_literal) {
                         // add literal
                         output.p_literals.push_back(literal(abstraction.p_scope[statement_ID].p_inputs[input_ID].p_name_value, abstraction.p_scope[statement_ID].p_inputs[input_ID].p_name_type, statement_ID, input_ID, error_occured));
                     }
@@ -453,6 +504,7 @@ namespace accounter {
             is_integer_literal,
             is_offset,
             is_boolean_literal,
+            is_instruction_literal,
         };
 
         class argument {
@@ -565,6 +617,8 @@ namespace accounter {
                     return argument_type::is_integer_literal;
                 case literal_type::is_boolean_literal:
                     return argument_type::is_boolean_literal;
+                case literal_type::is_instruction_literal:
+                    return argument_type::is_instruction_literal;
                 default:
                     return argument_type::is_invalid;
                 }
@@ -831,6 +885,17 @@ namespace accounter {
                                 break;
                             // is boolean literal
                             case parser::name_type::is_boolean_literal:
+                                // lookup literal
+                                output[output.size() - 1].p_inputs.push_back(p_abstractions[abstraction_ID].lookup_literal_by_ID(statement_ID, input_ID, error_occured));
+
+                                // check for error
+                                if (error_occured) {
+                                    return output;
+                                }
+
+                                break;
+                            // is instruction literal
+                            case parser::name_type::is_instruction_literal:
                                 // lookup literal
                                 output[output.size() - 1].p_inputs.push_back(p_abstractions[abstraction_ID].lookup_literal_by_ID(statement_ID, input_ID, error_occured));
 
