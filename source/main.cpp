@@ -26,7 +26,14 @@ void compile_and_run(std::vector<std::string> user_codes, bool debug) {
         input = runner::allocation((basic::address)buffer, (basic::address)(buffer + strlen(buffer) - 1));
 
         // run code
-        runner::run_program(program, input, run_time_error);
+        runner::allocation result = runner::run_program(program, input, run_time_error);
+
+        // print result
+        if (result.p_start != 0) {
+            std::cout << "Result buffer: ";
+            result.print();
+            std::cout << std::endl;
+        }
 
         // inform user of program end
         std::cout << std::endl << "Ending program..." << std::endl;

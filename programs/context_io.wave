@@ -40,5 +40,6 @@ string.print(start end)() = {
 
 main()() = {
     wave.get_context_input()(start end)
-    string.print(start end)()    
+    string.print(start end)()
+    wave.pass_context_output(start end)()
 }

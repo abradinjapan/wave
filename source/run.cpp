@@ -188,6 +188,19 @@ namespace runner {
             p_start = 0;
             p_end = 0;
         }
+
+        void print() {
+            basic::address current = p_start;
+
+            // print each character
+            while (current <= p_end) {
+                // print character
+                putchar(*(char*)current);
+
+                // next character
+                current = current + sizeof(char);
+            }
+        }
     };
 
     class allocations {
@@ -304,6 +317,7 @@ namespace runner {
         integer_within_range,
         boolean_not,
         get_context_input,
+        pass_context_output,
     };
 
     class instruction {
@@ -738,6 +752,15 @@ namespace runner {
                 current_instruction++;
 
                 break;
+            case instruction_type::pass_context_output:
+                // get data
+                output.p_start = (basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0];
+                output.p_end = (basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1];
+
+                // next instruction
+                current_instruction++;
+
+                break;
             default:
                 std::cout << "Runner Error: Invalid Instruction ID" << std::endl;
 
@@ -862,6 +885,9 @@ namespace runner {
                 break;
             case runner::instruction_type::get_context_input:
                 std::cout << "get_context_input";
+                break;
+            case runner::instruction_type::pass_context_output:
+                std::cout << "pass_context_output";
                 break;
             default:
                 std::cout << "[ invalid instruction ]";
