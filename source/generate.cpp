@@ -301,7 +301,7 @@ namespace generator {
             workspace.p_instruction_count++;
         }
 
-        void write__jump(workspace& workspace, runner::cell_ID condition, basic::u64 instruction_ID) {
+        void write__jump(workspace& workspace, runner::cell_ID condition, basic::u64 jump_instruction_ID) {
             runner::instruction temp_instruction;
 
             // create instruction
@@ -309,7 +309,7 @@ namespace generator {
                 // set type
                 temp_instruction.p_type = runner::instruction_type::jump;
                 temp_instruction.p_input_0 = condition;
-                temp_instruction.p_instruction_ID = instruction_ID;
+                temp_instruction.p_jump_instruction_ID = jump_instruction_ID;
 
                 // write instruction
                 workspace.p_program.p_instructions[workspace.p_instruction_count] = temp_instruction;

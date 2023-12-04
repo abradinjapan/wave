@@ -76,10 +76,10 @@ debug.list_instruction_metadata()() = {
     wave.print.number(value)()
     new_line()()
 
-    wave.set(wave.instruction.instruction_ID.offset)(value)
+    wave.set(wave.instruction.jump_instruction_ID.offset)(value)
     wave.print.number(value)()
     space()()
-    wave.set(wave.instruction.instruction_ID.size)(value)
+    wave.set(wave.instruction.jump_instruction_ID.size)(value)
     wave.print.number(value)()
     new_line()()
 

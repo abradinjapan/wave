@@ -332,7 +332,7 @@ namespace runner {
         cell_ID p_output_0;
         cell_ID p_output_1;
         cell_ID p_output_2;
-        basic::u64 p_instruction_ID;
+        basic::u64 p_jump_instruction_ID;
 
         instruction() {
             p_type = instruction_type::quit;
@@ -344,7 +344,7 @@ namespace runner {
             p_output_0 = 0;
             p_output_1 = 0;
             p_output_2 = 0;
-            p_instruction_ID = 0;
+            p_jump_instruction_ID = 0;
         }
     };
 
@@ -543,7 +543,7 @@ namespace runner {
                 // if true
                 if (context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0] == 1) {
                     // jump via instruction number
-                    current_instruction = program.p_instructions[current_instruction].p_instruction_ID;
+                    current_instruction = program.p_instructions[current_instruction].p_jump_instruction_ID;
                 } else {
                     // next instruction
                     current_instruction++;

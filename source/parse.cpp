@@ -179,13 +179,16 @@ namespace parser {
         if (string_contains_at(lexling.p_value, instruction_prefix.length(), "output_2.offset")) {
             return true;
         }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "instruction_ID.size")) {
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "jump_instruction_ID.size")) {
             return true;
         }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "instruction_ID.offset")) {
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "jump_instruction_ID.offset")) {
             return true;
         }
         if (string_contains_at(lexling.p_value, instruction_prefix.length(), "size")) {
+            return true;
+        }
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.quit")) {
             return true;
         }
 
