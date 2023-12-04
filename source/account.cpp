@@ -437,6 +437,8 @@ namespace accounter {
                     p_integer_value = sizeof(runner::instruction::p_instruction_ID);
                 } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "instruction_ID.offset")) {
                     p_integer_value = offsetof(runner::instruction, runner::instruction::p_instruction_ID);
+                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "size")) {
+                    p_integer_value = sizeof(runner::instruction);
                 } else {
                     // error
                     std::cout << "Accounting error, unrecognized instruction literal type: " << p_name << std::endl;

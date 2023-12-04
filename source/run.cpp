@@ -927,6 +927,9 @@ namespace runner {
             case runner::instruction_type::pass_context_output:
                 std::cout << "pass_context_output";
                 break;
+            case runner::instruction_type::run:
+                std::cout << "run";
+                break;
             default:
                 std::cout << "[ invalid instruction ]";
                 break;

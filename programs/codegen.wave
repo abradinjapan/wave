@@ -82,10 +82,10 @@ debug.list_instruction_metadata()() = {
     wave.set(wave.instruction.instruction_ID.size)(value)
     wave.print.number(value)()
     new_line()()
-}
 
-generate_instruction()() = {
-
+    wave.set(wave.instruction.size)(value)
+    wave.print.number(value)()
+    new_line()()
 }
 
 main()() = {

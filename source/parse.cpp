@@ -185,6 +185,9 @@ namespace parser {
         if (string_contains_at(lexling.p_value, instruction_prefix.length(), "instruction_ID.offset")) {
             return true;
         }
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "size")) {
+            return true;
+        }
 
         return false;
     }
