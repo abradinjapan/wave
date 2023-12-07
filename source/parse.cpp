@@ -420,7 +420,7 @@ namespace parser {
         output.p_header = parse_abstraction_header(lexlings, lexling_index, error_occured);
 
         // parse abstraction marker for abstraction
-        if (lexlings.p_lexlings[lexling_index].p_type == lexer::lexling_type::abstraction_marker) {
+        if (lexling_index < lexlings.count() && lexlings.p_lexlings[lexling_index].p_type == lexer::lexling_type::abstraction_marker) {
             // set type
             output.p_type = abstraction_type::is_code_defined;
 
@@ -428,12 +428,12 @@ namespace parser {
             lexling_index++;
 
             // get scope
-            if (lexlings.p_lexlings[lexling_index].p_type == lexer::lexling_type::left_curly_bracket) {
+            if (lexling_index < lexlings.count() && lexlings.p_lexlings[lexling_index].p_type == lexer::lexling_type::left_curly_bracket) {
                 // next scope
                 lexling_index++;
 
                 // get all statements
-                while (lexlings.p_lexlings[lexling_index].p_type != lexer::lexling_type::right_curly_bracket) {
+                while (lexling_index < lexlings.count() && lexlings.p_lexlings[lexling_index].p_type != lexer::lexling_type::right_curly_bracket) {
                     // parse statement
                     output.p_scope.push_back(parse_statement(lexlings, lexling_index, error_occured));
 

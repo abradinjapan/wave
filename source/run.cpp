@@ -351,6 +351,32 @@ namespace runner {
     class program {
     public:
         std::vector<instruction> p_instructions;
+
+        bool create_from_allocation(allocations& allocations, allocation program) {
+            instruction* current;
+
+            // clear program
+            p_instructions.clear();
+
+            // setup current
+            current = (instruction*)program.p_start;
+
+            // append instructions until at the end of the list
+            while (current < program.p_end) {
+                // check for remaining room
+                if (!allocations.is_address_and_length_valid(current, sizeof(runner::instruction))) {
+                    return false;
+                }
+
+                // add instruction
+                p_instructions.push_back(*current);
+
+                // next instruction
+                current += sizeof(runner::instruction);
+            }
+
+            return true;
+        }
     };
 
     // run code
@@ -782,18 +808,24 @@ namespace runner {
                 temp_input.p_end = (basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_3];
 
                 // convert buffer to program
-                temp_program.p_instructions.insert(temp_program.p_instructions.begin(), (instruction*)temp_code.p_start, (instruction*)temp_code.p_end);
+                if (temp_program.create_from_allocation(allocations, temp_code)) {
+                    // run program
+                    temp_result = run_code(temp_program, temp_input, allocations, runner_error_occured);
 
-                // run program
-                temp_result = run_code(temp_program, temp_input, allocations, runner_error_occured);
+                    // setup outputs
+                    context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = (runner::cell)temp_result.p_start;
+                    context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_1] = (runner::cell)temp_result.p_end;
+                    context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_2] = (runner::cell)runner_error_occured;
 
-                // setup outputs
-                context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = (runner::cell)temp_result.p_start;
-                context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_1] = (runner::cell)temp_result.p_end;
-                context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_2] = (runner::cell)runner_error_occured;
-
-                // clean up
-                temp_program.p_instructions.clear();
+                    // clean up
+                    temp_program.p_instructions.clear();
+                // conversion failed
+                } else {
+                    // setup error
+                    context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = 0;
+                    context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_1] = 0;
+                    context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_2] = true;
+                }
 
                 // next instruction
                 current_instruction++;
