@@ -86,6 +86,11 @@ debug.list_instruction_metadata()() = {
     wave.set(wave.instruction.size)(value)
     wave.print.number(value)()
     new_line()()
+    new_line()()
+
+    wave.set(wave.instruction.opcode.quit)(value)
+    wave.print.number(value)()
+    new_line()()
 }
 
 main()() = {

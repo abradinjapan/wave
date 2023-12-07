@@ -110,7 +110,7 @@ namespace accounter {
                     // check header
                     if (temp_program.p_abstractions[abstraction].p_scope[statement].p_name.p_name_type == parser::name_type::is_abstraction_name && header_table.header_registered(header(temp_program.p_abstractions[abstraction].p_scope[statement].p_name.p_name_value, temp_program.p_abstractions[abstraction].p_scope[statement].p_inputs.size(), temp_program.p_abstractions[abstraction].p_scope[statement].p_outputs.size())) == false) {
                         // inform user of error
-                        std::cout << "Accouting error, a header was not found during a header lookup: " << temp_program.p_abstractions[abstraction].p_scope[statement].p_name.p_name_value << std::endl;
+                        std::cout << "Accounting error, a header was not found during a header lookup: " << temp_program.p_abstractions[abstraction].p_scope[statement].p_name.p_name_value << "(" << temp_program.p_abstractions[abstraction].p_scope[statement].p_inputs.size() << ")" << "(" << temp_program.p_abstractions[abstraction].p_scope[statement].p_outputs.size() << ")" << std::endl;
 
                         // header not registered, error
                         return false;
@@ -483,7 +483,7 @@ namespace accounter {
                     // check for literal
                     if (abstraction.p_scope[statement_ID].p_outputs[output_ID].p_name_type != parser::name_type::is_value_name) {
                         // inform user of error
-                        std::cout << "Accouting error, an non variable name was found in the outputs of an abstraction call.: " << abstraction.p_scope[statement_ID].p_outputs[output_ID].p_name_value << std::endl;
+                        std::cout << "Accounting error, an non variable name was found in the outputs of an abstraction call.: " << abstraction.p_scope[statement_ID].p_outputs[output_ID].p_name_value << std::endl;
                         
                         // set error
                         error_occured = true;
@@ -588,7 +588,7 @@ namespace accounter {
                 error_occured = true;
 
                 // inform user of error
-                std::cout << "Accouting error, a variable was not found during lookup: " << name_value << std::endl;
+                std::cout << "Accounting error, a variable was not found during lookup: " << name_value << std::endl;
 
                 // return invalid argument
                 return argument(argument_type::is_invalid, -1);
@@ -609,7 +609,7 @@ namespace accounter {
                 error_occured = true;
 
                 // inform user of error
-                std::cout << "Accouting error, an offset was not found during lookup. " << name << std::endl;
+                std::cout << "Accounting error, an offset was not found during lookup. " << name << std::endl;
 
                 // return invalid argument
                 return argument(argument_type::is_invalid, -1);
@@ -642,7 +642,7 @@ namespace accounter {
                 error_occured = true;
 
                 // inform user of error
-                std::cout << "Accouting error, a literal was not found during lookup. [ " << statement_ID << " " << io_ID << " ]" << std::endl;
+                std::cout << "Accounting error, a literal was not found during lookup. [ " << statement_ID << " " << io_ID << " ]" << std::endl;
 
                 // return invalid argument
                 return argument(argument_type::is_invalid, -1);
@@ -665,7 +665,7 @@ namespace accounter {
 
                 // verify header table
                 if (verify_all_headers(p_header_table, programs) == false) {
-                    std::cout << "Accouting error, headers and statements do not all match." << std::endl;
+                    std::cout << "Accounting error, headers and statements do not all match." << std::endl;
                     error_occured = true;
 
                     return;
@@ -828,11 +828,12 @@ namespace accounter {
                 error_occured = true;
 
                 // inform user of error
-                std::cout << "Accouting error, a header was not found during a header lookup: " <<  header_name << std::endl;
+                std::cout << "Accounting error, a header was not found during a header lookup: " <<  header_name << std::endl;
 
                 // return invalid argument
                 return -1;
             }
+
         private:
             // get statement table
             std::vector<call> get_call_table(parser::abstraction& abstraction, int abstraction_ID, bool& error_occured) {
@@ -914,7 +915,7 @@ namespace accounter {
                                 break;
                             // not valid
                             default:
-                                std::cout << "Accouting error, an illegal name type was found in statement inputs." << std::endl;
+                                std::cout << "Accounting error, an illegal name type was found in statement inputs." << std::endl;
                                 error_occured = true;
 
                                 return output;
@@ -938,7 +939,7 @@ namespace accounter {
                                 break;
                             // not valid
                             default:
-                                std::cout << "Accouting error, an illegal name type was found in statement outputs." << std::endl;
+                                std::cout << "Accounting error, an illegal name type was found in statement outputs." << std::endl;
                                 return output;
                             }
                         }
@@ -975,7 +976,7 @@ namespace accounter {
 
                         error_occured = true;
 
-                        std::cout << "Accouting error, an illegal statement type was found while creating the statement map." << std::endl;
+                        std::cout << "Accounting error, an illegal statement type was found while creating the statement map." << std::endl;
 
                         return output;
                     }
