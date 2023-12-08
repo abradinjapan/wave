@@ -191,6 +191,21 @@ namespace parser {
         if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.quit")) {
             return true;
         }
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.write_cell")) {
+            return true;
+        }
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.print_cell_as_number")) {
+            return true;
+        }
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.print_cell_as_character")) {
+            return true;
+        }
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.get_console_input")) {
+            return true;
+        }
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.create_new_context")) {
+            return true;
+        }
 
         return false;
     }

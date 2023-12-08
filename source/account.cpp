@@ -441,6 +441,16 @@ namespace accounter {
                     p_integer_value = sizeof(runner::instruction);
                 } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "opcode.quit")) {
                     p_integer_value = (basic::u64)runner::instruction_type::quit;
+                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "opcode.write_cell")) {
+                    p_integer_value = (basic::u64)runner::instruction_type::write_cell;
+                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "opcode.print_cell_as_number")) {
+                    p_integer_value = (basic::u64)runner::instruction_type::print_cell_as_number;
+                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "opcode.print_cell_as_character")) {
+                    p_integer_value = (basic::u64)runner::instruction_type::print_cell_as_character;
+                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "opcode.get_console_input")) {
+                    p_integer_value = (basic::u64)runner::instruction_type::get_console_input;
+                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "opcode.create_new_context")) {
+                    p_integer_value = (basic::u64)runner::instruction_type::create_new_context;
                 } else {
                     // error
                     std::cout << "Accounting error, unrecognized instruction literal type: " << p_name << std::endl;

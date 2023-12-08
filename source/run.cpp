@@ -353,26 +353,35 @@ namespace runner {
         std::vector<instruction> p_instructions;
 
         bool create_from_allocation(allocations& allocations, allocation program) {
-            instruction* current;
+            basic::address current;
 
             // clear program
             p_instructions.clear();
 
+            // check for remaining room
+            if (!allocations.is_address_range_valid(program.p_start, program.p_end)) {
+                // DEBUG
+                printf("Program Creation Error: Allocation does not exist [ %lu %lu ].\n", program.p_start, program.p_end);
+
+                return false;
+            }
+            if (((runner::cell)program.p_end - (runner::cell)program.p_start + 1) % sizeof(runner::instruction) != 0) {
+                // DEBUG
+                printf("Program Creation Error: Program is invalid size.\n");
+
+                return false;
+            }
+
             // setup current
-            current = (instruction*)program.p_start;
+            current = program.p_start;
 
             // append instructions until at the end of the list
             while (current < program.p_end) {
-                // check for remaining room
-                if (!allocations.is_address_and_length_valid(current, sizeof(runner::instruction))) {
-                    return false;
-                }
-
                 // add instruction
-                p_instructions.push_back(*current);
+                p_instructions.push_back(*(instruction*)current);
 
                 // next instruction
-                current += sizeof(runner::instruction);
+                current = current + sizeof(runner::instruction);
             }
 
             return true;
@@ -403,6 +412,17 @@ namespace runner {
 
         // process instructions
         while (running == true) {
+            // check for instruction out of bounds
+            if ((size_t)current_instruction >= program.p_instructions.size()) {
+                // set error
+                error_occured = true;
+
+                // announce error
+                std::cout << "Runner Error: Ran out of instructions before quit was executed, quitting program." << std::endl;
+
+                return output;
+            }
+
             // process instruction
             switch (program.p_instructions[current_instruction].p_type) {
             case instruction_type::quit:
