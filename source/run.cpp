@@ -361,7 +361,7 @@ namespace runner {
             // check for remaining room
             if (!allocations.is_address_range_valid(program.p_start, program.p_end)) {
                 // DEBUG
-                printf("Program Creation Error: Allocation does not exist [ %lu %lu ].\n", program.p_start, program.p_end);
+                printf("Program Creation Error: Allocation does not exist [ %lu %lu ].\n", (basic::u64)program.p_start, (basic::u64)program.p_end);
 
                 return false;
             }
@@ -526,8 +526,11 @@ namespace runner {
 
                 break;
             case instruction_type::restore_old_context:
-                // restore the previous context
-                context_stack.pop_back();
+                // if there are any remaining contexts
+                if (context_stack.size() > 0) {
+                    // restore the previous context
+                    context_stack.pop_back();
+                }
 
                 // next instruction
                 current_instruction++;

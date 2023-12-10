@@ -206,6 +206,81 @@ namespace parser {
         if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.create_new_context")) {
             return true;
         }
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.restore_old_context")) {
+            return true;
+        }
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.pass_input")) {
+            return true;
+        }
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.get_input")) {
+            return true;
+        }
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.pass_output")) {
+            return true;
+        }
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.get_output")) {
+            return true;
+        }
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.jump_to_abstraction")) {
+            return true;
+        }
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.jump_from_abstraction")) {
+            return true;
+        }
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.jump")) {
+            return true;
+        }
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.get_instruction_index")) {
+            return true;
+        }
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.request_memory")) {
+            return true;
+        }
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.return_memory")) {
+            return true;
+        }
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.cell_to_address")) {
+            return true;
+        }
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.address_to_cell")) {
+            return true;
+        }
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.buffer_to_file")) {
+            return true;
+        }
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.file_to_buffer")) {
+            return true;
+        }
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.integer_add")) {
+            return true;
+        }
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.integer_subtract")) {
+            return true;
+        }
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.integer_multiply")) {
+            return true;
+        }
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.integer_divide")) {
+            return true;
+        }
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.integer_modulous")) {
+            return true;
+        }
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.integer_within_range")) {
+            return true;
+        }
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.boolean_not")) {
+            return true;
+        }
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.get_context_input")) {
+            return true;
+        }
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.pass_context_output")) {
+            return true;
+        }
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.run")) {
+            return true;
+        }
 
         return false;
     }
