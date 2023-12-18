@@ -600,7 +600,7 @@ namespace runner {
 
                 break;
             case instruction_type::get_instruction_index:
-                // perform addition
+                // remember instruction ID
                 context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = (cell)current_instruction;
 
                 // next instruction
