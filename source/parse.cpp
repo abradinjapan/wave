@@ -194,6 +194,9 @@ namespace parser {
         if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.write_cell")) {
             return true;
         }
+        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.copy_cell")) {
+            return true;
+        }
         if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.print_cell_as_number")) {
             return true;
         }

@@ -443,6 +443,8 @@ namespace accounter {
                     p_integer_value = (basic::u64)runner::instruction_type::quit;
                 } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "opcode.write_cell")) {
                     p_integer_value = (basic::u64)runner::instruction_type::write_cell;
+                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "opcode.copy_cell")) {
+                    p_integer_value = (basic::u64)runner::instruction_type::copy_cell;
                 } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "opcode.print_cell_as_number")) {
                     p_integer_value = (basic::u64)runner::instruction_type::print_cell_as_number;
                 } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "opcode.print_cell_as_character")) {
