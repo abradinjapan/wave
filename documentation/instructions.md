@@ -7,6 +7,8 @@
     - (none)
 - Outputs:
     - (none)
+- Alias:
+    "wave.quit"
 
 ## write_cell
 
@@ -15,6 +17,8 @@
     - value: The constant value to be written.
 - Outputs:
     - destination: The cell ID of the value's destination.
+- Alias:
+    "wave.set"
 
 ## copy_cell
 
@@ -23,6 +27,8 @@
     - source: The source cell ID.
 - Outputs:
     - destination: The destination cell ID.
+- Alias:
+    "wave.copy"
 
 ## print_cell_as_number
 
