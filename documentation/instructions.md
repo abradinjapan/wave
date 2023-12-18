@@ -161,4 +161,128 @@
 
 ## address_to_cell
 
-- TODO
+- Reads a specified amount of bytes from an address to a buffer.
+- Inputs:
+    - source: The address being read from.
+    - byte_size: the amount of bytes being copied (1 -> 8).
+- Outputs:
+    - destination: The destination address.
+    - error_code: An error boolean.
+
+## buffer_to_file
+
+- Overwrites a file with a buffer.
+- Inputs:
+    - source_start: The start address of the data buffer.
+    - source_end: The end address of the data buffer.
+    - file_path_start: The start address of the file path buffer.
+    - file_path_end: The end address of the file path buffer.
+- Outputs:
+    - error_code: An error boolean.
+
+## file_to_buffer
+
+- Reads an entire file into a buffer.
+- Inputs:
+    - file_path_start: The start address of the file path buffer.
+    - file_path_end: The end address of the file path buffer.
+- Outputs:
+    - source_start: The start address of the data buffer.
+    - source_end: The end address of the data buffer.
+    - error_code: An error boolean.
+
+## integer_add
+
+- Performs integer addition.
+- Inputs:
+    - source_1: The first parameter cell ID.
+    - source_2: The second parameter cell ID.
+- Outputs:
+    - destination: The result cell ID.
+
+## integer_subtract
+
+- Performs integer subtraction.
+- Inputs:
+    - source_1: The first parameter cell ID.
+    - source_2: The second parameter cell ID.
+- Outputs:
+    - destination: The result cell ID.
+
+## integer_multiply
+
+- Performs integer multiplication.
+- Inputs:
+    - source_1: The first parameter cell ID.
+    - source_2: The second parameter cell ID.
+- Outputs:
+    - destination: The result cell ID.
+
+## integer_divide
+
+- Performs integer division.
+- Inputs:
+    - source_1: The first parameter cell ID.
+    - source_2: The second parameter cell ID.
+- Outputs:
+    - destination: The result cell ID.
+    - error_code: Set to true if the divisor is zero.
+
+## integer_modulous
+
+- Performs integer modulous.
+- Inputs:
+    - source_1: The first parameter cell ID.
+    - source_2: The second parameter cell ID.
+- Outputs:
+    - destination: The result cell ID.
+    - error_code: Set to true if the divisor is zero.
+
+## integer_within_range
+
+- Checks if an integer is within an unsigned integer range.
+- Inputs:
+    - low_bound: The lowest (inclusive) possible value.
+    - value: The value being checked.
+    - high_bound: The highest (inclusive) possible value.
+- Outputs:
+    - destination: A boolean that says if the number was in range or not.
+
+## boolean_not
+
+- Inverts a boolean.
+- Inputs:
+    - source: The source boolean.
+- Outputs:
+    destination: The destination cell ID.
+
+## get_context_input
+
+- Gets the context level input from the caller context.
+- Inputs:
+    - (none)
+- Outputs:
+    - destination_start: The starting address of the input.
+    - destination_end: The ending address of the input.
+
+## pass_context_output
+
+- Gets the context level input from the caller context.
+- Inputs:
+    - (none)
+- Outputs:
+    - destination_start: The starting address of the input.
+    - destination_end: The ending address of the input.
+
+# run
+
+- Runs another program (single threaded).
+- Inputs:
+    - program_start: The program start address.
+    - program_end: The program end address.
+    - input_start: The context input start address.
+    - input_end: The context input end address.
+- Outputs:
+    - result_start: The run called context start address.
+    - result_end: The run called context end address.
+    - runner_error_occured: Returned as true if there was an intepreter error.
