@@ -1,4 +1,0 @@
-Function calls are structured as follows:
-    1) First, a context with the required variable count will be created.
-    2) Second, functions will get their input (in reverse order) using get_input instructions.
-    3) 
