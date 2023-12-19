@@ -116,6 +116,10 @@ namespace parser {
         return string.substr(offset, contains.length()) == contains;
     }
 
+    bool string_is_boolean_literal(lexer::lexling& lexling) {
+        return (lexling.p_value == "wave.boolean.true" || lexling.p_value == "wave.boolean.false");
+    }
+
     bool string_is_instruction_literal(lexer::lexling& lexling) {
         std::string instruction_prefix = "wave.instruction.";
 
@@ -317,7 +321,8 @@ namespace parser {
                     // next argument
                     lexling_index++;
                 // check for boolean literal
-                } else if (string_starts_with(lexlings.p_lexlings[lexling_index].p_value, "wave.boolean.") == true && ((string_contains_at(lexlings.p_lexlings[lexling_index].p_value, boolean_prefix.length(), true_suffix) && boolean_prefix.length() + true_suffix.length() == lexlings.p_lexlings[lexling_index].p_value.length()) || (string_contains_at(lexlings.p_lexlings[lexling_index].p_value, boolean_prefix.length(), false_suffix) && boolean_prefix.length() + false_suffix.length() == lexlings.p_lexlings[lexling_index].p_value.length()))) {
+                //} else if (string_starts_with(lexlings.p_lexlings[lexling_index].p_value, "wave.boolean.") == true && ((string_contains_at(lexlings.p_lexlings[lexling_index].p_value, boolean_prefix.length(), true_suffix) && boolean_prefix.length() + true_suffix.length() == lexlings.p_lexlings[lexling_index].p_value.length()) || (string_contains_at(lexlings.p_lexlings[lexling_index].p_value, boolean_prefix.length(), false_suffix) && boolean_prefix.length() + false_suffix.length() == lexlings.p_lexlings[lexling_index].p_value.length()))) {
+                } else if (string_is_boolean_literal(lexlings.p_lexlings[lexling_index])) {
                     // add argument
                     output.push_back(name(name_type::is_boolean_literal, lexlings.p_lexlings[lexling_index].p_value));
 
