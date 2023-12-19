@@ -12,15 +12,23 @@ There are many types of literals.
 
 ## Integer Literal
 
-An integer literal is a positive integer number.
+An integer literal is a positive or negative integer number.
 
-(Negative Numbers TODO)
-
-Integer literals are written like so:
+Positive integer literals are written like so:
 
 > wave.set(wave.integer.0123456789)(destination_cell)
 
 The 0123456789 represents any positive number that will fit into a 64 bit number.
+
+In order to make it a negative number, simply place an 'n' before the number's digits.
+
+Example:
+
+> wave.set(wave.integer.n0123456789)(destination_cell)
+
+Note, it is also possible to break up the numbers with underscores, like so:
+
+> wave.set(wave.integer.1_000_000)(destination_cell)
 
 ## Boolean Literal
 

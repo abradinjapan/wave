@@ -451,7 +451,7 @@ namespace runner {
                 break;
             case instruction_type::print_cell_as_number:
                 // print
-                std::cout << context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0];
+                std::cout << (basic::s64)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0];
 
                 // clear cache
                 fflush(stdout);

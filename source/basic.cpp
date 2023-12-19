@@ -88,18 +88,38 @@ namespace basic {
         // translate the number
         // if the number is negative
         if (string[0] == 'n') {
-            // TODO
-            error = true;
-            return 0;
+            // for each character
+            for (u64 character = string.length(); character > 1; character--) {
+                // go past dead space
+                while (character > 1 && string[character - 1] == '_') {
+                    // next character
+                    character--;
+                }
+
+                // check for end of buffer
+                if (character == 0) {
+                    break;
+                }
+
+                // apply digit
+                output += power(10, digit) * (u64)(string[character - 1] - '0');
+
+                // next digit
+                digit++;
+            }
+
+            // adjust for twos compliment
+            output = ~output;
+            output++;
+
+            return output;
         // if the number is positive
         } else {
             // for each character
             for (u64 character = string.length(); character > 0; character--) {
                 // go past dead space
                 while (character > 0 && string[character - 1] == '_') {
-                    // DEBUG
-                    printf("Skipping Underscore!\n");
-
+                    // next character
                     character--;
                 }
 

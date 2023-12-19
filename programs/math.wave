@@ -14,7 +14,7 @@ print.result(number)() = {
 test.integer.math()() = {
     [ setup variables ]
     wave.set(wave.integer.300)(a)
-    wave.set(wave.integer.200)(b)
+    wave.set(wave.integer.n200)(b)
 
     [ perform tests ]
     wave.integer.add(a b)(add.result)
