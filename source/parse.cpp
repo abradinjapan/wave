@@ -116,6 +116,22 @@ namespace parser {
         return string.substr(offset, contains.length()) == contains;
     }
 
+    bool string_is_integer_literal(lexer::lexling& lexling) {
+        bool output = false;
+        std::string prefix = "wave.integer.";
+
+        // check for the start of the literal
+        if (string_contains_at(lexling.p_value, 0, prefix) == false) {
+            return output;
+        }
+
+        // convert integer literal to binary integer
+        basic::convert_integer_literal_to_binary_integer(lexling.p_value.substr(prefix.length()), output);
+        output = !output;
+
+        return output;
+    }
+
     bool string_is_boolean_literal(lexer::lexling& lexling) {
         return (lexling.p_value == "wave.boolean.true" || lexling.p_value == "wave.boolean.false");
     }
@@ -314,14 +330,13 @@ namespace parser {
                     // next lexling
                     lexling_index += 2;
                 // check for integer literal
-                } else if (string_starts_with(lexlings.p_lexlings[lexling_index].p_value, "wave.integer.") == true) {
+                } else if (string_is_integer_literal(lexlings.p_lexlings[lexling_index])) {
                     // add argument
                     output.push_back(name(name_type::is_integer_literal, lexlings.p_lexlings[lexling_index].p_value));
 
                     // next argument
                     lexling_index++;
                 // check for boolean literal
-                //} else if (string_starts_with(lexlings.p_lexlings[lexling_index].p_value, "wave.boolean.") == true && ((string_contains_at(lexlings.p_lexlings[lexling_index].p_value, boolean_prefix.length(), true_suffix) && boolean_prefix.length() + true_suffix.length() == lexlings.p_lexlings[lexling_index].p_value.length()) || (string_contains_at(lexlings.p_lexlings[lexling_index].p_value, boolean_prefix.length(), false_suffix) && boolean_prefix.length() + false_suffix.length() == lexlings.p_lexlings[lexling_index].p_value.length()))) {
                 } else if (string_is_boolean_literal(lexlings.p_lexlings[lexling_index])) {
                     // add argument
                     output.push_back(name(name_type::is_boolean_literal, lexlings.p_lexlings[lexling_index].p_value));

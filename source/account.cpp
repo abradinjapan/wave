@@ -380,7 +380,7 @@ namespace accounter {
             std::string instruction_prefix = "wave.instruction.";
 
             if (type == parser::name_type::is_integer_literal) {
-                p_integer_value = std::stoi(p_name.substr(integer_prefix.length(), p_name.length() - integer_prefix.length()));
+                p_integer_value = basic::convert_integer_literal_to_binary_integer(p_name.substr(integer_prefix.length()), error_occured);
 
                 p_type = literal_type::is_integer_literal;
             } else if (type == parser::name_type::is_boolean_literal) {

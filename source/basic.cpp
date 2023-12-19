@@ -42,4 +42,80 @@ namespace basic {
         // return string
         return path;
     }
+
+    // power function
+    u64 power(u64 base, u64 exponent) {
+        u64 output = 1;
+
+        if (exponent == 0) {
+            return output;
+        }
+
+        while (exponent > 0) {
+            output *= base;
+
+            exponent--;
+        }
+
+        return output;
+    }
+
+    // convert an integer literal to a binary integer
+    u64 convert_integer_literal_to_binary_integer(std::string string, bool& error) {
+        u64 output = 0;
+        u64 digit = 0;
+
+        // check for blank string
+        if (string == "") {
+            // setup error
+            error = true;
+
+            return 0;
+        }
+
+        // pre check for all valid characters
+        for (u64 character = 0; character < string.length(); character++) {
+            // check character
+            if (((string[character] >= '0' && string[character] <= '9') || string[character] == '_' || (character == 0 && string[character] == 'n')) == false) {
+                // set error
+                error = true;
+
+                // return invalid
+                return 0;
+            }
+        }
+
+        // translate the number
+        // if the number is negative
+        if (string[0] == 'n') {
+            // TODO
+            error = true;
+            return 0;
+        // if the number is positive
+        } else {
+            // for each character
+            for (u64 character = string.length(); character > 0; character--) {
+                // go past dead space
+                while (character > 0 && string[character - 1] == '_') {
+                    // DEBUG
+                    printf("Skipping Underscore!\n");
+
+                    character--;
+                }
+
+                // check for end of buffer
+                if (character == 0) {
+                    break;
+                }
+
+                // apply digit
+                output += power(10, digit) * (u64)(string[character - 1] - '0');
+
+                // next digit
+                digit++;
+            }
+
+            return output;
+        }
+    }
 }
