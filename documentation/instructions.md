@@ -2,35 +2,37 @@
 
 ## quit
 
+wave.quit(0)(0)
+
 - Quits the current program.
 - Inputs:
     - (none)
 - Outputs:
     - (none)
-- Alias:
-    "wave.quit"
 
 ## write_cell
+
+wave.set(1)(1)
 
 - Writes a constant to a cell.
 - Inputs:
     - value: The constant value to be written.
 - Outputs:
     - destination: The cell ID of the value's destination.
-- Alias:
-    "wave.set"
 
 ## copy_cell
+
+wave.copy(1)(1)
 
 - Overwrites one cell with another cell.
 - Inputs:
     - source: The source cell ID.
 - Outputs:
     - destination: The destination cell ID.
-- Alias:
-    "wave.copy"
 
 ## print_cell_as_number
+
+wave.print.number(1)(0)
 
 - Prints the cell as an integer number.
 - Inputs:
@@ -40,6 +42,8 @@
 
 ## print_cell_as_character
 
+wave.print.character(1)(0)
+
 - Prints the cell as an ASCII character.
 - Inputs:
     - source: The source cell ID.
@@ -47,6 +51,8 @@
     - (none)
 
 ## get_console_input
+
+wave.get_console_input(0)(2)
 
 - Gets one line of user input from the terminal.
 - Inputs:
@@ -57,6 +63,8 @@
 
 ## create_new_context
 
+wave.create_new_context(1)(0)
+
 - Creates a new context.
 - Inputs:
     - cell_count: The amount of cells in the context.
@@ -64,6 +72,8 @@
     - (none)
 
 ## restore_old_context
+
+wave.restore_old_context(0)(0)
 
 - Restores the previous context.
 - Inputs:
@@ -73,6 +83,8 @@
 
 ## pass_input
 
+wave.pass_input(1)(0)
+
 - Passes one cell to the top of the input stack.
 - Inputs:
     - parameter: The cell ID of the parameter to be passed.
@@ -80,6 +92,8 @@
     - (none)
 
 ## get_input
+
+wave.get_input(0)(1)
 
 - Gets the top cell from the input stack.
 - Inputs:
@@ -89,13 +103,17 @@
 
 ## pass_output
 
+wave.pass_output(1)(0)
+
 - Passes one cell to the top of the output stack.
 - Inputs:
     - parameter: The cell ID of the parameter to be passed.
 - Outputs:
     - (none)
 
-## get_input
+## get_output
+
+wave.get_output(0)(1)
 
 - Gets the top cell from the output stack.
 - Inputs:
@@ -105,6 +123,8 @@
 
 ## jump_to_abstraction
 
+wave.jump_to_abstraction(1)(0)
+
 - Pushes the next instruction onto the return address stack and jumps to the designated abstraction.
 - Inputs:
     - destination_instruction: The instruction ID being jumped to.
@@ -113,6 +133,9 @@
 
 ## jump_from_abstraction
 
+
+wave.jump_from_abstraction(0)(0)
+
 - Pops the top return address from the return address stack and jumps to it.
 - Inputs:
     - (none)
@@ -120,6 +143,8 @@
     - (none)
 
 ## jump
+
+wave.jump(2)(0)
 
 - Conditionally jumps to any instruction.
 - Inputs:
@@ -130,6 +155,8 @@
 
 ## get_instruction_index
 
+wave.get_instruction_index(0)(1)
+
 - Gets the current instruction ID and saves it into a cell.
 - Inputs:
     - destination: The destination cell of the instruction ID.
@@ -137,6 +164,8 @@
     - (none)
 
 ## request_memory
+
+wave.request_memory(1)(3)
 
 - Attempts to allocate memory, returning a buffer.
 - Inputs:
@@ -148,6 +177,8 @@
 
 ## return_memory
 
+wave.return_memory(2)(0)
+
 - Frees a buffer.
 - Inputs:
     - start_address: The start of the buffer.
@@ -156,6 +187,8 @@
     - (none)
 
 ## cell_to_address
+
+wave.cell_to_address(3)(1)
 
 - Writes a specified amount of bytes from a cell to a buffer.
 - Inputs:
@@ -167,6 +200,8 @@
 
 ## address_to_cell
 
+wave.address_to_cell(2)(2)
+
 - Reads a specified amount of bytes from an address to a buffer.
 - Inputs:
     - source: The address being read from.
@@ -176,6 +211,8 @@
     - error_code: An error boolean.
 
 ## buffer_to_file
+
+wave.buffer_to_file(4)(1)
 
 - Overwrites a file with a buffer.
 - Inputs:
@@ -188,6 +225,8 @@
 
 ## file_to_buffer
 
+wave.file_to_buffer(2)(3)
+
 - Reads an entire file into a buffer.
 - Inputs:
     - file_path_start: The start address of the file path buffer.
@@ -199,6 +238,8 @@
 
 ## integer_add
 
+wave.integer.add(2)(1)
+
 - Performs integer addition.
 - Inputs:
     - source_1: The first parameter cell ID.
@@ -207,6 +248,8 @@
     - destination: The result cell ID.
 
 ## integer_subtract
+
+wave.integer.subtract(2)(1)
 
 - Performs integer subtraction.
 - Inputs:
@@ -217,6 +260,8 @@
 
 ## integer_multiply
 
+wave.integer.multiply(2)(1)
+
 - Performs integer multiplication.
 - Inputs:
     - source_1: The first parameter cell ID.
@@ -225,6 +270,8 @@
     - destination: The result cell ID.
 
 ## integer_divide
+
+wave.integer.divide(2)(2)
 
 - Performs integer division.
 - Inputs:
@@ -236,6 +283,8 @@
 
 ## integer_modulous
 
+wave.integer.modulous(2)(2)
+
 - Performs integer modulous.
 - Inputs:
     - source_1: The first parameter cell ID.
@@ -245,6 +294,8 @@
     - error_code: Set to true if the divisor is zero.
 
 ## integer_within_range
+
+wave.integer.within_range(3)(1)
 
 - Checks if an integer is within an unsigned integer range.
 - Inputs:
@@ -256,6 +307,8 @@
 
 ## boolean_not
 
+wave.integer.boolean_not(1)(1)
+
 - Inverts a boolean.
 - Inputs:
     - source: The source boolean.
@@ -263,6 +316,8 @@
     destination: The destination cell ID.
 
 ## get_context_input
+
+wave.get_context_input(0)(2)
 
 - Gets the context level input from the caller context.
 - Inputs:
@@ -273,6 +328,8 @@
 
 ## pass_context_output
 
+wave.pass_context_output(2)(0)
+
 - Gets the context level input from the caller context.
 - Inputs:
     - (none)
@@ -281,6 +338,8 @@
     - destination_end: The ending address of the input.
 
 # run
+
+wave.run(4)(3)
 
 - Runs another program (single threaded).
 - Inputs:
