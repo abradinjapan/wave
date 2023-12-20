@@ -30,6 +30,18 @@ Note, it is also possible to break up the numbers with underscores, like so:
 
 > wave.set(wave.integer.1_000_000)(destination_cell)
 
+## Hexadecimal Literal
+
+A hexadecimal literal is a positive number written in hexadecimal.
+
+Hexadecimal literals are written like so:
+
+> wave.set(wave.hexadecimal.0123456789abcdefABCDEF)(destination_cell)
+
+Note, it is also possible to break up the numbers with underscores, like so:
+
+> wave.set(wave.hexadecimal.00_cc_ff)(destination_cell)
+
 ## Boolean Literal
 
 This is a literal that can be either true or false.
