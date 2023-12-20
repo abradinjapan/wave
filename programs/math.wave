@@ -1,5 +1,6 @@
 main()() = {
     test.integer.math()()
+    test.integer.hexadecimals()()
 }
 
 print.result(number)() = {
@@ -29,4 +30,9 @@ test.integer.math()() = {
     print.result(multiply.result)()
     print.result(divide.result)()
     print.result(modulous.result)()
+}
+
+test.integer.hexadecimals()() = {
+    wave.set(wave.hexadecimal._aF__00_)(value)
+    wave.print.number(value)()
 }

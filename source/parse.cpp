@@ -15,6 +15,7 @@ namespace parser {
         is_offset,
         is_boolean_literal,
         is_instruction_literal,
+        is_hexadecimal_literal,
     };
 
     class name {
@@ -118,6 +119,7 @@ namespace parser {
 
     bool string_is_integer_literal(lexer::lexling& lexling) {
         bool output = false;
+        bool error;
         std::string prefix = "wave.integer.";
 
         // check for the start of the literal
@@ -126,8 +128,8 @@ namespace parser {
         }
 
         // convert integer literal to binary integer
-        basic::convert_integer_literal_to_binary_integer(lexling.p_value.substr(prefix.length()), output);
-        output = !output;
+        basic::convert_integer_literal_to_binary_integer(lexling.p_value.substr(prefix.length()), error);
+        output = !error;
 
         return output;
     }
@@ -308,12 +310,25 @@ namespace parser {
         return false;
     }
 
+    bool string_is_hexadecimal_literal(lexer::lexling& lexling) {
+        std::string prefix = "wave.hexadecimal.";
+        bool error;
+
+        // check for prefix
+        if (string_contains_at(lexling.p_value, 0, prefix) == false) {
+            return false;
+        }
+
+        // attempt conversion
+        basic::convert_hexadecimal_literal_to_binary_integer(lexling.p_value.substr(prefix.length()), error);
+
+        // return findings
+        return !error;
+    }
+
     // parse arguments
     std::vector<name> parse_arguments(lexer::lexlings& lexlings, int& lexling_index, bool& error_occured) {
         std::vector<name> output;
-        std::string boolean_prefix = "wave.boolean.";
-        std::string true_suffix = "true";
-        std::string false_suffix = "false";
 
         // check for opener
         if (lexlings.p_lexlings[lexling_index].p_type == lexer::lexling_type::left_parenthesis) {
@@ -347,6 +362,13 @@ namespace parser {
                 } else if (string_is_instruction_literal(lexlings.p_lexlings[lexling_index])) {
                     // add argument
                     output.push_back(name(name_type::is_instruction_literal, lexlings.p_lexlings[lexling_index].p_value));
+
+                    // next argument
+                    lexling_index++;
+                // check for hexadecimal literal
+                } else if (string_is_hexadecimal_literal(lexlings.p_lexlings[lexling_index])) {
+                    // add argument
+                    output.push_back(name(name_type::is_hexadecimal_literal, lexlings.p_lexlings[lexling_index].p_value));
 
                     // next argument
                     lexling_index++;

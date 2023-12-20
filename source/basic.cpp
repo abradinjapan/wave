@@ -138,4 +138,66 @@ namespace basic {
             return output;
         }
     }
+
+    u64 convert_hexadecimal_digit_to_binary(basic::character character, bool& error) {
+        if (character >= '0' && character <= '9') {
+            return character - '0';
+        } else if (character >= 'a' && character <= 'f') {
+            return character - 'a' + 10;
+        } else if (character >= 'A' && character <= 'F') {
+            return character - 'A' + 10;
+        } else {
+            error = true;
+            return 0;
+        }
+    }
+
+    u64 convert_hexadecimal_literal_to_binary_integer(std::string string, bool& error) {
+        u64 output = 0;
+
+        // check for blank string
+        if (string == "") {
+            // setup error
+            error = true;
+
+            return 0;
+        }
+
+        // pre check for all valid characters
+        for (u64 character = 0; character < string.length(); character++) {
+            // check character
+            if (((string[character] >= '0' && string[character] <= '9') || (string[character] >= 'a' && string[character] <= 'f') || (string[character] >= 'A' && string[character] <= 'F') || string[character] == '_') == false) {
+                // set error
+                error = true;
+
+                // return invalid
+                return 0;
+            }
+        }
+
+        // translate number
+        // for each character
+        for (u64 character = 0; character < string.length(); character++) {
+            // skip dead space
+            while (character < string.length() && string[character] == '_') {
+                // next character
+                character++;
+            }
+
+            // check for end of buffer
+            if (character >= string.length()) {
+                break;
+            }
+
+            // translate character
+            u64 value = convert_hexadecimal_digit_to_binary(string[character], error);
+
+            // write value to output
+            output <<= 4;
+            output &= ~15;
+            output |= value;
+        }
+
+        return output;
+    }
 }
