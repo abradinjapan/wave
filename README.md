@@ -10,7 +10,9 @@ Statements are a named function with a set of input arguments and a set of outpu
 
 For example, if we wanted to perform addition, you would write:
 
-> wave.integer.add(a b)(c)
+```
+wave.integer.add(a b)(c)
+```
 
 There are no commas between arguments, just whitespace.
 
