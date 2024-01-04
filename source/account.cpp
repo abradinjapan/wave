@@ -365,7 +365,7 @@ namespace accounter {
         int p_statement_ID;
         int p_argument_ID;
 
-        literal(std::string name, parser::name_type type, int statement_ID, int argument_ID, bool error_occured) {
+        literal(std::string name, parser::name_type type, int statement_ID, int argument_ID, bool& error_occured) {
             // set properties
             p_name = name;
             p_statement_ID = statement_ID;
@@ -1027,6 +1027,12 @@ namespace accounter {
                             break;
                         case argument_type::is_boolean_literal:
                             std::cout << "is_boolean_literal" << " -> " << table[i].p_inputs[j].p_ID;
+                            break;
+                        case argument_type::is_instruction_literal:
+                            std::cout << "is_instruction_literal" << " -> " << table[i].p_inputs[j].p_ID;
+                            break;
+                        case argument_type::is_hexadecimal_literal:
+                            std::cout << "is_hexadecimal_literal" << " -> " << table[i].p_inputs[j].p_ID;
                             break;
                         default:
                             std::cout << "is_invalid" << " -> " << table[i].p_inputs[j].p_ID;
