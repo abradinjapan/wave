@@ -63,20 +63,37 @@ namespace generator {
     };
 
     namespace write_instructions {
-        void write__quit(workspace& workspace) {
-            runner::instruction temp_instruction;
+        void write__ANY(workspace& workspace, runner::instruction_type opcode, runner::cell write_register_value, runner::cell_ID input_0, runner::cell_ID input_1, runner::cell_ID input_2, runner::cell_ID input_3, runner::cell_ID output_0, runner::cell_ID output_1, runner::cell_ID output_2, runner::instruction_ID jump_instruction_ID) {
+            runner::instruction temp;
 
             // create instruction
             if (workspace.p_pass_type == pass_type::pass_build) {
-                // set type
-                temp_instruction.p_type = runner::instruction_type::quit;
+                // set data
+                temp.p_type = opcode;
+                temp.p_write_register_value = write_register_value;
+                temp.p_input_0 = input_0;
+                temp.p_input_1 = input_1;
+                temp.p_input_2 = input_2;
+                temp.p_input_3 = input_3;
+                temp.p_output_0 = output_0;
+                temp.p_output_1 = output_1;
+                temp.p_output_2 = output_2;
+                temp.p_jump_instruction_ID = jump_instruction_ID;
 
                 // write instruction
-                workspace.p_program.p_instructions[workspace.p_instruction_count] = temp_instruction;
+                workspace.p_program.p_instructions[workspace.p_instruction_count] = temp;
             }
 
             // next instruction
             workspace.p_instruction_count++;
+
+            return;
+        }
+
+        void write__quit(workspace& workspace) {
+            write__ANY(workspace, runner::instruction_type::quit, 0, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused);
+
+            return;
         }
 
         void write__write_cell(workspace& workspace, runner::cell value, runner::cell_ID destination) {

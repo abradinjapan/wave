@@ -11,7 +11,12 @@ namespace runner {
     typedef basic::u64 cell; // register
     typedef basic::u64 cell_ID;
     typedef cell cell_count;
+    typedef basic::u64 instruction_ID;
+    
+    // unused parameter
+    #define parameter_unused -1
 
+    // console input buffer metadata
     #define console_input_buffer_length 2048
 
     // read buffer
@@ -293,7 +298,7 @@ namespace runner {
         cell_ID p_output_0;
         cell_ID p_output_1;
         cell_ID p_output_2;
-        basic::u64 p_jump_instruction_ID;
+        instruction_ID p_jump_instruction_ID;
 
         instruction() {
             p_type = instruction_type::quit;
@@ -353,7 +358,7 @@ namespace runner {
     basic::buffer run_code(program program, basic::buffer input, allocations& allocations, bool& error_occured) {
         basic::buffer output;
         bool running = true;
-        int current_instruction = 0;
+        basic::u64 current_instruction = 0;
         std::vector<context> context_stack;
         std::vector<int> return_stack;
         std::vector<cell> inputs;
