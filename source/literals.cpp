@@ -28,8 +28,60 @@ namespace literals {
 
     bool string_is_instruction_literal(lexer::lexling& lexling) {
         std::string instruction_prefix = "wave.instruction.";
-        std::string suffixes[] = {
-            ""
+        std::vector<std::string> suffixes = {
+            "type.size",
+            "type.offset",
+            "write_register_value.size",
+            "write_register_value.offset",
+            "input_0.size",
+            "input_0.offset",
+            "input_1.size",
+            "input_1.offset",
+            "input_2.size",
+            "input_2.offset",
+            "input_3.size",
+            "input_3.offset",
+            "output_0.size",
+            "output_0.offset",
+            "output_1.size",
+            "output_1.offset",
+            "output_2.size",
+            "output_2.offset",
+            "jump_instruction_ID.size",
+            "jump_instruction_ID.offset",
+            "size",
+            "opcode.quit",
+            "opcode.write_cell",
+            "opcode.copy_cell",
+            "opcode.print_cell_as_number",
+            "opcode.print_cell_as_character",
+            "opcode.get_console_input",
+            "opcode.create_new_context",
+            "opcode.restore_old_context",
+            "opcode.pass_input",
+            "opcode.get_input",
+            "opcode.pass_output",
+            "opcode.get_output",
+            "opcode.jump_to_abstraction",
+            "opcode.jump_from_abstraction",
+            "opcode.jump",
+            "opcode.get_instruction_index",
+            "opcode.request_memory",
+            "opcode.return_memory",
+            "opcode.cell_to_address",
+            "opcode.address_to_cell",
+            "opcode.buffer_to_file",
+            "opcode.file_to_buffer",
+            "opcode.integer_add",
+            "opcode.integer_subtract",
+            "opcode.integer_multiply",
+            "opcode.integer_divide",
+            "opcode.integer_modulous",
+            "opcode.integer_within_range",
+            "opcode.boolean_not",
+            "opcode.get_context_input",
+            "opcode.pass_context_output",
+            "opcode.run",
         };
 
         // check for prefix
@@ -38,166 +90,15 @@ namespace literals {
         }
 
         // check for suffixes
-        if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), "type.size")) {
-            return true;
-        }
-        if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), "type.offset")) {
-            return true;
-        }
-        if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), "write_register_value.size")) {
-            return true;
-        }
-        if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), "write_register_value.offset")) {
-            return true;
-        }
-        if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), "input_0.size")) {
-            return true;
-        }
-        if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), "input_0.offset")) {
-            return true;
-        }
-        if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), "input_1.size")) {
-            return true;
-        }
-        if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), "input_1.offset")) {
-            return true;
-        }
-        if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), "input_2.size")) {
-            return true;
-        }
-        if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), "input_2.offset")) {
-            return true;
-        }
-        if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), "input_3.size")) {
-            return true;
-        }
-        if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), "input_3.offset")) {
-            return true;
-        }
-        if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), "output_0.size")) {
-            return true;
-        }
-        if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), "output_0.offset")) {
-            return true;
-        }
-        if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), "output_1.size")) {
-            return true;
-        }
-        if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), "output_1.offset")) {
-            return true;
-        }
-        if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), "output_2.size")) {
-            return true;
-        }
-        if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), "output_2.offset")) {
-            return true;
-        }
-        if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), "jump_instruction_ID.size")) {
-            return true;
-        }
-        if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), "jump_instruction_ID.offset")) {
-            return true;
-        }
-        if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), "size")) {
-            return true;
-        }
-        if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.quit")) {
-            return true;
-        }
-        if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.write_cell")) {
-            return true;
-        }
-        if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.copy_cell")) {
-            return true;
-        }
-        if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.print_cell_as_number")) {
-            return true;
-        }
-        if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.print_cell_as_character")) {
-            return true;
-        }
-        if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.get_console_input")) {
-            return true;
-        }
-        if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.create_new_context")) {
-            return true;
-        }
-        if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.restore_old_context")) {
-            return true;
-        }
-        if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.pass_input")) {
-            return true;
-        }
-        if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.get_input")) {
-            return true;
-        }
-        if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.pass_output")) {
-            return true;
-        }
-        if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.get_output")) {
-            return true;
-        }
-        if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.jump_to_abstraction")) {
-            return true;
-        }
-        if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.jump_from_abstraction")) {
-            return true;
-        }
-        if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.jump")) {
-            return true;
-        }
-        if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.get_instruction_index")) {
-            return true;
-        }
-        if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.request_memory")) {
-            return true;
-        }
-        if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.return_memory")) {
-            return true;
-        }
-        if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.cell_to_address")) {
-            return true;
-        }
-        if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.address_to_cell")) {
-            return true;
-        }
-        if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.buffer_to_file")) {
-            return true;
-        }
-        if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.file_to_buffer")) {
-            return true;
-        }
-        if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.integer_add")) {
-            return true;
-        }
-        if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.integer_subtract")) {
-            return true;
-        }
-        if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.integer_multiply")) {
-            return true;
-        }
-        if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.integer_divide")) {
-            return true;
-        }
-        if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.integer_modulous")) {
-            return true;
-        }
-        if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.integer_within_range")) {
-            return true;
-        }
-        if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.boolean_not")) {
-            return true;
-        }
-        if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.get_context_input")) {
-            return true;
-        }
-        if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.pass_context_output")) {
-            return true;
-        }
-        if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.run")) {
-            return true;
+        for (basic::u64 suffix = 0; suffix < suffixes.size(); suffix++) {
+            // check suffix
+            if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), suffixes[suffix])) {
+                // if found, return true
+                return true;
+            }
         }
 
+        // suffix not found
         return false;
     }
 
