@@ -2,6 +2,7 @@
 
 #include "basic.cpp"
 #include "lex.cpp"
+#include "run.cpp"
 
 /* Code */
 namespace literals {
@@ -26,8 +27,7 @@ namespace literals {
         return (lexling.p_value == "wave.boolean.true" || lexling.p_value == "wave.boolean.false");
     }
 
-    bool string_is_instruction_literal(lexer::lexling& lexling) {
-        std::string instruction_prefix = "wave.instruction.";
+    std::vector<std::string> get_all_instruction_literal_suffixes() {
         std::vector<std::string> suffixes = {
             "type.size",
             "type.offset",
@@ -83,6 +83,98 @@ namespace literals {
             "opcode.pass_context_output",
             "opcode.run",
         };
+
+        return suffixes;
+    }
+
+    std::vector<basic::u64> get_all_instruction_literal_values() {
+        std::vector<basic::u64> values = {
+            sizeof(runner::instruction::p_type),
+            offsetof(runner::instruction, runner::instruction::p_type),
+            sizeof(runner::instruction::p_write_register_value),
+            offsetof(runner::instruction, runner::instruction::p_write_register_value),
+            sizeof(runner::instruction::p_input_0),
+            offsetof(runner::instruction, runner::instruction::p_input_0),
+            sizeof(runner::instruction::p_input_1),
+            offsetof(runner::instruction, runner::instruction::p_input_1),
+            sizeof(runner::instruction::p_input_2),
+            offsetof(runner::instruction, runner::instruction::p_input_2),
+            sizeof(runner::instruction::p_input_3),
+            offsetof(runner::instruction, runner::instruction::p_input_3),
+            sizeof(runner::instruction::p_output_0),
+            offsetof(runner::instruction, runner::instruction::p_output_0),
+            sizeof(runner::instruction::p_output_1),
+            offsetof(runner::instruction, runner::instruction::p_output_1),
+            sizeof(runner::instruction::p_output_2),
+            offsetof(runner::instruction, runner::instruction::p_output_2),
+            sizeof(runner::instruction::p_jump_instruction_ID),
+            offsetof(runner::instruction, runner::instruction::p_jump_instruction_ID),
+            sizeof(runner::instruction),
+            (basic::u64)runner::instruction_type::quit,
+            (basic::u64)runner::instruction_type::write_cell,
+            (basic::u64)runner::instruction_type::copy_cell,
+            (basic::u64)runner::instruction_type::print_cell_as_number,
+            (basic::u64)runner::instruction_type::print_cell_as_character,
+            (basic::u64)runner::instruction_type::get_console_input,
+            (basic::u64)runner::instruction_type::create_new_context,
+            (basic::u64)runner::instruction_type::restore_old_context,
+            (basic::u64)runner::instruction_type::pass_input,
+            (basic::u64)runner::instruction_type::get_input,
+            (basic::u64)runner::instruction_type::pass_output,
+            (basic::u64)runner::instruction_type::get_output,
+            (basic::u64)runner::instruction_type::jump_to_abstraction,
+            (basic::u64)runner::instruction_type::jump_from_abstraction,
+            (basic::u64)runner::instruction_type::jump,
+            (basic::u64)runner::instruction_type::get_instruction_index,
+            (basic::u64)runner::instruction_type::request_memory,
+            (basic::u64)runner::instruction_type::return_memory,
+            (basic::u64)runner::instruction_type::cell_to_address,
+            (basic::u64)runner::instruction_type::address_to_cell,
+            (basic::u64)runner::instruction_type::buffer_to_file,
+            (basic::u64)runner::instruction_type::file_to_buffer,
+            (basic::u64)runner::instruction_type::integer_add,
+            (basic::u64)runner::instruction_type::integer_subtract,
+            (basic::u64)runner::instruction_type::integer_multiply,
+            (basic::u64)runner::instruction_type::integer_divide,
+            (basic::u64)runner::instruction_type::integer_modulous,
+            (basic::u64)runner::instruction_type::integer_within_range,
+            (basic::u64)runner::instruction_type::boolean_not,
+            (basic::u64)runner::instruction_type::get_context_input,
+            (basic::u64)runner::instruction_type::pass_context_output,
+            (basic::u64)runner::instruction_type::run,
+        };
+
+        return values;
+    }
+
+    basic::u64 convert_instruction_literal_suffix_to_value(std::string suffix) {
+        std::vector<std::string> suffixes = get_all_instruction_literal_suffixes();
+        std::vector<basic::u64> values = get_all_instruction_literal_values();
+
+        // sanity check
+        if (suffixes.size() != values.size()) {
+            // error
+            std::cout << "Internal Error, value and suffix count did not match!" << std::endl;
+
+            return -1;
+        }
+
+        // search for suffix
+        for (basic::u64 i = 0; i < suffixes.size(); i++) {
+            // check suffix
+            if (suffixes[i] == suffix) {
+                // found value
+                return values[i];
+            }
+        }
+
+        // suffix not found
+        return -1;
+    }
+
+    bool string_is_instruction_literal(lexer::lexling& lexling) {
+        std::string instruction_prefix = "wave.instruction.";
+        std::vector<std::string> suffixes = get_all_instruction_literal_suffixes();
 
         // check for prefix
         if (!basic::string_contains_at(lexling.p_value, 0, instruction_prefix)) {
