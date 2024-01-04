@@ -14,23 +14,6 @@
 
 /* Code */
 namespace compiler {
-    std::string load_file(std::string file_path) {
-        std::ifstream file(file_path);
-
-        // if file opened
-        if (file) {
-            // return file contents
-            return std::string((std::istreambuf_iterator<char>(file)), std::istreambuf_iterator<char>());
-        // if file not opened
-        } else {
-            // announce error
-            std::cout << "File loading error, file was not opened: " << file_path << std::endl;
-
-            // return empty string
-            return "";
-        }
-    }
-
     class compilation_unit {
     public:
         std::vector<std::string> p_files;

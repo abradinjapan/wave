@@ -59,7 +59,7 @@ int main(int argc, char** argv) {
             std::string file_path = std::string(argv[file]);
                 
             // get file data
-            std::string file_data = compiler::load_file(file_path);
+            std::string file_data = basic::load_file(file_path);
 
             // append file
             user_codes.push_back(file_data);
