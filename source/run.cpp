@@ -169,11 +169,6 @@ namespace runner {
         return;
     }
 
-    class buffer {
-    public:
-        std::vector<cell> p_cells;
-    };
-
     class allocation {
     public:
         basic::address p_start;
@@ -268,19 +263,14 @@ namespace runner {
 
     class context {
     public:
-        buffer p_cells;
-
-        // constructor
-        context() {
-            p_cells = buffer();
-        }
+        std::vector<cell> p_cells;
 
         // constructor
         context(cell_ID cell_count) {
             // initialize blank context
             for (cell_ID i = 0; i < cell_count; i++) {
                 // add cell
-                p_cells.p_cells.push_back(0);
+                p_cells.push_back(0);
             }
         }
     };
@@ -395,8 +385,8 @@ namespace runner {
         int current_instruction = 0;
         std::vector<context> context_stack;
         std::vector<int> return_stack;
-        buffer inputs;
-        buffer outputs;
+        std::vector<cell> inputs;
+        std::vector<cell> outputs;
         basic::address file_start;
         basic::address file_end;
         bool file_error_occured;
@@ -435,7 +425,7 @@ namespace runner {
                 break;
             case instruction_type::write_cell:
                 // write data
-                context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = program.p_instructions[current_instruction].p_write_register_value;
+                context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0] = program.p_instructions[current_instruction].p_write_register_value;
 
                 // next instruction
                 current_instruction++;
@@ -443,7 +433,7 @@ namespace runner {
                 break;
             case instruction_type::copy_cell:
                 // copy data
-                context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0];
+                context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0] = context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0];
 
                 // next instruction
                 current_instruction++;
@@ -451,7 +441,7 @@ namespace runner {
                 break;
             case instruction_type::print_cell_as_number:
                 // print
-                std::cout << (basic::s64)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0];
+                std::cout << (basic::s64)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0];
 
                 // clear cache
                 fflush(stdout);
@@ -462,7 +452,7 @@ namespace runner {
                 break;
             case instruction_type::print_cell_as_character:
                 // print
-                putchar((char)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0]);
+                putchar((char)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0]);
 
                 // clear cache
                 fflush(stdout);
@@ -489,28 +479,28 @@ namespace runner {
                 }
 
                 // allocate new buffer
-                context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = (runner::cell)malloc(console_buffer_length + 1);
+                context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0] = (runner::cell)malloc(console_buffer_length + 1);
 
                 // if allocation succeded
-                if (context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] != 0) {
+                if (context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0] != 0) {
                     // setup buffer end
-                    context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_1] = context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] + console_buffer_length;
+                    context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_1] = context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0] + console_buffer_length;
 
                     // register buffer with allocations
-                    allocations.add_allocation(allocation((basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0], (basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_1]));
+                    allocations.add_allocation(allocation((basic::address)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0], (basic::address)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_1]));
 
                     // copy string to new buffer
                     for (basic::u64 i = 0; i < console_buffer_length; i++) {
                         // copy byte
-                        ((basic::character*)(context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0]))[i] = console_buffer[i];
+                        ((basic::character*)(context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0]))[i] = console_buffer[i];
                     }
 
                     // setup null termination
-                    ((basic::character*)(context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0]))[console_buffer_length] = 0;
+                    ((basic::character*)(context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0]))[console_buffer_length] = 0;
                 // if allocation failed
                 } else {
                     // setup null buffer
-                    context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_1] = 0;
+                    context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_1] = 0;
                 }
 
                 // next instruction
@@ -538,7 +528,7 @@ namespace runner {
                 break;
             case instruction_type::pass_input:
                 // add input
-                inputs.p_cells.push_back(context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0]);
+                inputs.push_back(context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0]);
 
                 // next instruction
                 current_instruction++;
@@ -546,10 +536,10 @@ namespace runner {
                 break;
             case instruction_type::get_input:
                 // retrieve input
-                context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = inputs.p_cells[inputs.p_cells.size() - 1];
+                context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0] = inputs[inputs.size() - 1];
 
                 // clear last input
-                inputs.p_cells.pop_back();
+                inputs.pop_back();
 
                 // next instruction
                 current_instruction++;
@@ -557,7 +547,7 @@ namespace runner {
                 break;
             case instruction_type::pass_output:
                 // add output
-                outputs.p_cells.push_back(context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0]);
+                outputs.push_back(context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0]);
 
                 // next instruction
                 current_instruction++;
@@ -565,10 +555,10 @@ namespace runner {
                 break;
             case instruction_type::get_output:
                 // retrieve output
-                context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = outputs.p_cells[outputs.p_cells.size() - 1];
+                context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0] = outputs[outputs.size() - 1];
 
                 // clear last output
-                outputs.p_cells.pop_back();
+                outputs.pop_back();
 
                 // next instruction
                 current_instruction++;
@@ -579,7 +569,7 @@ namespace runner {
                 return_stack.push_back(current_instruction + 1);
 
                 // jump
-                current_instruction = context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0];
+                current_instruction = context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0];
 
                 break;
             case instruction_type::jump_from_abstraction:
@@ -590,7 +580,7 @@ namespace runner {
                 break;
             case instruction_type::jump:
                 // if true
-                if (context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0] == 1) {
+                if (context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0] == 1) {
                     // jump via instruction number
                     current_instruction = program.p_instructions[current_instruction].p_jump_instruction_ID;
                 } else {
@@ -601,7 +591,7 @@ namespace runner {
                 break;
             case instruction_type::get_instruction_index:
                 // remember instruction ID
-                context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = (cell)current_instruction;
+                context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0] = (cell)current_instruction;
 
                 // next instruction
                 current_instruction++;
@@ -609,21 +599,21 @@ namespace runner {
                 break;
             case instruction_type::request_memory:
                 // perform allocation
-                context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = (basic::u64)malloc(context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0]);
+                context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0] = (basic::u64)malloc(context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0]);
 
                 // if allocation succeded
-                if (context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] != 0) {
+                if (context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0] != 0) {
                     // setup outputs
-                    context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_1] = context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] + context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0] - 1;
-                    context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_2] = false;
+                    context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_1] = context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0] + context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0] - 1;
+                    context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_2] = false;
 
                     // remember allocation
-                    allocations.add_allocation(allocation((basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0], (basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_1]));
+                    allocations.add_allocation(allocation((basic::address)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0], (basic::address)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_1]));
                 // if allocation failed
                 } else {
                     // setup outputs
-                    context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_1] = 0;
-                    context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_2] = true;
+                    context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_1] = 0;
+                    context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_2] = true;
                 }
 
                 // next instruction
@@ -632,10 +622,10 @@ namespace runner {
                 break;
             case instruction_type::return_memory:
                 // return memory
-                free((void*)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0]);
+                free((void*)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0]);
 
                 // remove allocation marker
-                allocations.remove_allocation(allocation((basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0], (basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1]));
+                allocations.remove_allocation(allocation((basic::address)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0], (basic::address)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_1]));
 
                 // next instruction
                 current_instruction++;
@@ -643,25 +633,25 @@ namespace runner {
                 break;
             case instruction_type::cell_to_address:
                 // DEBUG
-                //printf("Writing allocation: [ %lu, %lu ]\n", context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_2], context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1]);
+                //printf("Writing allocation: [ %lu, %lu ]\n", context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_2], context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_1]);
 
                 // if valid request
-                if (allocations.is_address_and_length_valid((basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_2], context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1])) {
+                if (allocations.is_address_and_length_valid((basic::address)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_2], context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_1])) {
                     // do write
-                    write_buffer(context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0], context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1], (basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_2]);
+                    write_buffer(context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0], context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_1], (basic::address)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_2]);
 
                     // DEBUG
-                    //printf("Allocation write, value: [ %lu ]\n", context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0]);
+                    //printf("Allocation write, value: [ %lu ]\n", context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0]);
 
                     // set error code
-                    context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = false;
+                    context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0] = false;
                 // if invalid request
                 } else {
                     // DEBUG
-                    //printf("Allocation not written. Values: [ %lu, %lu ]\n", context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_2], context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1]);
+                    //printf("Allocation not written. Values: [ %lu, %lu ]\n", context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_2], context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_1]);
 
                     // set error code
-                    context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = true;
+                    context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0] = true;
                 }
 
                 // next instruction
@@ -670,25 +660,25 @@ namespace runner {
                 break;
             case instruction_type::address_to_cell:
                 // DEBUG
-                //printf("Reading allocation: [ %lu, %lu ]\n", context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0], context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1]);
+                //printf("Reading allocation: [ %lu, %lu ]\n", context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0], context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_1]);
 
                 // if valid request
-                if (allocations.is_address_and_length_valid((basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0], context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1])) {
+                if (allocations.is_address_and_length_valid((basic::address)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0], context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_1])) {
                     // do read
-                    context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = read_buffer((basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0], context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1]);
+                    context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0] = read_buffer((basic::address)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0], context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_1]);
 
                     // DEBUG
-                    //printf("Allocation read, value: [ %lu ]\n", context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0]);
+                    //printf("Allocation read, value: [ %lu ]\n", context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0]);
 
                     // set error code
-                    context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_1] = false;
+                    context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_1] = false;
                 // if invalid request
                 } else {
                     // DEBUG
                     //printf("Allocation not read.\n");
 
                     // set error code
-                    context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_1] = true;
+                    context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_1] = true;
                 }
 
                 // next instruction
@@ -697,10 +687,10 @@ namespace runner {
                 break;
             case instruction_type::buffer_to_file:
                 // write a buffer to a file
-                move_buffer_to_file(file_error_occured, (basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0], (basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1], (basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_2], (basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_3]);
+                move_buffer_to_file(file_error_occured, (basic::address)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0], (basic::address)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_1], (basic::address)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_2], (basic::address)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_3]);
 
                 // write error variable
-                context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = file_error_occured;
+                context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0] = file_error_occured;
 
                 // next instruction
                 current_instruction++;
@@ -708,12 +698,12 @@ namespace runner {
                 break;
             case instruction_type::file_to_buffer:
                 // write a file to a buffer
-                move_file_to_buffer(file_error_occured, (basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0], (basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1], &file_start, &file_end);
+                move_file_to_buffer(file_error_occured, (basic::address)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0], (basic::address)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_1], &file_start, &file_end);
 
                 // write output variables
-                context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = (runner::cell)file_start;
-                context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_1] = (runner::cell)file_end;
-                context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_2] = file_error_occured;
+                context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0] = (runner::cell)file_start;
+                context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_1] = (runner::cell)file_end;
+                context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_2] = file_error_occured;
 
                 // register buffer with allocations
                 if (file_start != 0) {
@@ -726,7 +716,7 @@ namespace runner {
                 break;
             case instruction_type::integer_add:
                 // perform addition
-                context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0] + context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1];
+                context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0] = context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0] + context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_1];
 
                 // next instruction
                 current_instruction++;
@@ -734,7 +724,7 @@ namespace runner {
                 break;
             case instruction_type::integer_subtract:
                 // perform subtraction
-                context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0] - context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1];
+                context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0] = context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0] - context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_1];
 
                 // next instruction
                 current_instruction++;
@@ -742,7 +732,7 @@ namespace runner {
                 break;
             case instruction_type::integer_multiply:
                 // perform multiplication
-                context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0] * context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1];
+                context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0] = context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0] * context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_1];
 
                 // next instruction
                 current_instruction++;
@@ -750,16 +740,16 @@ namespace runner {
                 break;
             case instruction_type::integer_divide:
                 // check for valid denominator
-                if (context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1] != 0) {
+                if (context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_1] != 0) {
                     // perform division
-                    context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0] / context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1];
+                    context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0] = context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0] / context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_1];
 
                     // setup error code
-                    context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_1] = false;
+                    context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_1] = false;
                 // demoninator is invalid (0)
                 } else {
                     // setup error code
-                    context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_1] = true;
+                    context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_1] = true;
                 }
 
                 // next instruction
@@ -768,16 +758,16 @@ namespace runner {
                 break;
             case instruction_type::integer_modulous:
                 // check for valid denominator
-                if (context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1] != 0) {
+                if (context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_1] != 0) {
                     // perform division
-                    context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0] % context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1];
+                    context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0] = context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0] % context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_1];
 
                     // setup error code
-                    context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_1] = false;
+                    context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_1] = false;
                 // demoninator is invalid (0)
                 } else {
                     // setup error code
-                    context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_1] = true;
+                    context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_1] = true;
                 }
 
                 // next instruction
@@ -786,7 +776,7 @@ namespace runner {
                 break;
             case instruction_type::integer_within_range:
                 // perform range check
-                context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = (cell)(basic::u64)((context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1] >= context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0]) && (context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1] <= context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_2]));
+                context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0] = (cell)(basic::u64)((context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_1] >= context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0]) && (context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_1] <= context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_2]));
 
                 // next instruction
                 current_instruction++;
@@ -794,7 +784,7 @@ namespace runner {
                 break;
             case instruction_type::boolean_not:
                 // perform inversion
-                context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = (cell)!((basic::u64)(context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0]));
+                context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0] = (cell)!((basic::u64)(context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0]));
 
                 // next instruction
                 current_instruction++;
@@ -802,8 +792,8 @@ namespace runner {
                 break;
             case instruction_type::get_context_input:
                 // get data
-                context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = (cell)input.p_start;
-                context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_1] = (cell)input.p_end;
+                context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0] = (cell)input.p_start;
+                context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_1] = (cell)input.p_end;
 
                 // next instruction
                 current_instruction++;
@@ -811,8 +801,8 @@ namespace runner {
                 break;
             case instruction_type::pass_context_output:
                 // get data
-                output.p_start = (basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0];
-                output.p_end = (basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1];
+                output.p_start = (basic::address)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0];
+                output.p_end = (basic::address)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_1];
 
                 // next instruction
                 current_instruction++;
@@ -823,12 +813,12 @@ namespace runner {
                 runner_error_occured = false;
 
                 // get code
-                temp_code.p_start = (basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_0];
-                temp_code.p_end = (basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_1];
+                temp_code.p_start = (basic::address)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0];
+                temp_code.p_end = (basic::address)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_1];
 
                 // get input
-                temp_input.p_start = (basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_2];
-                temp_input.p_end = (basic::address)context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_input_3];
+                temp_input.p_start = (basic::address)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_2];
+                temp_input.p_end = (basic::address)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_3];
 
                 // convert buffer to program
                 if (temp_program.create_from_allocation(allocations, temp_code)) {
@@ -836,18 +826,18 @@ namespace runner {
                     temp_result = run_code(temp_program, temp_input, allocations, runner_error_occured);
 
                     // setup outputs
-                    context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = (runner::cell)temp_result.p_start;
-                    context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_1] = (runner::cell)temp_result.p_end;
-                    context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_2] = (runner::cell)runner_error_occured;
+                    context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0] = (runner::cell)temp_result.p_start;
+                    context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_1] = (runner::cell)temp_result.p_end;
+                    context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_2] = (runner::cell)runner_error_occured;
 
                     // clean up
                     temp_program.p_instructions.clear();
                 // conversion failed
                 } else {
                     // setup error
-                    context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_0] = 0;
-                    context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_1] = 0;
-                    context_stack[context_stack.size() - 1].p_cells.p_cells[program.p_instructions[current_instruction].p_output_2] = true;
+                    context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0] = 0;
+                    context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_1] = 0;
+                    context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_2] = true;
                 }
 
                 // next instruction
