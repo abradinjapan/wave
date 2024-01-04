@@ -29,8 +29,8 @@ namespace literals {
 
     std::vector<std::string> get_all_instruction_literal_suffixes() {
         std::vector<std::string> suffixes = {
-            "type.size",
-            "type.offset",
+            "opcode.size",
+            "opcode.offset",
             "write_register_value.size",
             "write_register_value.offset",
             "input_0.size",

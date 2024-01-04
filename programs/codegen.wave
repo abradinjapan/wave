@@ -13,10 +13,10 @@ space()() = {
 }
 
 debug.list_instruction_metadata()() = {
-    wave.set(wave.instruction.type.offset)(value)
+    wave.set(wave.instruction.opcode.offset)(value)
     wave.print.number(value)()
     space()()
-    wave.set(wave.instruction.type.size)(value)
+    wave.set(wave.instruction.opcode.size)(value)
     wave.print.number(value)()
     new_line()()
 
