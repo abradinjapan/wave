@@ -23,17 +23,17 @@ namespace basic {
 
     typedef char character;
 
-    class allocation {
+    class buffer {
     public:
         basic::address p_start;
         basic::address p_end;
 
-        allocation(basic::address start, basic::address end) {
+        buffer(basic::address start, basic::address end) {
             p_start = start;
             p_end = end;
         }
 
-        allocation() {
+        buffer() {
             p_start = 0;
             p_end = 0;
         }

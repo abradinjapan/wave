@@ -8,7 +8,7 @@ void compile_and_run(std::vector<std::string> user_codes, bool debug) {
     runner::program program;
     bool compilation_error = false;
     bool run_time_error = false;
-    basic::allocation input;
+    basic::buffer input;
     const char* buffer = "Hello World!";
 
     // inform user of compilation start
@@ -23,10 +23,10 @@ void compile_and_run(std::vector<std::string> user_codes, bool debug) {
         std::cout << "Starting program..." << std::endl;
 
         // convert test buffer to program input
-        input = basic::allocation((basic::address)buffer, (basic::address)(buffer + strlen(buffer) - 1));
+        input = basic::buffer((basic::address)buffer, (basic::address)(buffer + strlen(buffer) - 1));
 
         // run code
-        basic::allocation result = runner::run_program(program, input, run_time_error);
+        basic::buffer result = runner::run_program(program, input, run_time_error);
 
         // print result
         if (result.p_start != 0) {
