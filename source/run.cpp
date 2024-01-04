@@ -169,40 +169,11 @@ namespace runner {
         return;
     }
 
-    class allocation {
-    public:
-        basic::address p_start;
-        basic::address p_end;
-
-        allocation(basic::address start, basic::address end) {
-            p_start = start;
-            p_end = end;
-        }
-
-        allocation() {
-            p_start = 0;
-            p_end = 0;
-        }
-
-        void print() {
-            basic::address current = p_start;
-
-            // print each character
-            while (current <= p_end) {
-                // print character
-                putchar(*(char*)current);
-
-                // next character
-                current = (char*)current + sizeof(char);
-            }
-        }
-    };
-
     class allocations {
     private:
-        std::vector<allocation> p_allocations;
+        std::vector<basic::allocation> p_allocations;
 
-        basic::u64 get_allocation_number(allocation data) {
+        basic::u64 get_allocation_number(basic::allocation data) {
             for (basic::u64 index = 0; index < p_allocations.size(); index++) {
                 if (p_allocations[index].p_start == data.p_start && p_allocations[index].p_start == data.p_end) {
                     return index;
@@ -213,7 +184,7 @@ namespace runner {
         }
 
     public:
-        bool allocation_exists(allocation data) {
+        bool allocation_exists(basic::allocation data) {
             if (get_allocation_number(data) < p_allocations.size()) {
                 return true;
             } else {
@@ -221,13 +192,13 @@ namespace runner {
             }
         }
 
-        void add_allocation(allocation data) {
+        void add_allocation(basic::allocation data) {
             if (allocation_exists(data) == false) {
                 p_allocations.push_back(data);
             }
         }
 
-        void remove_allocation(allocation data) {
+        void remove_allocation(basic::allocation data) {
             if (allocation_exists(data)) {
                 p_allocations.erase(p_allocations.begin() + get_allocation_number(data));
             }
@@ -342,7 +313,7 @@ namespace runner {
     public:
         std::vector<instruction> p_instructions;
 
-        bool create_from_allocation(allocations& allocations, allocation program) {
+        bool create_from_allocation(allocations& allocations, basic::allocation program) {
             basic::address current;
 
             // clear program
@@ -379,8 +350,8 @@ namespace runner {
     };
 
     // run code
-    allocation run_code(program program, allocation input, allocations& allocations, bool& error_occured) {
-        allocation output;
+    basic::allocation run_code(program program, basic::allocation input, allocations& allocations, bool& error_occured) {
+        basic::allocation output;
         bool running = true;
         int current_instruction = 0;
         std::vector<context> context_stack;
@@ -395,9 +366,9 @@ namespace runner {
         
         // run instruction variables
         runner::program temp_program;
-        runner::allocation temp_code;
-        runner::allocation temp_input;
-        runner::allocation temp_result;
+        basic::allocation temp_code;
+        basic::allocation temp_input;
+        basic::allocation temp_result;
         bool runner_error_occured;
 
         // process instructions
@@ -487,7 +458,7 @@ namespace runner {
                     context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_1] = context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0] + console_buffer_length;
 
                     // register buffer with allocations
-                    allocations.add_allocation(allocation((basic::address)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0], (basic::address)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_1]));
+                    allocations.add_allocation(basic::allocation((basic::address)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0], (basic::address)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_1]));
 
                     // copy string to new buffer
                     for (basic::u64 i = 0; i < console_buffer_length; i++) {
@@ -608,7 +579,7 @@ namespace runner {
                     context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_2] = false;
 
                     // remember allocation
-                    allocations.add_allocation(allocation((basic::address)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0], (basic::address)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_1]));
+                    allocations.add_allocation(basic::allocation((basic::address)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0], (basic::address)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_1]));
                 // if allocation failed
                 } else {
                     // setup outputs
@@ -625,7 +596,7 @@ namespace runner {
                 free((void*)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0]);
 
                 // remove allocation marker
-                allocations.remove_allocation(allocation((basic::address)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0], (basic::address)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_1]));
+                allocations.remove_allocation(basic::allocation((basic::address)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0], (basic::address)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_1]));
 
                 // next instruction
                 current_instruction++;
@@ -707,7 +678,7 @@ namespace runner {
 
                 // register buffer with allocations
                 if (file_start != 0) {
-                    allocations.add_allocation(runner::allocation(file_start, file_end));
+                    allocations.add_allocation(basic::allocation(file_start, file_end));
                 }
 
                 // next instruction
@@ -857,7 +828,7 @@ namespace runner {
     }
 
     // run a program
-    allocation run_program(program program, allocation input, bool& error_occured) {
+    basic::allocation run_program(program program, basic::allocation input, bool& error_occured) {
         allocations allocations;
 
         // add the input buffer to the allocations

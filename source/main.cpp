@@ -8,7 +8,7 @@ void compile_and_run(std::vector<std::string> user_codes, bool debug) {
     runner::program program;
     bool compilation_error = false;
     bool run_time_error = false;
-    runner::allocation input;
+    basic::allocation input;
     const char* buffer = "Hello World!";
 
     // inform user of compilation start
@@ -23,10 +23,10 @@ void compile_and_run(std::vector<std::string> user_codes, bool debug) {
         std::cout << "Starting program..." << std::endl;
 
         // convert test buffer to program input
-        input = runner::allocation((basic::address)buffer, (basic::address)(buffer + strlen(buffer) - 1));
+        input = basic::allocation((basic::address)buffer, (basic::address)(buffer + strlen(buffer) - 1));
 
         // run code
-        runner::allocation result = runner::run_program(program, input, run_time_error);
+        basic::allocation result = runner::run_program(program, input, run_time_error);
 
         // print result
         if (result.p_start != 0) {
@@ -75,7 +75,7 @@ int main(int argc, char** argv) {
         compile_and_run(user_codes, false);
     // if file name is missing
     } else {
-        std::cout << "Missing file name." << std::endl;
+        std::cout << "Missing file name(s)." << std::endl;
     }
 
     return 0;

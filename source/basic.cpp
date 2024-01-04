@@ -23,6 +23,35 @@ namespace basic {
 
     typedef char character;
 
+    class allocation {
+    public:
+        basic::address p_start;
+        basic::address p_end;
+
+        allocation(basic::address start, basic::address end) {
+            p_start = start;
+            p_end = end;
+        }
+
+        allocation() {
+            p_start = 0;
+            p_end = 0;
+        }
+
+        void print() {
+            basic::address current = p_start;
+
+            // print each character
+            while (current <= p_end) {
+                // print character
+                putchar(*(char*)current);
+
+                // next character
+                current = (char*)current + sizeof(char);
+            }
+        }
+    };
+
     // get a current working directory
     std::string get_current_working_directory() {
         char buffer[define__current_working_directory_buffer_size];
