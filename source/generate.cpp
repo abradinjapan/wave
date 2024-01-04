@@ -63,13 +63,13 @@ namespace generator {
     };
 
     namespace write_instructions {
-        void write__any_instruction(workspace& workspace, runner::instruction_type opcode, runner::cell write_register_value, runner::cell_ID input_0, runner::cell_ID input_1, runner::cell_ID input_2, runner::cell_ID input_3, runner::cell_ID output_0, runner::cell_ID output_1, runner::cell_ID output_2, runner::instruction_ID jump_instruction_ID) {
+        void write__any_instruction(workspace& workspace, runner::opcode opcode, runner::cell write_register_value, runner::cell_ID input_0, runner::cell_ID input_1, runner::cell_ID input_2, runner::cell_ID input_3, runner::cell_ID output_0, runner::cell_ID output_1, runner::cell_ID output_2, runner::instruction_ID jump_instruction_ID) {
             runner::instruction temp;
 
             // create instruction
             if (workspace.p_pass_type == pass_type::pass_build) {
                 // set data
-                temp.p_type = opcode;
+                temp.p_opcode = opcode;
                 temp.p_write_register_value = write_register_value;
                 temp.p_input_0 = input_0;
                 temp.p_input_1 = input_1;
@@ -91,193 +91,193 @@ namespace generator {
         }
 
         void write__quit(workspace& workspace) {
-            write__any_instruction(workspace, runner::instruction_type::quit, 0, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused);
+            write__any_instruction(workspace, runner::opcode::quit, 0, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused);
 
             return;
         }
 
         void write__write_cell(workspace& workspace, runner::cell value, runner::cell_ID destination) {
-            write__any_instruction(workspace, runner::instruction_type::write_cell, value, parameter_unused, parameter_unused, parameter_unused, parameter_unused, destination, parameter_unused, parameter_unused, parameter_unused);
+            write__any_instruction(workspace, runner::opcode::write_cell, value, parameter_unused, parameter_unused, parameter_unused, parameter_unused, destination, parameter_unused, parameter_unused, parameter_unused);
 
             return;
         }
 
         void write__copy_cell(workspace& workspace, runner::cell_ID source, runner::cell_ID destination) {
-            write__any_instruction(workspace, runner::instruction_type::copy_cell, parameter_unused, source, parameter_unused, parameter_unused, parameter_unused, destination, parameter_unused, parameter_unused, parameter_unused);
+            write__any_instruction(workspace, runner::opcode::copy_cell, parameter_unused, source, parameter_unused, parameter_unused, parameter_unused, destination, parameter_unused, parameter_unused, parameter_unused);
 
             return;
         }
 
         void write__print_cell_as_number(workspace& workspace, runner::cell_ID source) {
-            write__any_instruction(workspace, runner::instruction_type::print_cell_as_number, parameter_unused, source, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused);
+            write__any_instruction(workspace, runner::opcode::print_cell_as_number, parameter_unused, source, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused);
 
             return;
         }
 
         void write__print_cell_as_character(workspace& workspace, runner::cell_ID source) {
-            write__any_instruction(workspace, runner::instruction_type::print_cell_as_character, parameter_unused, source, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused);
+            write__any_instruction(workspace, runner::opcode::print_cell_as_character, parameter_unused, source, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused);
 
             return;
         }
 
         void write__get_console_input(workspace& workspace, runner::cell_ID start, runner::cell_ID end) {
-            write__any_instruction(workspace, runner::instruction_type::get_console_input, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, start, end, parameter_unused, parameter_unused);
+            write__any_instruction(workspace, runner::opcode::get_console_input, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, start, end, parameter_unused, parameter_unused);
 
             return;
         }
 
         void write__create_new_context(workspace& workspace, runner::cell cell_count) {
-            write__any_instruction(workspace, runner::instruction_type::create_new_context, cell_count, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused);
+            write__any_instruction(workspace, runner::opcode::create_new_context, cell_count, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused);
 
             return;
         }
 
         void write__restore_old_context(workspace& workspace) {
-            write__any_instruction(workspace, runner::instruction_type::restore_old_context, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused);
+            write__any_instruction(workspace, runner::opcode::restore_old_context, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused);
 
             return;
         }
 
         void write__pass_input(workspace& workspace, runner::cell_ID parameter) {
-            write__any_instruction(workspace, runner::instruction_type::pass_input, parameter_unused, parameter, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused);
+            write__any_instruction(workspace, runner::opcode::pass_input, parameter_unused, parameter, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused);
 
             return;
         }
 
         void write__get_input(workspace& workspace, runner::cell_ID parameter) {
-            write__any_instruction(workspace, runner::instruction_type::get_input, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter, parameter_unused, parameter_unused, parameter_unused);
+            write__any_instruction(workspace, runner::opcode::get_input, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter, parameter_unused, parameter_unused, parameter_unused);
 
             return;
         }
 
         void write__pass_output(workspace& workspace, runner::cell_ID parameter) {
-            write__any_instruction(workspace, runner::instruction_type::pass_output, parameter_unused, parameter, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused);
+            write__any_instruction(workspace, runner::opcode::pass_output, parameter_unused, parameter, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused);
 
             return;
         }
 
         void write__get_output(workspace& workspace, runner::cell_ID parameter) {
-            write__any_instruction(workspace, runner::instruction_type::get_output, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter, parameter_unused, parameter_unused, parameter_unused);
+            write__any_instruction(workspace, runner::opcode::get_output, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter, parameter_unused, parameter_unused, parameter_unused);
 
             return;
         }
 
         void write__jump_to_abstraction(workspace& workspace, runner::cell_ID destination_instruction) {
-            write__any_instruction(workspace, runner::instruction_type::jump_to_abstraction, parameter_unused, destination_instruction, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused);
+            write__any_instruction(workspace, runner::opcode::jump_to_abstraction, parameter_unused, destination_instruction, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused);
 
             return;
         }
 
         void write__jump_from_abstraction(workspace& workspace) {
-            write__any_instruction(workspace, runner::instruction_type::jump_from_abstraction, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused);
+            write__any_instruction(workspace, runner::opcode::jump_from_abstraction, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused);
 
             return;
         }
 
         void write__jump(workspace& workspace, runner::cell_ID condition, basic::u64 jump_instruction_ID) {
-            write__any_instruction(workspace, runner::instruction_type::jump, parameter_unused, condition, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, jump_instruction_ID);
+            write__any_instruction(workspace, runner::opcode::jump, parameter_unused, condition, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, jump_instruction_ID);
 
             return;
         }
 
         void write__get_instruction_index(workspace& workspace, runner::cell_ID destination) {
-            write__any_instruction(workspace, runner::instruction_type::get_instruction_index, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, destination, parameter_unused, parameter_unused, parameter_unused);
+            write__any_instruction(workspace, runner::opcode::get_instruction_index, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, destination, parameter_unused, parameter_unused, parameter_unused);
 
             return;
         }
 
         void write__request_memory(workspace& workspace, runner::cell_ID length, runner::cell_ID start_address, runner::cell_ID end_address, runner::cell_ID error) {
-            write__any_instruction(workspace, runner::instruction_type::request_memory, parameter_unused, length, parameter_unused, parameter_unused, parameter_unused, start_address, end_address, error, parameter_unused);
+            write__any_instruction(workspace, runner::opcode::request_memory, parameter_unused, length, parameter_unused, parameter_unused, parameter_unused, start_address, end_address, error, parameter_unused);
 
             return;
         }
 
         void write__return_memory(workspace& workspace, runner::cell_ID start_address, runner::cell_ID end_address) {
-            write__any_instruction(workspace, runner::instruction_type::return_memory, parameter_unused, start_address, end_address, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused);
+            write__any_instruction(workspace, runner::opcode::return_memory, parameter_unused, start_address, end_address, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused);
 
             return;
         }
 
         void write__cell_to_address(workspace& workspace, runner::cell_ID source, runner::cell_ID byte_size, runner::cell_ID destination, runner::cell_ID error_code) {
-            write__any_instruction(workspace, runner::instruction_type::cell_to_address, parameter_unused, source, byte_size, destination, parameter_unused, error_code, parameter_unused, parameter_unused, parameter_unused);
+            write__any_instruction(workspace, runner::opcode::cell_to_address, parameter_unused, source, byte_size, destination, parameter_unused, error_code, parameter_unused, parameter_unused, parameter_unused);
 
             return;
         }
 
         void write__address_to_cell(workspace& workspace, runner::cell_ID source, runner::cell_ID byte_size, runner::cell_ID destination, runner::cell_ID error_code) {
-            write__any_instruction(workspace, runner::instruction_type::address_to_cell, parameter_unused, source, byte_size, parameter_unused, parameter_unused, destination, error_code, parameter_unused, parameter_unused);
+            write__any_instruction(workspace, runner::opcode::address_to_cell, parameter_unused, source, byte_size, parameter_unused, parameter_unused, destination, error_code, parameter_unused, parameter_unused);
 
             return;
         }
 
         void write__buffer_to_file(workspace& workspace, runner::cell_ID source_start, runner::cell_ID source_end, runner::cell_ID file_path_start, runner::cell_ID file_path_end, runner::cell_ID error_code) {
-            write__any_instruction(workspace, runner::instruction_type::buffer_to_file, parameter_unused, source_start, source_end, file_path_start, file_path_end, error_code, parameter_unused, parameter_unused, parameter_unused);
+            write__any_instruction(workspace, runner::opcode::buffer_to_file, parameter_unused, source_start, source_end, file_path_start, file_path_end, error_code, parameter_unused, parameter_unused, parameter_unused);
 
             return;
         }
 
         void write__file_to_buffer(workspace& workspace, runner::cell_ID file_path_start, runner::cell_ID file_path_end, runner::cell_ID source_start, runner::cell_ID source_end, runner::cell_ID error_code) {
-            write__any_instruction(workspace, runner::instruction_type::file_to_buffer, parameter_unused, file_path_start, file_path_end, parameter_unused, parameter_unused, source_start, source_end, error_code, parameter_unused);
+            write__any_instruction(workspace, runner::opcode::file_to_buffer, parameter_unused, file_path_start, file_path_end, parameter_unused, parameter_unused, source_start, source_end, error_code, parameter_unused);
 
             return;
         }
 
         void write__integer_add(workspace& workspace, runner::cell_ID source_1, runner::cell_ID source_2, runner::cell_ID destination) {
-            write__any_instruction(workspace, runner::instruction_type::integer_add, parameter_unused, source_1, source_2, parameter_unused, parameter_unused, destination, parameter_unused, parameter_unused, parameter_unused);
+            write__any_instruction(workspace, runner::opcode::integer_add, parameter_unused, source_1, source_2, parameter_unused, parameter_unused, destination, parameter_unused, parameter_unused, parameter_unused);
 
             return;
         }
 
         void write__integer_subtract(workspace& workspace, runner::cell_ID source_1, runner::cell_ID source_2, runner::cell_ID destination) {
-            write__any_instruction(workspace, runner::instruction_type::integer_subtract, parameter_unused, source_1, source_2, parameter_unused, parameter_unused, destination, parameter_unused, parameter_unused, parameter_unused);
+            write__any_instruction(workspace, runner::opcode::integer_subtract, parameter_unused, source_1, source_2, parameter_unused, parameter_unused, destination, parameter_unused, parameter_unused, parameter_unused);
 
             return;
         }
 
         void write__integer_multiply(workspace& workspace, runner::cell_ID source_1, runner::cell_ID source_2, runner::cell_ID destination) {
-            write__any_instruction(workspace, runner::instruction_type::integer_multiply, parameter_unused, source_1, source_2, parameter_unused, parameter_unused, destination, parameter_unused, parameter_unused, parameter_unused);
+            write__any_instruction(workspace, runner::opcode::integer_multiply, parameter_unused, source_1, source_2, parameter_unused, parameter_unused, destination, parameter_unused, parameter_unused, parameter_unused);
 
             return;
         }
 
         void write__integer_divide(workspace& workspace, runner::cell_ID source_1, runner::cell_ID source_2, runner::cell_ID destination, runner::cell_ID error_code) {
-            write__any_instruction(workspace, runner::instruction_type::integer_divide, parameter_unused, source_1, source_2, parameter_unused, parameter_unused, destination, error_code, parameter_unused, parameter_unused);
+            write__any_instruction(workspace, runner::opcode::integer_divide, parameter_unused, source_1, source_2, parameter_unused, parameter_unused, destination, error_code, parameter_unused, parameter_unused);
 
             return;
         }
 
         void write__integer_modulous(workspace& workspace, runner::cell_ID source_1, runner::cell_ID source_2, runner::cell_ID destination, runner::cell_ID error_code) {
-            write__any_instruction(workspace, runner::instruction_type::integer_modulous, parameter_unused, source_1, source_2, parameter_unused, parameter_unused, destination, error_code, parameter_unused, parameter_unused);
+            write__any_instruction(workspace, runner::opcode::integer_modulous, parameter_unused, source_1, source_2, parameter_unused, parameter_unused, destination, error_code, parameter_unused, parameter_unused);
 
             return;
         }
 
         void write__integer_within_range(workspace& workspace, runner::cell_ID low_bound, runner::cell_ID value, runner::cell_ID high_bound, runner::cell_ID destination) {
-            write__any_instruction(workspace, runner::instruction_type::integer_within_range, parameter_unused, low_bound, value, high_bound, parameter_unused, destination, parameter_unused, parameter_unused, parameter_unused);
+            write__any_instruction(workspace, runner::opcode::integer_within_range, parameter_unused, low_bound, value, high_bound, parameter_unused, destination, parameter_unused, parameter_unused, parameter_unused);
 
             return;
         }
 
         void write__boolean_not(workspace& workspace, runner::cell_ID source, runner::cell_ID destination) {
-            write__any_instruction(workspace, runner::instruction_type::boolean_not, parameter_unused, source, parameter_unused, parameter_unused, parameter_unused, destination, parameter_unused, parameter_unused, parameter_unused);
+            write__any_instruction(workspace, runner::opcode::boolean_not, parameter_unused, source, parameter_unused, parameter_unused, parameter_unused, destination, parameter_unused, parameter_unused, parameter_unused);
 
             return;
         }
 
         void write__get_context_input(workspace& workspace, runner::cell_ID destination_start, runner::cell_ID destination_end) {
-            write__any_instruction(workspace, runner::instruction_type::get_context_input, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, destination_start, destination_end, parameter_unused, parameter_unused);
+            write__any_instruction(workspace, runner::opcode::get_context_input, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, destination_start, destination_end, parameter_unused, parameter_unused);
 
             return;
         }
 
         void write__pass_context_output(workspace& workspace, runner::cell_ID source_start, runner::cell_ID source_end) {
-            write__any_instruction(workspace, runner::instruction_type::pass_context_output, parameter_unused, source_start, source_end, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused);
+            write__any_instruction(workspace, runner::opcode::pass_context_output, parameter_unused, source_start, source_end, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused);
 
             return;
         }
 
         void write__run(workspace& workspace, runner::cell_ID program_start, runner::cell_ID program_end, runner::cell_ID input_start, runner::cell_ID input_end, runner::cell_ID result_start, runner::cell_ID result_end, runner::cell_ID runner_error_occured) {
-            write__any_instruction(workspace, runner::instruction_type::run, parameter_unused, program_start, program_end, input_start, input_end, result_start, result_end, runner_error_occured, parameter_unused);
+            write__any_instruction(workspace, runner::opcode::run, parameter_unused, program_start, program_end, input_start, input_end, result_start, result_end, runner_error_occured, parameter_unused);
 
             return;
         }
@@ -330,13 +330,13 @@ namespace generator {
                 // write code (NOTE: make sure that the switch cases are aligned with their respective run.cpp instructions!)
                 switch (abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_header_ID) {
                 // wave.quit(0)(0)
-                case runner::instruction_type::quit:
+                case runner::opcode::quit:
                     // write code
                     write_instructions::write__quit(workspace);
 
                     break;
                 // wave.write_cell(1)(1)
-                case runner::instruction_type::write_cell:
+                case runner::opcode::write_cell:
                     // determine type of input
                     if (abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0].p_type == accounter::skeleton::argument_type::is_integer_literal || abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0].p_type == accounter::skeleton::argument_type::is_boolean_literal || abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0].p_type == accounter::skeleton::argument_type::is_instruction_literal || abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0].p_type == accounter::skeleton::argument_type::is_hexadecimal_literal) {
                         // constant is an integer literal, write code
@@ -363,31 +363,31 @@ namespace generator {
 
                     break;
                 // wave.copy(1)(1)
-                case runner::instruction_type::copy_cell:
+                case runner::opcode::copy_cell:
                     // write code
                     write_instructions::write__copy_cell(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[0], abstraction));
 
                     break;
                 // wave.print_cell_as_number(1)(0)
-                case runner::instruction_type::print_cell_as_number:
+                case runner::opcode::print_cell_as_number:
                     // write code
                     write_instructions::write__print_cell_as_number(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction));
 
                     break;
                 // wave.print_cell_as_character(1)(0)
-                case runner::instruction_type::print_cell_as_character:
+                case runner::opcode::print_cell_as_character:
                     // write code
                     write_instructions::write__print_cell_as_character(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction));
 
                     break;
                 // wave.get_console_input(0)(2)
-                case runner::instruction_type::get_console_input:
+                case runner::opcode::get_console_input:
                     // write code
                     write_instructions::write__get_console_input(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[1], abstraction));
 
                     break;
                 // wave.create_new_context(1)(0)
-                case runner::instruction_type::create_new_context:
+                case runner::opcode::create_new_context:
                     // set error
                     error_occured = true;
 
@@ -396,7 +396,7 @@ namespace generator {
 
                     break;
                 // wave.restore_old_context(0)(0)
-                case runner::instruction_type::restore_old_context:
+                case runner::opcode::restore_old_context:
                     // set error
                     error_occured = true;
 
@@ -405,7 +405,7 @@ namespace generator {
 
                     break;
                 // wave.pass_input(1)(0)
-                case runner::instruction_type::pass_input:
+                case runner::opcode::pass_input:
                     // set error
                     error_occured = true;
 
@@ -414,7 +414,7 @@ namespace generator {
 
                     break;
                 // wave.get_input(0)(1)
-                case runner::instruction_type::get_input:
+                case runner::opcode::get_input:
                     // set error
                     error_occured = true;
 
@@ -423,7 +423,7 @@ namespace generator {
 
                     break;
                 // wave.pass_output(1)(0)
-                case runner::instruction_type::pass_output:
+                case runner::opcode::pass_output:
                     // set error
                     error_occured = true;
 
@@ -432,7 +432,7 @@ namespace generator {
 
                     break;
                 // wave.get_output(0)(1)
-                case runner::instruction_type::get_output:
+                case runner::opcode::get_output:
                     // set error
                     error_occured = true;
 
@@ -441,7 +441,7 @@ namespace generator {
 
                     break;
                 // wave.jump_to_abstraction(1)(0)
-                case runner::instruction_type::jump_to_abstraction:
+                case runner::opcode::jump_to_abstraction:
                     // set error
                     error_occured = true;
 
@@ -450,7 +450,7 @@ namespace generator {
 
                     break;
                 // wave.jump_from_abstraction(0)(0)
-                case runner::instruction_type::jump_from_abstraction:
+                case runner::opcode::jump_from_abstraction:
                     // set error
                     error_occured = true;
 
@@ -459,7 +459,7 @@ namespace generator {
 
                     break;
                 // wave.jump(2)(0)
-                case runner::instruction_type::jump:
+                case runner::opcode::jump:
                     // if measure pass
                     if (workspace.p_pass_type == pass_type::pass_measure) {
                         // write dummy code
@@ -472,103 +472,103 @@ namespace generator {
 
                     break;
                 // wave.get_instruction_index(0)(1)
-                case runner::instruction_type::get_instruction_index:
+                case runner::opcode::get_instruction_index:
                     // write code
                     write_instructions::write__get_instruction_index(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[0], abstraction));
 
                     break;
                 // wave.request_memory(1)(3)
-                case runner::instruction_type::request_memory:
+                case runner::opcode::request_memory:
                     // write code
                     write_instructions::write__request_memory(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[1], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[2], abstraction));
 
                     break;
                 // wave.return_memory(1)(0)
-                case runner::instruction_type::return_memory:
+                case runner::opcode::return_memory:
                     // write code
                     write_instructions::write__return_memory(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[1], abstraction));
 
                     break;
                 // wave.cell_to_address(3)(1)
-                case runner::instruction_type::cell_to_address:
+                case runner::opcode::cell_to_address:
                     // write code
                     write_instructions::write__cell_to_address(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[1], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[2], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[0], abstraction));
 
                     break;
                 // wave.address_to_cell(2)(2)
-                case runner::instruction_type::address_to_cell:
+                case runner::opcode::address_to_cell:
                     // write code
                     write_instructions::write__address_to_cell(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[1], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[1], abstraction));
 
                     break;
                 // wave.buffer_to_file(4)(1)
-                case runner::instruction_type::buffer_to_file:
+                case runner::opcode::buffer_to_file:
                     // write code
                     write_instructions::write__buffer_to_file(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[1], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[2], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[3], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[0], abstraction));
 
                     break;
                 // wave.file_to_buffer(2)(3)
-                case runner::instruction_type::file_to_buffer:
+                case runner::opcode::file_to_buffer:
                     // write code
                     write_instructions::write__file_to_buffer(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[1], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[1], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[2], abstraction));
 
                     break;
                 // wave.integer.add(2)(1)
-                case runner::instruction_type::integer_add:
+                case runner::opcode::integer_add:
                     // write code
                     write_instructions::write__integer_add(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[1], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[0], abstraction));
 
                     break;
                 // wave.integer.subtract(2)(1)
-                case runner::instruction_type::integer_subtract:
+                case runner::opcode::integer_subtract:
                     // write code
                     write_instructions::write__integer_subtract(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[1], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[0], abstraction));
 
                     break;
                 // wave.integer.multiply(2)(1)
-                case runner::instruction_type::integer_multiply:
+                case runner::opcode::integer_multiply:
                     // write code
                     write_instructions::write__integer_multiply(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[1], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[0], abstraction));
 
                     break;
                 // wave.integer.divide(2)(1)
-                case runner::instruction_type::integer_divide:
+                case runner::opcode::integer_divide:
                     // write code
                     write_instructions::write__integer_divide(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[1], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[1], abstraction));
 
                     break;
                 // wave.integer.modulous(2)(1)
-                case runner::instruction_type::integer_modulous:
+                case runner::opcode::integer_modulous:
                     // write code
                     write_instructions::write__integer_modulous(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[1], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[1], abstraction));
 
                     break;
                 // wave.integer.within_range(3)(1)
-                case runner::instruction_type::integer_within_range:
+                case runner::opcode::integer_within_range:
                     // write code
                     write_instructions::write__integer_within_range(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[1], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[2], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[0], abstraction));
 
                     break;
                 // wave.boolean.not(1)(1)
-                case runner::instruction_type::boolean_not:
+                case runner::opcode::boolean_not:
                     // write code
                     write_instructions::write__boolean_not(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[0], abstraction));
 
                     break;
                 // wave.get_context_input(0)(2)
-                case runner::instruction_type::get_context_input:
+                case runner::opcode::get_context_input:
                     // write code
                     write_instructions::write__get_context_input(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[1], abstraction));
 
                     break;
                 // wave.pass_context_output(2)(0)
-                case runner::instruction_type::pass_context_output:
+                case runner::opcode::pass_context_output:
                     // write code
                     write_instructions::write__pass_context_output(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[1], abstraction));
 
                     break;
                 // wave.run(4)(3)
-                case runner::instruction_type::run:
+                case runner::opcode::run:
                     // write code
                     write_instructions::write__run(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[1], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[2], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[3], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[1], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[2], abstraction));
 

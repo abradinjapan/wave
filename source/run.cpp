@@ -252,7 +252,7 @@ namespace runner {
     };
 
     // instructions
-    enum instruction_type {
+    enum opcode {
         quit,
         write_cell,
         copy_cell,
@@ -289,7 +289,7 @@ namespace runner {
 
     class instruction {
     public:
-        instruction_type p_type;
+        opcode p_opcode;
         cell p_write_register_value;
         cell_ID p_input_0;
         cell_ID p_input_1;
@@ -301,7 +301,7 @@ namespace runner {
         instruction_ID p_jump_instruction_ID;
 
         instruction() {
-            p_type = instruction_type::quit;
+            p_opcode = opcode::quit;
             p_write_register_value = 0;
             p_input_0 = 0;
             p_input_1 = 0;
@@ -390,8 +390,8 @@ namespace runner {
             }
 
             // process instruction
-            switch (program.p_instructions[current_instruction].p_type) {
-            case instruction_type::quit:
+            switch (program.p_instructions[current_instruction].p_opcode) {
+            case opcode::quit:
                 // next instruction
                 current_instruction++;
 
@@ -399,7 +399,7 @@ namespace runner {
                 running = false;
 
                 break;
-            case instruction_type::write_cell:
+            case opcode::write_cell:
                 // write data
                 context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0] = program.p_instructions[current_instruction].p_write_register_value;
 
@@ -407,7 +407,7 @@ namespace runner {
                 current_instruction++;
 
                 break;
-            case instruction_type::copy_cell:
+            case opcode::copy_cell:
                 // copy data
                 context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0] = context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0];
 
@@ -415,7 +415,7 @@ namespace runner {
                 current_instruction++;
 
                 break;
-            case instruction_type::print_cell_as_number:
+            case opcode::print_cell_as_number:
                 // print
                 std::cout << (basic::s64)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0];
 
@@ -426,7 +426,7 @@ namespace runner {
                 current_instruction++;
 
                 break;
-            case instruction_type::print_cell_as_character:
+            case opcode::print_cell_as_character:
                 // print
                 putchar((char)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0]);
 
@@ -437,7 +437,7 @@ namespace runner {
                 current_instruction++;
 
                 break;
-            case instruction_type::get_console_input:
+            case opcode::get_console_input:
                 // clear console input
                 for (basic::u64 character = 0; character < console_input_buffer_length; character++) {
                     // clear one byte
@@ -483,7 +483,7 @@ namespace runner {
                 current_instruction++;
 
                 break;
-            case instruction_type::create_new_context:
+            case opcode::create_new_context:
                 // push a new context onto the stack
                 context_stack.push_back(context(program.p_instructions[current_instruction].p_write_register_value));
 
@@ -491,7 +491,7 @@ namespace runner {
                 current_instruction++;
 
                 break;
-            case instruction_type::restore_old_context:
+            case opcode::restore_old_context:
                 // if there are any remaining contexts
                 if (context_stack.size() > 0) {
                     // restore the previous context
@@ -502,7 +502,7 @@ namespace runner {
                 current_instruction++;
 
                 break;
-            case instruction_type::pass_input:
+            case opcode::pass_input:
                 // add input
                 inputs.push_back(context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0]);
 
@@ -510,7 +510,7 @@ namespace runner {
                 current_instruction++;
 
                 break;
-            case instruction_type::get_input:
+            case opcode::get_input:
                 // retrieve input
                 context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0] = inputs[inputs.size() - 1];
 
@@ -521,7 +521,7 @@ namespace runner {
                 current_instruction++;
 
                 break;
-            case instruction_type::pass_output:
+            case opcode::pass_output:
                 // add output
                 outputs.push_back(context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0]);
 
@@ -529,7 +529,7 @@ namespace runner {
                 current_instruction++;
 
                 break;
-            case instruction_type::get_output:
+            case opcode::get_output:
                 // retrieve output
                 context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0] = outputs[outputs.size() - 1];
 
@@ -540,7 +540,7 @@ namespace runner {
                 current_instruction++;
 
                 break;
-            case instruction_type::jump_to_abstraction:
+            case opcode::jump_to_abstraction:
                 // push the instruction to be returned
                 return_stack.push_back(current_instruction + 1);
 
@@ -548,13 +548,13 @@ namespace runner {
                 current_instruction = context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0];
 
                 break;
-            case instruction_type::jump_from_abstraction:
+            case opcode::jump_from_abstraction:
                 // jump
                 current_instruction = return_stack[return_stack.size() - 1];
                 return_stack.pop_back();
 
                 break;
-            case instruction_type::jump:
+            case opcode::jump:
                 // if true
                 if (context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0] == 1) {
                     // jump via instruction number
@@ -565,7 +565,7 @@ namespace runner {
                 }
 
                 break;
-            case instruction_type::get_instruction_index:
+            case opcode::get_instruction_index:
                 // remember instruction ID
                 context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0] = (cell)current_instruction;
 
@@ -573,7 +573,7 @@ namespace runner {
                 current_instruction++;
 
                 break;
-            case instruction_type::request_memory:
+            case opcode::request_memory:
                 // perform allocation
                 context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0] = (basic::u64)malloc(context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0]);
 
@@ -596,7 +596,7 @@ namespace runner {
                 current_instruction++;
 
                 break;
-            case instruction_type::return_memory:
+            case opcode::return_memory:
                 // return memory
                 free((void*)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0]);
 
@@ -607,7 +607,7 @@ namespace runner {
                 current_instruction++;
 
                 break;
-            case instruction_type::cell_to_address:
+            case opcode::cell_to_address:
                 // DEBUG
                 //printf("Writing allocation: [ %lu, %lu ]\n", context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_2], context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_1]);
 
@@ -634,7 +634,7 @@ namespace runner {
                 current_instruction++;
 
                 break;
-            case instruction_type::address_to_cell:
+            case opcode::address_to_cell:
                 // DEBUG
                 //printf("Reading allocation: [ %lu, %lu ]\n", context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0], context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_1]);
 
@@ -661,7 +661,7 @@ namespace runner {
                 current_instruction++;
                 
                 break;
-            case instruction_type::buffer_to_file:
+            case opcode::buffer_to_file:
                 // write a buffer to a file
                 move_buffer_to_file(file_error_occured, (basic::address)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0], (basic::address)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_1], (basic::address)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_2], (basic::address)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_3]);
 
@@ -672,7 +672,7 @@ namespace runner {
                 current_instruction++;
                 
                 break;
-            case instruction_type::file_to_buffer:
+            case opcode::file_to_buffer:
                 // write a file to a buffer
                 move_file_to_buffer(file_error_occured, (basic::address)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0], (basic::address)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_1], &file_start, &file_end);
 
@@ -690,7 +690,7 @@ namespace runner {
                 current_instruction++;
                 
                 break;
-            case instruction_type::integer_add:
+            case opcode::integer_add:
                 // perform addition
                 context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0] = context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0] + context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_1];
 
@@ -698,7 +698,7 @@ namespace runner {
                 current_instruction++;
 
                 break;
-            case instruction_type::integer_subtract:
+            case opcode::integer_subtract:
                 // perform subtraction
                 context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0] = context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0] - context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_1];
 
@@ -706,7 +706,7 @@ namespace runner {
                 current_instruction++;
 
                 break;
-            case instruction_type::integer_multiply:
+            case opcode::integer_multiply:
                 // perform multiplication
                 context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0] = context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0] * context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_1];
 
@@ -714,7 +714,7 @@ namespace runner {
                 current_instruction++;
 
                 break;
-            case instruction_type::integer_divide:
+            case opcode::integer_divide:
                 // check for valid denominator
                 if (context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_1] != 0) {
                     // perform division
@@ -732,7 +732,7 @@ namespace runner {
                 current_instruction++;
 
                 break;
-            case instruction_type::integer_modulous:
+            case opcode::integer_modulous:
                 // check for valid denominator
                 if (context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_1] != 0) {
                     // perform division
@@ -750,7 +750,7 @@ namespace runner {
                 current_instruction++;
 
                 break;
-            case instruction_type::integer_within_range:
+            case opcode::integer_within_range:
                 // perform range check
                 context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0] = (cell)(basic::u64)((context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_1] >= context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0]) && (context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_1] <= context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_2]));
 
@@ -758,7 +758,7 @@ namespace runner {
                 current_instruction++;
 
                 break;
-            case instruction_type::boolean_not:
+            case opcode::boolean_not:
                 // perform inversion
                 context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0] = (cell)!((basic::u64)(context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0]));
 
@@ -766,7 +766,7 @@ namespace runner {
                 current_instruction++;
 
                 break;
-            case instruction_type::get_context_input:
+            case opcode::get_context_input:
                 // get data
                 context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0] = (cell)input.p_start;
                 context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_1] = (cell)input.p_end;
@@ -775,7 +775,7 @@ namespace runner {
                 current_instruction++;
 
                 break;
-            case instruction_type::pass_context_output:
+            case opcode::pass_context_output:
                 // get data
                 output.p_start = (basic::address)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0];
                 output.p_end = (basic::address)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_1];
@@ -784,7 +784,7 @@ namespace runner {
                 current_instruction++;
 
                 break;
-            case instruction_type::run:
+            case opcode::run:
                 // setup error
                 runner_error_occured = false;
 
@@ -854,101 +854,101 @@ namespace runner {
         for (basic::u64 i = 0; i < program.p_instructions.size(); i++) {
             // print instruction name
             std::cout << "\t";
-            switch (program.p_instructions[i].p_type) {
-            case runner::instruction_type::quit:
+            switch (program.p_instructions[i].p_opcode) {
+            case runner::opcode::quit:
                 std::cout << "quit";
                 break;
-            case runner::instruction_type::write_cell:
+            case runner::opcode::write_cell:
                 std::cout << "write_cell";
                 break;
-            case runner::instruction_type::copy_cell:
+            case runner::opcode::copy_cell:
                 std::cout << "copy_cell";
                 break;
-            case runner::instruction_type::print_cell_as_number:
+            case runner::opcode::print_cell_as_number:
                 std::cout << "print_cell_as_number";
                 break;
-            case runner::instruction_type::print_cell_as_character:
+            case runner::opcode::print_cell_as_character:
                 std::cout << "print_cell_as_character";
                 break;
-            case runner::instruction_type::get_console_input:
+            case runner::opcode::get_console_input:
                 std::cout << "get_console_input";
                 break;
-            case runner::instruction_type::create_new_context:
+            case runner::opcode::create_new_context:
                 std::cout << "create_new_context";
                 break;
-            case runner::instruction_type::restore_old_context:
+            case runner::opcode::restore_old_context:
                 std::cout << "restore_old_context";
                 break;
-            case runner::instruction_type::pass_input:
+            case runner::opcode::pass_input:
                 std::cout << "pass_input";
                 break;
-            case runner::instruction_type::get_input:
+            case runner::opcode::get_input:
                 std::cout << "get_input";
                 break;
-            case runner::instruction_type::pass_output:
+            case runner::opcode::pass_output:
                 std::cout << "pass_output";
                 break;
-            case runner::instruction_type::get_output:
+            case runner::opcode::get_output:
                 std::cout << "get_output";
                 break;
-            case runner::instruction_type::jump_to_abstraction:
+            case runner::opcode::jump_to_abstraction:
                 std::cout << "jump_to_abstraction";
                 break;
-            case runner::instruction_type::jump_from_abstraction:
+            case runner::opcode::jump_from_abstraction:
                 std::cout << "jump_from_abstraction";
                 break;
-            case runner::instruction_type::jump:
+            case runner::opcode::jump:
                 std::cout << "jump";
                 break;
-            case runner::instruction_type::get_instruction_index:
+            case runner::opcode::get_instruction_index:
                 std::cout << "get_instruction_index";
                 break;
-            case runner::instruction_type::request_memory:
+            case runner::opcode::request_memory:
                 std::cout << "request_memory";
                 break;
-            case runner::instruction_type::return_memory:
+            case runner::opcode::return_memory:
                 std::cout << "return_memory";
                 break;
-            case runner::instruction_type::cell_to_address:
+            case runner::opcode::cell_to_address:
                 std::cout << "cell_to_address";
                 break;
-            case runner::instruction_type::address_to_cell:
+            case runner::opcode::address_to_cell:
                 std::cout << "address_to_cell";
                 break;
-            case runner::instruction_type:: buffer_to_file:
+            case runner::opcode:: buffer_to_file:
                 std::cout << "buffer_to_file";
                 break;
-            case runner::instruction_type::file_to_buffer:
+            case runner::opcode::file_to_buffer:
                 std::cout << "file_to_buffer";
                 break;
-            case runner::instruction_type::integer_add:
+            case runner::opcode::integer_add:
                 std::cout << "integer_add";
                 break;
-            case runner::instruction_type::integer_subtract:
+            case runner::opcode::integer_subtract:
                 std::cout << "integer_subtract";
                 break;
-            case runner::instruction_type::integer_multiply:
+            case runner::opcode::integer_multiply:
                 std::cout << "integer_multiply";
                 break;
-            case runner::instruction_type::integer_divide:
+            case runner::opcode::integer_divide:
                 std::cout << "integer_divide";
                 break;
-            case runner::instruction_type::integer_modulous:
+            case runner::opcode::integer_modulous:
                 std::cout << "integer_modulous";
                 break;
-            case runner::instruction_type::integer_within_range:
+            case runner::opcode::integer_within_range:
                 std::cout << "integer_within_range";
                 break;
-            case runner::instruction_type::boolean_not:
+            case runner::opcode::boolean_not:
                 std::cout << "boolean_not";
                 break;
-            case runner::instruction_type::get_context_input:
+            case runner::opcode::get_context_input:
                 std::cout << "get_context_input";
                 break;
-            case runner::instruction_type::pass_context_output:
+            case runner::opcode::pass_context_output:
                 std::cout << "pass_context_output";
                 break;
-            case runner::instruction_type::run:
+            case runner::opcode::run:
                 std::cout << "run";
                 break;
             default:
@@ -957,7 +957,7 @@ namespace runner {
             }
 
             // print instruction ID
-            std::cout << "[" << program.p_instructions[i].p_type << ']' << std::endl;
+            std::cout << "[" << program.p_instructions[i].p_opcode << ']' << std::endl;
         }
 
         return;
