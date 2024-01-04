@@ -63,7 +63,7 @@ namespace generator {
     };
 
     namespace write_instructions {
-        void write__ANY(workspace& workspace, runner::instruction_type opcode, runner::cell write_register_value, runner::cell_ID input_0, runner::cell_ID input_1, runner::cell_ID input_2, runner::cell_ID input_3, runner::cell_ID output_0, runner::cell_ID output_1, runner::cell_ID output_2, runner::instruction_ID jump_instruction_ID) {
+        void write__any_instruction(workspace& workspace, runner::instruction_type opcode, runner::cell write_register_value, runner::cell_ID input_0, runner::cell_ID input_1, runner::cell_ID input_2, runner::cell_ID input_3, runner::cell_ID output_0, runner::cell_ID output_1, runner::cell_ID output_2, runner::instruction_ID jump_instruction_ID) {
             runner::instruction temp;
 
             // create instruction
@@ -91,580 +91,195 @@ namespace generator {
         }
 
         void write__quit(workspace& workspace) {
-            write__ANY(workspace, runner::instruction_type::quit, 0, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused);
+            write__any_instruction(workspace, runner::instruction_type::quit, 0, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused);
 
             return;
         }
 
         void write__write_cell(workspace& workspace, runner::cell value, runner::cell_ID destination) {
-            runner::instruction temp_instruction;
+            write__any_instruction(workspace, runner::instruction_type::write_cell, value, parameter_unused, parameter_unused, parameter_unused, parameter_unused, destination, parameter_unused, parameter_unused, parameter_unused);
 
-            // create instruction
-            if (workspace.p_pass_type == pass_type::pass_build) {
-                // set type
-                temp_instruction.p_type = runner::instruction_type::write_cell;
-                temp_instruction.p_write_register_value = value;
-                temp_instruction.p_output_0 = destination;
-
-                // write instruction
-                workspace.p_program.p_instructions[workspace.p_instruction_count] = temp_instruction;
-            }
-
-            // next instruction
-            workspace.p_instruction_count++;
+            return;
         }
 
         void write__copy_cell(workspace& workspace, runner::cell_ID source, runner::cell_ID destination) {
-            runner::instruction temp_instruction;
+            write__any_instruction(workspace, runner::instruction_type::copy_cell, parameter_unused, source, parameter_unused, parameter_unused, parameter_unused, destination, parameter_unused, parameter_unused, parameter_unused);
 
-            // create instruction
-            if (workspace.p_pass_type == pass_type::pass_build) {
-                // set type
-                temp_instruction.p_type = runner::instruction_type::copy_cell;
-                temp_instruction.p_input_0 = source;
-                temp_instruction.p_output_0 = destination;
-
-                // write instruction
-                workspace.p_program.p_instructions[workspace.p_instruction_count] = temp_instruction;
-            }
-
-            // next instruction
-            workspace.p_instruction_count++;
+            return;
         }
 
         void write__print_cell_as_number(workspace& workspace, runner::cell_ID source) {
-            runner::instruction temp_instruction;
+            write__any_instruction(workspace, runner::instruction_type::print_cell_as_number, parameter_unused, source, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused);
 
-            // create instruction
-            if (workspace.p_pass_type == pass_type::pass_build) {
-                // set type
-                temp_instruction.p_type = runner::instruction_type::print_cell_as_number;
-                temp_instruction.p_input_0 = source;
-
-                // write instruction
-                workspace.p_program.p_instructions[workspace.p_instruction_count] = temp_instruction;
-            }
-
-            // next instruction
-            workspace.p_instruction_count++;
+            return;
         }
 
         void write__print_cell_as_character(workspace& workspace, runner::cell_ID source) {
-            runner::instruction temp_instruction;
+            write__any_instruction(workspace, runner::instruction_type::print_cell_as_character, parameter_unused, source, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused);
 
-            // create instruction
-            if (workspace.p_pass_type == pass_type::pass_build) {
-                // set type
-                temp_instruction.p_type = runner::instruction_type::print_cell_as_character;
-                temp_instruction.p_input_0 = source;
-
-                // write instruction
-                workspace.p_program.p_instructions[workspace.p_instruction_count] = temp_instruction;
-            }
-
-            // next instruction
-            workspace.p_instruction_count++;
+            return;
         }
 
         void write__get_console_input(workspace& workspace, runner::cell_ID start, runner::cell_ID end) {
-            runner::instruction temp_instruction;
+            write__any_instruction(workspace, runner::instruction_type::get_console_input, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, start, end, parameter_unused, parameter_unused);
 
-            // create instruction
-            if (workspace.p_pass_type == pass_type::pass_build) {
-                // set type
-                temp_instruction.p_type = runner::instruction_type::get_console_input;
-                temp_instruction.p_output_0 = start;
-                temp_instruction.p_output_1 = end;
-
-                // write instruction
-                workspace.p_program.p_instructions[workspace.p_instruction_count] = temp_instruction;
-            }
-
-            // next instruction
-            workspace.p_instruction_count++;
+            return;
         }
 
         void write__create_new_context(workspace& workspace, runner::cell cell_count) {
-            runner::instruction temp_instruction;
+            write__any_instruction(workspace, runner::instruction_type::create_new_context, cell_count, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused);
 
-            // create instruction
-            if (workspace.p_pass_type == pass_type::pass_build) {
-                // set type
-                temp_instruction.p_type = runner::instruction_type::create_new_context;
-                temp_instruction.p_write_register_value = cell_count;
-
-                // write instruction
-                workspace.p_program.p_instructions[workspace.p_instruction_count] = temp_instruction;
-            }
-
-            // next instruction
-            workspace.p_instruction_count++;
+            return;
         }
 
         void write__restore_old_context(workspace& workspace) {
-            runner::instruction temp_instruction;
+            write__any_instruction(workspace, runner::instruction_type::restore_old_context, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused);
 
-            // create instruction
-            if (workspace.p_pass_type == pass_type::pass_build) {
-                // set type
-                temp_instruction.p_type = runner::instruction_type::restore_old_context;
-
-                // write instruction
-                workspace.p_program.p_instructions[workspace.p_instruction_count] = temp_instruction;
-            }
-
-            // next instruction
-            workspace.p_instruction_count++;
+            return;
         }
 
         void write__pass_input(workspace& workspace, runner::cell_ID parameter) {
-            runner::instruction temp_instruction;
+            write__any_instruction(workspace, runner::instruction_type::pass_input, parameter_unused, parameter, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused);
 
-            // create instruction
-            if (workspace.p_pass_type == pass_type::pass_build) {
-                // set type
-                temp_instruction.p_type = runner::instruction_type::pass_input;
-                temp_instruction.p_input_0 = parameter;
-
-                // write instruction
-                workspace.p_program.p_instructions[workspace.p_instruction_count] = temp_instruction;
-            }
-
-            // next instruction
-            workspace.p_instruction_count++;
+            return;
         }
 
         void write__get_input(workspace& workspace, runner::cell_ID parameter) {
-            runner::instruction temp_instruction;
+            write__any_instruction(workspace, runner::instruction_type::get_input, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter, parameter_unused, parameter_unused, parameter_unused);
 
-            // create instruction
-            if (workspace.p_pass_type == pass_type::pass_build) {
-                // set type
-                temp_instruction.p_type = runner::instruction_type::get_input;
-                temp_instruction.p_output_0 = parameter;
-
-                // write instruction
-                workspace.p_program.p_instructions[workspace.p_instruction_count] = temp_instruction;
-            }
-
-            // next instruction
-            workspace.p_instruction_count++;
+            return;
         }
 
         void write__pass_output(workspace& workspace, runner::cell_ID parameter) {
-            runner::instruction temp_instruction;
+            write__any_instruction(workspace, runner::instruction_type::pass_output, parameter_unused, parameter, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused);
 
-            // create instruction
-            if (workspace.p_pass_type == pass_type::pass_build) {
-                // set type
-                temp_instruction.p_type = runner::instruction_type::pass_output;
-                temp_instruction.p_input_0 = parameter;
-
-                // write instruction
-                workspace.p_program.p_instructions[workspace.p_instruction_count] = temp_instruction;
-            }
-
-            // next instruction
-            workspace.p_instruction_count++;
+            return;
         }
 
         void write__get_output(workspace& workspace, runner::cell_ID parameter) {
-            runner::instruction temp_instruction;
+            write__any_instruction(workspace, runner::instruction_type::get_output, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter, parameter_unused, parameter_unused, parameter_unused);
 
-            // create instruction
-            if (workspace.p_pass_type == pass_type::pass_build) {
-                // set type
-                temp_instruction.p_type = runner::instruction_type::get_output;
-                temp_instruction.p_output_0 = parameter;
-
-                // write instruction
-                workspace.p_program.p_instructions[workspace.p_instruction_count] = temp_instruction;
-            }
-
-            // next instruction
-            workspace.p_instruction_count++;
+            return;
         }
 
         void write__jump_to_abstraction(workspace& workspace, runner::cell_ID destination_instruction) {
-            runner::instruction temp_instruction;
+            write__any_instruction(workspace, runner::instruction_type::jump_to_abstraction, parameter_unused, destination_instruction, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused);
 
-            // create instruction
-            if (workspace.p_pass_type == pass_type::pass_build) {
-                // set data
-                temp_instruction.p_type = runner::instruction_type::jump_to_abstraction;
-                temp_instruction.p_input_0 = destination_instruction;
-
-                // write instruction
-                workspace.p_program.p_instructions[workspace.p_instruction_count] = temp_instruction;
-            }
-
-            // next instruction
-            workspace.p_instruction_count++;
+            return;
         }
 
         void write__jump_from_abstraction(workspace& workspace) {
-            runner::instruction temp_instruction;
+            write__any_instruction(workspace, runner::instruction_type::jump_from_abstraction, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused);
 
-            // create instruction
-            if (workspace.p_pass_type == pass_type::pass_build) {
-                // set data
-                temp_instruction.p_type = runner::instruction_type::jump_from_abstraction;
-
-                // write instruction
-                workspace.p_program.p_instructions[workspace.p_instruction_count] = temp_instruction;
-            }
-
-            // next instruction
-            workspace.p_instruction_count++;
+            return;
         }
 
         void write__jump(workspace& workspace, runner::cell_ID condition, basic::u64 jump_instruction_ID) {
-            runner::instruction temp_instruction;
+            write__any_instruction(workspace, runner::instruction_type::jump, parameter_unused, condition, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, jump_instruction_ID);
 
-            // create instruction
-            if (workspace.p_pass_type == pass_type::pass_build) {
-                // set type
-                temp_instruction.p_type = runner::instruction_type::jump;
-                temp_instruction.p_input_0 = condition;
-                temp_instruction.p_jump_instruction_ID = jump_instruction_ID;
-
-                // write instruction
-                workspace.p_program.p_instructions[workspace.p_instruction_count] = temp_instruction;
-            }
-
-            // next instruction
-            workspace.p_instruction_count++;
+            return;
         }
 
         void write__get_instruction_index(workspace& workspace, runner::cell_ID destination) {
-            runner::instruction temp_instruction;
+            write__any_instruction(workspace, runner::instruction_type::get_instruction_index, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, destination, parameter_unused, parameter_unused, parameter_unused);
 
-            // create instruction
-            if (workspace.p_pass_type == pass_type::pass_build) {
-                // set type
-                temp_instruction.p_type = runner::instruction_type::get_instruction_index;
-                temp_instruction.p_output_0 = destination;
-
-                // write instruction
-                workspace.p_program.p_instructions[workspace.p_instruction_count] = temp_instruction;
-            }
-
-            // next instruction
-            workspace.p_instruction_count++;
+            return;
         }
 
         void write__request_memory(workspace& workspace, runner::cell_ID length, runner::cell_ID start_address, runner::cell_ID end_address, runner::cell_ID error) {
-            runner::instruction temp_instruction;
+            write__any_instruction(workspace, runner::instruction_type::request_memory, parameter_unused, length, parameter_unused, parameter_unused, parameter_unused, start_address, end_address, error, parameter_unused);
 
-            // create instruction
-            if (workspace.p_pass_type == pass_type::pass_build) {
-                // set type
-                temp_instruction.p_type = runner::instruction_type::request_memory;
-                temp_instruction.p_input_0 = length;
-                temp_instruction.p_output_0 = start_address;
-                temp_instruction.p_output_1 = end_address;
-                temp_instruction.p_output_2 = error;
-
-                // write instruction
-                workspace.p_program.p_instructions[workspace.p_instruction_count] = temp_instruction;
-            }
-
-            // next instruction
-            workspace.p_instruction_count++;
+            return;
         }
 
         void write__return_memory(workspace& workspace, runner::cell_ID start_address, runner::cell_ID end_address) {
-            runner::instruction temp_instruction;
+            write__any_instruction(workspace, runner::instruction_type::return_memory, parameter_unused, start_address, end_address, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused);
 
-            // create instruction
-            if (workspace.p_pass_type == pass_type::pass_build) {
-                // set type
-                temp_instruction.p_type = runner::instruction_type::return_memory;
-                temp_instruction.p_input_0 = start_address;
-                temp_instruction.p_input_1 = end_address;
-
-                // write instruction
-                workspace.p_program.p_instructions[workspace.p_instruction_count] = temp_instruction;
-            }
-
-            // next instruction
-            workspace.p_instruction_count++;
+            return;
         }
 
         void write__cell_to_address(workspace& workspace, runner::cell_ID source, runner::cell_ID byte_size, runner::cell_ID destination, runner::cell_ID error_code) {
-            runner::instruction temp_instruction;
+            write__any_instruction(workspace, runner::instruction_type::cell_to_address, parameter_unused, source, byte_size, destination, parameter_unused, error_code, parameter_unused, parameter_unused, parameter_unused);
 
-            // create instruction
-            if (workspace.p_pass_type == pass_type::pass_build) {
-                // set type
-                temp_instruction.p_type = runner::instruction_type::cell_to_address;
-                temp_instruction.p_input_0 = source;
-                temp_instruction.p_input_1 = byte_size;
-                temp_instruction.p_input_2 = destination;
-                temp_instruction.p_output_0 = error_code;
-
-                // write instruction
-                workspace.p_program.p_instructions[workspace.p_instruction_count] = temp_instruction;
-            }
-
-            // next instruction
-            workspace.p_instruction_count++;
+            return;
         }
 
         void write__address_to_cell(workspace& workspace, runner::cell_ID source, runner::cell_ID byte_size, runner::cell_ID destination, runner::cell_ID error_code) {
-            runner::instruction temp_instruction;
+            write__any_instruction(workspace, runner::instruction_type::address_to_cell, parameter_unused, source, byte_size, parameter_unused, parameter_unused, destination, error_code, parameter_unused, parameter_unused);
 
-            // create instruction
-            if (workspace.p_pass_type == pass_type::pass_build) {
-                // set type
-                temp_instruction.p_type = runner::instruction_type::address_to_cell;
-                temp_instruction.p_input_0 = source;
-                temp_instruction.p_input_1 = byte_size;
-                temp_instruction.p_output_0 = destination;
-                temp_instruction.p_output_1 = error_code;
-
-                // write instruction
-                workspace.p_program.p_instructions[workspace.p_instruction_count] = temp_instruction;
-            }
-
-            // next instruction
-            workspace.p_instruction_count++;
+            return;
         }
 
         void write__buffer_to_file(workspace& workspace, runner::cell_ID source_start, runner::cell_ID source_end, runner::cell_ID file_path_start, runner::cell_ID file_path_end, runner::cell_ID error_code) {
-            runner::instruction temp_instruction;
+            write__any_instruction(workspace, runner::instruction_type::buffer_to_file, parameter_unused, source_start, source_end, file_path_start, file_path_end, error_code, parameter_unused, parameter_unused, parameter_unused);
 
-            // create instruction
-            if (workspace.p_pass_type == pass_type::pass_build) {
-                // set type
-                temp_instruction.p_type = runner::instruction_type::buffer_to_file;
-                temp_instruction.p_input_0 = source_start;
-                temp_instruction.p_input_1 = source_end;
-                temp_instruction.p_input_2 = file_path_start;
-                temp_instruction.p_input_3 = file_path_end;
-                temp_instruction.p_output_0 = error_code;
-
-                // write instruction
-                workspace.p_program.p_instructions[workspace.p_instruction_count] = temp_instruction;
-            }
-
-            // next instruction
-            workspace.p_instruction_count++;
+            return;
         }
 
         void write__file_to_buffer(workspace& workspace, runner::cell_ID file_path_start, runner::cell_ID file_path_end, runner::cell_ID source_start, runner::cell_ID source_end, runner::cell_ID error_code) {
-            runner::instruction temp_instruction;
+            write__any_instruction(workspace, runner::instruction_type::file_to_buffer, parameter_unused, file_path_start, file_path_end, parameter_unused, parameter_unused, source_start, source_end, error_code, parameter_unused);
 
-            // create instruction
-            if (workspace.p_pass_type == pass_type::pass_build) {
-                // set type
-                temp_instruction.p_type = runner::instruction_type::file_to_buffer;
-                temp_instruction.p_input_0 = file_path_start;
-                temp_instruction.p_input_1 = file_path_end;
-                temp_instruction.p_output_0 = source_start;
-                temp_instruction.p_output_1 = source_end;
-                temp_instruction.p_output_2 = error_code;
-
-                // write instruction
-                workspace.p_program.p_instructions[workspace.p_instruction_count] = temp_instruction;
-            }
-
-            // next instruction
-            workspace.p_instruction_count++;
+            return;
         }
 
         void write__integer_add(workspace& workspace, runner::cell_ID source_1, runner::cell_ID source_2, runner::cell_ID destination) {
-            runner::instruction temp_instruction;
+            write__any_instruction(workspace, runner::instruction_type::integer_add, parameter_unused, source_1, source_2, parameter_unused, parameter_unused, destination, parameter_unused, parameter_unused, parameter_unused);
 
-            // create instruction
-            if (workspace.p_pass_type == pass_type::pass_build) {
-                // set type
-                temp_instruction.p_type = runner::instruction_type::integer_add;
-                temp_instruction.p_input_0 = source_1;
-                temp_instruction.p_input_1 = source_2;
-                temp_instruction.p_output_0 = destination;
-
-                // write instruction
-                workspace.p_program.p_instructions[workspace.p_instruction_count] = temp_instruction;
-            }
-
-            // next instruction
-            workspace.p_instruction_count++;
+            return;
         }
 
         void write__integer_subtract(workspace& workspace, runner::cell_ID source_1, runner::cell_ID source_2, runner::cell_ID destination) {
-            runner::instruction temp_instruction;
+            write__any_instruction(workspace, runner::instruction_type::integer_subtract, parameter_unused, source_1, source_2, parameter_unused, parameter_unused, destination, parameter_unused, parameter_unused, parameter_unused);
 
-            // create instruction
-            if (workspace.p_pass_type == pass_type::pass_build) {
-                // set type
-                temp_instruction.p_type = runner::instruction_type::integer_subtract;
-                temp_instruction.p_input_0 = source_1;
-                temp_instruction.p_input_1 = source_2;
-                temp_instruction.p_output_0 = destination;
-
-                // write instruction
-                workspace.p_program.p_instructions[workspace.p_instruction_count] = temp_instruction;
-            }
-
-            // next instruction
-            workspace.p_instruction_count++;
+            return;
         }
 
         void write__integer_multiply(workspace& workspace, runner::cell_ID source_1, runner::cell_ID source_2, runner::cell_ID destination) {
-            runner::instruction temp_instruction;
+            write__any_instruction(workspace, runner::instruction_type::integer_multiply, parameter_unused, source_1, source_2, parameter_unused, parameter_unused, destination, parameter_unused, parameter_unused, parameter_unused);
 
-            // create instruction
-            if (workspace.p_pass_type == pass_type::pass_build) {
-                // set type
-                temp_instruction.p_type = runner::instruction_type::integer_multiply;
-                temp_instruction.p_input_0 = source_1;
-                temp_instruction.p_input_1 = source_2;
-                temp_instruction.p_output_0 = destination;
-
-                // write instruction
-                workspace.p_program.p_instructions[workspace.p_instruction_count] = temp_instruction;
-            }
-
-            // next instruction
-            workspace.p_instruction_count++;
+            return;
         }
 
         void write__integer_divide(workspace& workspace, runner::cell_ID source_1, runner::cell_ID source_2, runner::cell_ID destination, runner::cell_ID error_code) {
-            runner::instruction temp_instruction;
+            write__any_instruction(workspace, runner::instruction_type::integer_divide, parameter_unused, source_1, source_2, parameter_unused, parameter_unused, destination, error_code, parameter_unused, parameter_unused);
 
-            // create instruction
-            if (workspace.p_pass_type == pass_type::pass_build) {
-                // set type
-                temp_instruction.p_type = runner::instruction_type::integer_divide;
-                temp_instruction.p_input_0 = source_1;
-                temp_instruction.p_input_1 = source_2;
-                temp_instruction.p_output_0 = destination;
-                temp_instruction.p_output_1 = error_code;
-
-                // write instruction
-                workspace.p_program.p_instructions[workspace.p_instruction_count] = temp_instruction;
-            }
-
-            // next instruction
-            workspace.p_instruction_count++;
+            return;
         }
 
         void write__integer_modulous(workspace& workspace, runner::cell_ID source_1, runner::cell_ID source_2, runner::cell_ID destination, runner::cell_ID error_code) {
-            runner::instruction temp_instruction;
+            write__any_instruction(workspace, runner::instruction_type::integer_modulous, parameter_unused, source_1, source_2, parameter_unused, parameter_unused, destination, error_code, parameter_unused, parameter_unused);
 
-            // create instruction
-            if (workspace.p_pass_type == pass_type::pass_build) {
-                // set type
-                temp_instruction.p_type = runner::instruction_type::integer_modulous;
-                temp_instruction.p_input_0 = source_1;
-                temp_instruction.p_input_1 = source_2;
-                temp_instruction.p_output_0 = destination;
-                temp_instruction.p_output_1 = error_code;
-
-                // write instruction
-                workspace.p_program.p_instructions[workspace.p_instruction_count] = temp_instruction;
-            }
-
-            // next instruction
-            workspace.p_instruction_count++;
+            return;
         }
 
         void write__integer_within_range(workspace& workspace, runner::cell_ID low_bound, runner::cell_ID value, runner::cell_ID high_bound, runner::cell_ID destination) {
-            runner::instruction temp_instruction;
+            write__any_instruction(workspace, runner::instruction_type::integer_within_range, parameter_unused, low_bound, value, high_bound, parameter_unused, destination, parameter_unused, parameter_unused, parameter_unused);
 
-            // create instruction
-            if (workspace.p_pass_type == pass_type::pass_build) {
-                // set type
-                temp_instruction.p_type = runner::instruction_type::integer_within_range;
-                temp_instruction.p_input_0 = low_bound;
-                temp_instruction.p_input_1 = value;
-                temp_instruction.p_input_2 = high_bound;
-                temp_instruction.p_output_0 = destination;
-
-                // write instruction
-                workspace.p_program.p_instructions[workspace.p_instruction_count] = temp_instruction;
-            }
-
-            // next instruction
-            workspace.p_instruction_count++;
+            return;
         }
 
         void write__boolean_not(workspace& workspace, runner::cell_ID source, runner::cell_ID destination) {
-            runner::instruction temp_instruction;
+            write__any_instruction(workspace, runner::instruction_type::boolean_not, parameter_unused, source, parameter_unused, parameter_unused, parameter_unused, destination, parameter_unused, parameter_unused, parameter_unused);
 
-            // create instruction
-            if (workspace.p_pass_type == pass_type::pass_build) {
-                // set type
-                temp_instruction.p_type = runner::instruction_type::boolean_not;
-                temp_instruction.p_input_0 = source;
-                temp_instruction.p_output_0 = destination;
-
-                // write instruction
-                workspace.p_program.p_instructions[workspace.p_instruction_count] = temp_instruction;
-            }
-
-            // next instruction
-            workspace.p_instruction_count++;
+            return;
         }
 
         void write__get_context_input(workspace& workspace, runner::cell_ID destination_start, runner::cell_ID destination_end) {
-            runner::instruction temp_instruction;
+            write__any_instruction(workspace, runner::instruction_type::get_context_input, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, destination_start, destination_end, parameter_unused, parameter_unused);
 
-            // create instruction
-            if (workspace.p_pass_type == pass_type::pass_build) {
-                // set type
-                temp_instruction.p_type = runner::instruction_type::get_context_input;
-                temp_instruction.p_output_0 = destination_start;
-                temp_instruction.p_output_1 = destination_end;
-
-                // write instruction
-                workspace.p_program.p_instructions[workspace.p_instruction_count] = temp_instruction;
-            }
-
-            // next instruction
-            workspace.p_instruction_count++;
+            return;
         }
 
         void write__pass_context_output(workspace& workspace, runner::cell_ID source_start, runner::cell_ID source_end) {
-            runner::instruction temp_instruction;
+            write__any_instruction(workspace, runner::instruction_type::pass_context_output, parameter_unused, source_start, source_end, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused);
 
-            // create instruction
-            if (workspace.p_pass_type == pass_type::pass_build) {
-                // set type
-                temp_instruction.p_type = runner::instruction_type::pass_context_output;
-                temp_instruction.p_input_0 = source_start;
-                temp_instruction.p_input_1 = source_end;
-
-                // write instruction
-                workspace.p_program.p_instructions[workspace.p_instruction_count] = temp_instruction;
-            }
-
-            // next instruction
-            workspace.p_instruction_count++;
+            return;
         }
 
         void write__run(workspace& workspace, runner::cell_ID program_start, runner::cell_ID program_end, runner::cell_ID input_start, runner::cell_ID input_end, runner::cell_ID result_start, runner::cell_ID result_end, runner::cell_ID runner_error_occured) {
-            runner::instruction temp_instruction;
+            write__any_instruction(workspace, runner::instruction_type::run, parameter_unused, program_start, program_end, input_start, input_end, result_start, result_end, runner_error_occured, parameter_unused);
 
-            // create instruction
-            if (workspace.p_pass_type == pass_type::pass_build) {
-                // set type
-                temp_instruction.p_type = runner::instruction_type::run;
-                temp_instruction.p_input_0 = program_start;
-                temp_instruction.p_input_1 = program_end;
-                temp_instruction.p_input_2 = input_start;
-                temp_instruction.p_input_3 = input_end;
-                temp_instruction.p_output_0 = result_start;
-                temp_instruction.p_output_1 = result_end;
-                temp_instruction.p_output_2 = runner_error_occured;
-
-                // write instruction
-                workspace.p_program.p_instructions[workspace.p_instruction_count] = temp_instruction;
-            }
-
-            // next instruction
-            workspace.p_instruction_count++;
+            return;
         }
     }
 
