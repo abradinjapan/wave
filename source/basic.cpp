@@ -246,4 +246,8 @@ namespace basic {
 
         return output;
     }
+
+    bool string_contains_at(std::string& string, basic::u64 offset, std::string contains) {
+        return string.substr(offset, contains.length()) == contains;
+    }
 }

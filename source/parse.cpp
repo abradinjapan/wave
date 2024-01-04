@@ -2,8 +2,9 @@
 
 #include <iostream>
 
-#include "lex.cpp"
 #include "basic.cpp"
+#include "lex.cpp"
+#include "literals.cpp"
 #include "run.cpp"
 
 namespace parser {
@@ -83,7 +84,7 @@ namespace parser {
         std::vector<statement> p_scope;
 
         abstraction() {
-            p_type = is_undefined;
+            p_type = abstraction_type::is_undefined;
             p_header = statement();
             p_scope = std::vector<statement>();
         }
@@ -93,238 +94,6 @@ namespace parser {
     public:
         std::vector<abstraction> p_abstractions;
     };
-
-    bool string_starts_with(std::string& string, std::string starts_with) {
-        // check if length of start with is less than length of string
-        if (string.length() <= starts_with.length()) {
-            return false;
-        }
-
-        // check each character
-        for (basic::u64 i = 0; i < starts_with.length(); i++) {
-            // check if character is invalid
-            if (starts_with[i] != string[i]) {
-                // not a match
-                return false;
-            }
-        }
-
-        // match found
-        return true;
-    }
-
-    bool string_contains_at(std::string& string, basic::u64 offset, std::string contains) {
-        return string.substr(offset, contains.length()) == contains;
-    }
-
-    bool string_is_integer_literal(lexer::lexling& lexling) {
-        bool output = false;
-        bool error;
-        std::string prefix = "wave.integer.";
-
-        // check for the start of the literal
-        if (string_contains_at(lexling.p_value, 0, prefix) == false) {
-            return output;
-        }
-
-        // convert integer literal to binary integer
-        basic::convert_integer_literal_to_binary_integer(lexling.p_value.substr(prefix.length()), error);
-        output = !error;
-
-        return output;
-    }
-
-    bool string_is_boolean_literal(lexer::lexling& lexling) {
-        return (lexling.p_value == "wave.boolean.true" || lexling.p_value == "wave.boolean.false");
-    }
-
-    bool string_is_instruction_literal(lexer::lexling& lexling) {
-        std::string instruction_prefix = "wave.instruction.";
-
-        // check for prefix
-        if (!string_contains_at(lexling.p_value, 0, instruction_prefix)) {
-            return false;
-        }
-
-        // check for suffixes
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "type.size")) {
-            return true;
-        }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "type.offset")) {
-            return true;
-        }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "write_register_value.size")) {
-            return true;
-        }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "write_register_value.offset")) {
-            return true;
-        }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "input_0.size")) {
-            return true;
-        }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "input_0.offset")) {
-            return true;
-        }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "input_1.size")) {
-            return true;
-        }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "input_1.offset")) {
-            return true;
-        }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "input_2.size")) {
-            return true;
-        }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "input_2.offset")) {
-            return true;
-        }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "input_3.size")) {
-            return true;
-        }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "input_3.offset")) {
-            return true;
-        }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "output_0.size")) {
-            return true;
-        }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "output_0.offset")) {
-            return true;
-        }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "output_1.size")) {
-            return true;
-        }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "output_1.offset")) {
-            return true;
-        }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "output_2.size")) {
-            return true;
-        }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "output_2.offset")) {
-            return true;
-        }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "jump_instruction_ID.size")) {
-            return true;
-        }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "jump_instruction_ID.offset")) {
-            return true;
-        }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "size")) {
-            return true;
-        }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.quit")) {
-            return true;
-        }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.write_cell")) {
-            return true;
-        }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.copy_cell")) {
-            return true;
-        }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.print_cell_as_number")) {
-            return true;
-        }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.print_cell_as_character")) {
-            return true;
-        }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.get_console_input")) {
-            return true;
-        }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.create_new_context")) {
-            return true;
-        }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.restore_old_context")) {
-            return true;
-        }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.pass_input")) {
-            return true;
-        }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.get_input")) {
-            return true;
-        }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.pass_output")) {
-            return true;
-        }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.get_output")) {
-            return true;
-        }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.jump_to_abstraction")) {
-            return true;
-        }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.jump_from_abstraction")) {
-            return true;
-        }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.jump")) {
-            return true;
-        }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.get_instruction_index")) {
-            return true;
-        }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.request_memory")) {
-            return true;
-        }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.return_memory")) {
-            return true;
-        }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.cell_to_address")) {
-            return true;
-        }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.address_to_cell")) {
-            return true;
-        }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.buffer_to_file")) {
-            return true;
-        }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.file_to_buffer")) {
-            return true;
-        }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.integer_add")) {
-            return true;
-        }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.integer_subtract")) {
-            return true;
-        }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.integer_multiply")) {
-            return true;
-        }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.integer_divide")) {
-            return true;
-        }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.integer_modulous")) {
-            return true;
-        }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.integer_within_range")) {
-            return true;
-        }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.boolean_not")) {
-            return true;
-        }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.get_context_input")) {
-            return true;
-        }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.pass_context_output")) {
-            return true;
-        }
-        if (string_contains_at(lexling.p_value, instruction_prefix.length(), "opcode.run")) {
-            return true;
-        }
-
-        return false;
-    }
-
-    bool string_is_hexadecimal_literal(lexer::lexling& lexling) {
-        std::string prefix = "wave.hexadecimal.";
-        bool error;
-
-        // check for prefix
-        if (string_contains_at(lexling.p_value, 0, prefix) == false) {
-            return false;
-        }
-
-        // attempt conversion
-        basic::convert_hexadecimal_literal_to_binary_integer(lexling.p_value.substr(prefix.length()), error);
-
-        // return findings
-        return !error;
-    }
 
     // parse arguments
     std::vector<name> parse_arguments(lexer::lexlings& lexlings, int& lexling_index, bool& error_occured) {
@@ -345,28 +114,28 @@ namespace parser {
                     // next lexling
                     lexling_index += 2;
                 // check for integer literal
-                } else if (string_is_integer_literal(lexlings.p_lexlings[lexling_index])) {
+                } else if (literals::string_is_integer_literal(lexlings.p_lexlings[lexling_index])) {
                     // add argument
                     output.push_back(name(name_type::is_integer_literal, lexlings.p_lexlings[lexling_index].p_value));
 
                     // next argument
                     lexling_index++;
                 // check for boolean literal
-                } else if (string_is_boolean_literal(lexlings.p_lexlings[lexling_index])) {
+                } else if (literals::string_is_boolean_literal(lexlings.p_lexlings[lexling_index])) {
                     // add argument
                     output.push_back(name(name_type::is_boolean_literal, lexlings.p_lexlings[lexling_index].p_value));
 
                     // next argument
                     lexling_index++;
                 // check for instruction literal
-                } else if (string_is_instruction_literal(lexlings.p_lexlings[lexling_index])) {
+                } else if (literals::string_is_instruction_literal(lexlings.p_lexlings[lexling_index])) {
                     // add argument
                     output.push_back(name(name_type::is_instruction_literal, lexlings.p_lexlings[lexling_index].p_value));
 
                     // next argument
                     lexling_index++;
                 // check for hexadecimal literal
-                } else if (string_is_hexadecimal_literal(lexlings.p_lexlings[lexling_index])) {
+                } else if (literals::string_is_hexadecimal_literal(lexlings.p_lexlings[lexling_index])) {
                     // add argument
                     output.push_back(name(name_type::is_hexadecimal_literal, lexlings.p_lexlings[lexling_index].p_value));
 

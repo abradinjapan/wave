@@ -61,7 +61,7 @@ namespace lexer {
         return (low <= character) && (character <= high);
     }
 
-    // lex string
+    // lex user code
     lexlings lex(std::string user_code, bool& error_occured) {
         lexlings output;
         unsigned int index;
@@ -160,7 +160,7 @@ namespace lexer {
 
                     // next index
                     index++;
-                // check for instruction marker
+                // check for abstraction marker
                 } else if (user_code[index] == '=') {
                     // add lexling
                     output.p_lexlings.push_back(lexling(lexling_type::abstraction_marker, "="));

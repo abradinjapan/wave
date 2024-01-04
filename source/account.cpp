@@ -386,9 +386,9 @@ namespace accounter {
 
                 p_type = literal_type::is_integer_literal;
             } else if (type == parser::name_type::is_boolean_literal) {
-                if (parser::string_contains_at(p_name, boolean_prefix.length(), "false")) {
+                if (basic::string_contains_at(p_name, boolean_prefix.length(), "false")) {
                     p_integer_value = 0;
-                } else if (parser::string_contains_at(p_name, boolean_prefix.length(), "true")) {
+                } else if (basic::string_contains_at(p_name, boolean_prefix.length(), "true")) {
                     p_integer_value = 1;
                 } else {
                     // error
@@ -399,111 +399,111 @@ namespace accounter {
 
                 p_type = literal_type::is_boolean_literal;
             } else if (type == parser::name_type::is_instruction_literal) {
-                if (parser::string_contains_at(p_name, instruction_prefix.length(), "type.size")) {
+                if (basic::string_contains_at(p_name, instruction_prefix.length(), "type.size")) {
                     p_integer_value = sizeof(runner::instruction::p_type);
-                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "type.offset")) {
+                } else if (basic::string_contains_at(p_name, instruction_prefix.length(), "type.offset")) {
                     p_integer_value = offsetof(runner::instruction, runner::instruction::p_type);
-                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "write_register_value.size")) {
+                } else if (basic::string_contains_at(p_name, instruction_prefix.length(), "write_register_value.size")) {
                     p_integer_value = sizeof(runner::instruction::p_write_register_value);
-                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "write_register_value.offset")) {
+                } else if (basic::string_contains_at(p_name, instruction_prefix.length(), "write_register_value.offset")) {
                     p_integer_value = offsetof(runner::instruction, runner::instruction::p_write_register_value);
-                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "input_0.size")) {
+                } else if (basic::string_contains_at(p_name, instruction_prefix.length(), "input_0.size")) {
                     p_integer_value = sizeof(runner::instruction::p_input_0);
-                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "input_0.offset")) {
+                } else if (basic::string_contains_at(p_name, instruction_prefix.length(), "input_0.offset")) {
                     p_integer_value = offsetof(runner::instruction, runner::instruction::p_input_0);
-                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "input_1.size")) {
+                } else if (basic::string_contains_at(p_name, instruction_prefix.length(), "input_1.size")) {
                     p_integer_value = sizeof(runner::instruction::p_input_1);
-                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "input_1.offset")) {
+                } else if (basic::string_contains_at(p_name, instruction_prefix.length(), "input_1.offset")) {
                     p_integer_value = offsetof(runner::instruction, runner::instruction::p_input_1);
-                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "input_2.size")) {
+                } else if (basic::string_contains_at(p_name, instruction_prefix.length(), "input_2.size")) {
                     p_integer_value = sizeof(runner::instruction::p_input_2);
-                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "input_2.offset")) {
+                } else if (basic::string_contains_at(p_name, instruction_prefix.length(), "input_2.offset")) {
                     p_integer_value = offsetof(runner::instruction, runner::instruction::p_input_2);
-                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "input_3.size")) {
+                } else if (basic::string_contains_at(p_name, instruction_prefix.length(), "input_3.size")) {
                     p_integer_value = sizeof(runner::instruction::p_input_3);
-                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "input_3.offset")) {
+                } else if (basic::string_contains_at(p_name, instruction_prefix.length(), "input_3.offset")) {
                     p_integer_value = offsetof(runner::instruction, runner::instruction::p_input_3);
-                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "output_0.size")) {
+                } else if (basic::string_contains_at(p_name, instruction_prefix.length(), "output_0.size")) {
                     p_integer_value = sizeof(runner::instruction::p_output_0);
-                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "output_0.offset")) {
+                } else if (basic::string_contains_at(p_name, instruction_prefix.length(), "output_0.offset")) {
                     p_integer_value = offsetof(runner::instruction, runner::instruction::p_output_0);
-                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "output_1.size")) {
+                } else if (basic::string_contains_at(p_name, instruction_prefix.length(), "output_1.size")) {
                     p_integer_value = sizeof(runner::instruction::p_output_1);
-                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "output_1.offset")) {
+                } else if (basic::string_contains_at(p_name, instruction_prefix.length(), "output_1.offset")) {
                     p_integer_value = offsetof(runner::instruction, runner::instruction::p_output_1);
-                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "output_2.size")) {
+                } else if (basic::string_contains_at(p_name, instruction_prefix.length(), "output_2.size")) {
                     p_integer_value = sizeof(runner::instruction::p_output_2);
-                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "output_2.offset")) {
+                } else if (basic::string_contains_at(p_name, instruction_prefix.length(), "output_2.offset")) {
                     p_integer_value = offsetof(runner::instruction, runner::instruction::p_output_2);
-                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "jump_instruction_ID.size")) {
+                } else if (basic::string_contains_at(p_name, instruction_prefix.length(), "jump_instruction_ID.size")) {
                     p_integer_value = sizeof(runner::instruction::p_jump_instruction_ID);
-                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "jump_instruction_ID.offset")) {
+                } else if (basic::string_contains_at(p_name, instruction_prefix.length(), "jump_instruction_ID.offset")) {
                     p_integer_value = offsetof(runner::instruction, runner::instruction::p_jump_instruction_ID);
-                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "size")) {
+                } else if (basic::string_contains_at(p_name, instruction_prefix.length(), "size")) {
                     p_integer_value = sizeof(runner::instruction);
-                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "opcode.quit")) {
+                } else if (basic::string_contains_at(p_name, instruction_prefix.length(), "opcode.quit")) {
                     p_integer_value = (basic::u64)runner::instruction_type::quit;
-                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "opcode.write_cell")) {
+                } else if (basic::string_contains_at(p_name, instruction_prefix.length(), "opcode.write_cell")) {
                     p_integer_value = (basic::u64)runner::instruction_type::write_cell;
-                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "opcode.copy_cell")) {
+                } else if (basic::string_contains_at(p_name, instruction_prefix.length(), "opcode.copy_cell")) {
                     p_integer_value = (basic::u64)runner::instruction_type::copy_cell;
-                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "opcode.print_cell_as_number")) {
+                } else if (basic::string_contains_at(p_name, instruction_prefix.length(), "opcode.print_cell_as_number")) {
                     p_integer_value = (basic::u64)runner::instruction_type::print_cell_as_number;
-                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "opcode.print_cell_as_character")) {
+                } else if (basic::string_contains_at(p_name, instruction_prefix.length(), "opcode.print_cell_as_character")) {
                     p_integer_value = (basic::u64)runner::instruction_type::print_cell_as_character;
-                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "opcode.get_console_input")) {
+                } else if (basic::string_contains_at(p_name, instruction_prefix.length(), "opcode.get_console_input")) {
                     p_integer_value = (basic::u64)runner::instruction_type::get_console_input;
-                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "opcode.create_new_context")) {
+                } else if (basic::string_contains_at(p_name, instruction_prefix.length(), "opcode.create_new_context")) {
                     p_integer_value = (basic::u64)runner::instruction_type::create_new_context;
-                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "opcode.restore_old_context")) {
+                } else if (basic::string_contains_at(p_name, instruction_prefix.length(), "opcode.restore_old_context")) {
                     p_integer_value = (basic::u64)runner::instruction_type::restore_old_context;
-                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "opcode.pass_input")) {
+                } else if (basic::string_contains_at(p_name, instruction_prefix.length(), "opcode.pass_input")) {
                     p_integer_value = (basic::u64)runner::instruction_type::pass_input;
-                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "opcode.get_input")) {
+                } else if (basic::string_contains_at(p_name, instruction_prefix.length(), "opcode.get_input")) {
                     p_integer_value = (basic::u64)runner::instruction_type::get_input;
-                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "opcode.pass_output")) {
+                } else if (basic::string_contains_at(p_name, instruction_prefix.length(), "opcode.pass_output")) {
                     p_integer_value = (basic::u64)runner::instruction_type::pass_output;
-                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "opcode.get_output")) {
+                } else if (basic::string_contains_at(p_name, instruction_prefix.length(), "opcode.get_output")) {
                     p_integer_value = (basic::u64)runner::instruction_type::get_output;
-                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "opcode.jump_to_abstraction")) {
+                } else if (basic::string_contains_at(p_name, instruction_prefix.length(), "opcode.jump_to_abstraction")) {
                     p_integer_value = (basic::u64)runner::instruction_type::jump_to_abstraction;
-                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "opcode.jump_from_abstraction")) {
+                } else if (basic::string_contains_at(p_name, instruction_prefix.length(), "opcode.jump_from_abstraction")) {
                     p_integer_value = (basic::u64)runner::instruction_type::jump_from_abstraction;
-                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "opcode.jump")) {
+                } else if (basic::string_contains_at(p_name, instruction_prefix.length(), "opcode.jump")) {
                     p_integer_value = (basic::u64)runner::instruction_type::jump;
-                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "opcode.get_instruction_index")) {
+                } else if (basic::string_contains_at(p_name, instruction_prefix.length(), "opcode.get_instruction_index")) {
                     p_integer_value = (basic::u64)runner::instruction_type::get_instruction_index;
-                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "opcode.request_memory")) {
+                } else if (basic::string_contains_at(p_name, instruction_prefix.length(), "opcode.request_memory")) {
                     p_integer_value = (basic::u64)runner::instruction_type::request_memory;
-                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "opcode.return_memory")) {
+                } else if (basic::string_contains_at(p_name, instruction_prefix.length(), "opcode.return_memory")) {
                     p_integer_value = (basic::u64)runner::instruction_type::return_memory;
-                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "opcode.cell_to_address")) {
+                } else if (basic::string_contains_at(p_name, instruction_prefix.length(), "opcode.cell_to_address")) {
                     p_integer_value = (basic::u64)runner::instruction_type::cell_to_address;
-                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "opcode.address_to_cell")) {
+                } else if (basic::string_contains_at(p_name, instruction_prefix.length(), "opcode.address_to_cell")) {
                     p_integer_value = (basic::u64)runner::instruction_type::address_to_cell;
-                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "opcode.buffer_to_file")) {
+                } else if (basic::string_contains_at(p_name, instruction_prefix.length(), "opcode.buffer_to_file")) {
                     p_integer_value = (basic::u64)runner::instruction_type::buffer_to_file;
-                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "opcode.file_to_buffer")) {
+                } else if (basic::string_contains_at(p_name, instruction_prefix.length(), "opcode.file_to_buffer")) {
                     p_integer_value = (basic::u64)runner::instruction_type::file_to_buffer;
-                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "opcode.integer_add")) {
+                } else if (basic::string_contains_at(p_name, instruction_prefix.length(), "opcode.integer_add")) {
                     p_integer_value = (basic::u64)runner::instruction_type::integer_add;
-                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "opcode.integer_subtract")) {
+                } else if (basic::string_contains_at(p_name, instruction_prefix.length(), "opcode.integer_subtract")) {
                     p_integer_value = (basic::u64)runner::instruction_type::integer_subtract;
-                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "opcode.integer_multiply")) {
+                } else if (basic::string_contains_at(p_name, instruction_prefix.length(), "opcode.integer_multiply")) {
                     p_integer_value = (basic::u64)runner::instruction_type::integer_multiply;
-                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "opcode.integer_divide")) {
+                } else if (basic::string_contains_at(p_name, instruction_prefix.length(), "opcode.integer_divide")) {
                     p_integer_value = (basic::u64)runner::instruction_type::integer_divide;
-                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "opcode.integer_modulous")) {
+                } else if (basic::string_contains_at(p_name, instruction_prefix.length(), "opcode.integer_modulous")) {
                     p_integer_value = (basic::u64)runner::instruction_type::integer_modulous;
-                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "opcode.integer_within_range")) {
+                } else if (basic::string_contains_at(p_name, instruction_prefix.length(), "opcode.integer_within_range")) {
                     p_integer_value = (basic::u64)runner::instruction_type::integer_within_range;
-                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "opcode.boolean_not")) {
+                } else if (basic::string_contains_at(p_name, instruction_prefix.length(), "opcode.boolean_not")) {
                     p_integer_value = (basic::u64)runner::instruction_type::boolean_not;
-                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "opcode.get_context_input")) {
+                } else if (basic::string_contains_at(p_name, instruction_prefix.length(), "opcode.get_context_input")) {
                     p_integer_value = (basic::u64)runner::instruction_type::get_context_input;
-                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "opcode.pass_context_output")) {
+                } else if (basic::string_contains_at(p_name, instruction_prefix.length(), "opcode.pass_context_output")) {
                     p_integer_value = (basic::u64)runner::instruction_type::pass_context_output;
-                } else if (parser::string_contains_at(p_name, instruction_prefix.length(), "opcode.run")) {
+                } else if (basic::string_contains_at(p_name, instruction_prefix.length(), "opcode.run")) {
                     p_integer_value = (basic::u64)runner::instruction_type::run;
                 } else {
                     // error
