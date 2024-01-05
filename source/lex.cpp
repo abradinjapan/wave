@@ -204,9 +204,6 @@ namespace lexer {
 
                     // push back string
                     output.p_lexlings.push_back(lexling(lexling_type::string_literal, user_code.substr(string_start + 2, (index - 2) - (string_start + 2))));
-
-                    // next index
-                    index++;
                 // no lexling found, error
                 } else {
                     // inform user of failure

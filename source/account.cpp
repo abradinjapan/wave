@@ -354,6 +354,7 @@ namespace accounter {
         is_boolean_literal,
         is_instruction_literal,
         is_hexadecimal_literal,
+        is_string_literal,
         is_invalid,
     };
 
@@ -362,6 +363,7 @@ namespace accounter {
         std::string p_name;
         literal_type p_type;
         basic::u64 p_integer_value;
+        std::string p_string_value;
         int p_statement_ID;
         int p_argument_ID;
 
@@ -381,7 +383,11 @@ namespace accounter {
             std::string instruction_prefix = "wave.instruction.";
             std::string hexadecimal_prefix = "wave.hexadecimal.";
 
-            if (type == parser::name_type::is_integer_literal) {
+            if (type == parser::name_type::is_string_literal) {
+                p_string_value = p_name;
+
+                p_type = literal_type::is_string_literal;
+            } else if (type == parser::name_type::is_integer_literal) {
                 p_integer_value = basic::convert_integer_literal_to_binary_integer(p_name.substr(integer_prefix.length()), error_occured);
 
                 p_type = literal_type::is_integer_literal;
@@ -429,7 +435,7 @@ namespace accounter {
                 // check statement inputs for literals
                 for (basic::u64 input_ID = 0; input_ID < abstraction.p_scope[statement_ID].p_inputs.size(); input_ID++) {
                     // check statement type
-                    if (abstraction.p_scope[statement_ID].p_inputs[input_ID].p_name_type == parser::name_type::is_integer_literal || abstraction.p_scope[statement_ID].p_inputs[input_ID].p_name_type == parser::name_type::is_boolean_literal || abstraction.p_scope[statement_ID].p_inputs[input_ID].p_name_type == parser::name_type::is_instruction_literal || abstraction.p_scope[statement_ID].p_inputs[input_ID].p_name_type == parser::name_type::is_hexadecimal_literal) {
+                    if (abstraction.p_scope[statement_ID].p_inputs[input_ID].p_name_type == parser::name_type::is_integer_literal || abstraction.p_scope[statement_ID].p_inputs[input_ID].p_name_type == parser::name_type::is_boolean_literal || abstraction.p_scope[statement_ID].p_inputs[input_ID].p_name_type == parser::name_type::is_instruction_literal || abstraction.p_scope[statement_ID].p_inputs[input_ID].p_name_type == parser::name_type::is_hexadecimal_literal || abstraction.p_scope[statement_ID].p_inputs[input_ID].p_name_type == parser::name_type::is_string_literal) {
                         // add literal
                         output.p_literals.push_back(literal(abstraction.p_scope[statement_ID].p_inputs[input_ID].p_name_value, abstraction.p_scope[statement_ID].p_inputs[input_ID].p_name_type, statement_ID, input_ID, error_occured));
                     }
@@ -467,6 +473,7 @@ namespace accounter {
             is_boolean_literal,
             is_instruction_literal,
             is_hexadecimal_literal,
+            is_string_literal,
         };
 
         class argument {
@@ -583,6 +590,8 @@ namespace accounter {
                     return argument_type::is_instruction_literal;
                 case literal_type::is_hexadecimal_literal:
                     return argument_type::is_hexadecimal_literal;
+                case literal_type::is_string_literal:
+                    return argument_type::is_string_literal;
                 default:
                     return argument_type::is_invalid;
                 }
@@ -742,6 +751,7 @@ namespace accounter {
                 synthesize_header_only_abstraction("wave.quit", 0, 0);
                 synthesize_header_only_abstraction("wave.set", 1, 1);
                 synthesize_header_only_abstraction("wave.copy", 1, 1);
+                synthesize_header_only_abstraction("wave.copy.string", 1, 3);
                 synthesize_header_only_abstraction("wave.print.number", 1, 0);
                 synthesize_header_only_abstraction("wave.print.character", 1, 0);
                 synthesize_header_only_abstraction("wave.get_console_input", 0, 2);
@@ -884,6 +894,17 @@ namespace accounter {
                                 }
 
                                 break;
+                            // is string literal
+                            case parser::name_type::is_string_literal:
+                                // lookup literal
+                                output[output.size() - 1].p_inputs.push_back(p_abstractions[abstraction_ID].lookup_literal_by_ID(statement_ID, input_ID, error_occured));
+
+                                // check for error
+                                if (error_occured) {
+                                    return output;
+                                }
+
+                                break;
                             // not valid
                             default:
                                 std::cout << "Accounting error, an illegal name type was found in statement inputs." << std::endl;
@@ -989,7 +1010,18 @@ namespace accounter {
                 // print literals
                 for (basic::u64 i = 0; i < table.p_literals.size(); i++) {
                     // print literal
-                    std::cout << "\t\t\t" << table.p_literals[i].p_name << " ( " << table.p_literals[i].p_integer_value << " ); Found At: [ " << table.p_literals[i].p_statement_ID << " " << table.p_literals[i].p_argument_ID << " ]" << std::endl;
+                    std::cout << "\t\t\t" << table.p_literals[i].p_name << " ( ";
+
+                    // if string literal
+                    if (table.p_literals[i].p_type == literal_type::is_string_literal) {
+                        std::cout << "\"\'" << table.p_literals[i].p_string_value << "\'\"";
+                    // is integer based literal
+                    } else {
+                        std::cout << table.p_literals[i].p_integer_value;
+                    }
+
+                    // print remaining data
+                    std::cout << " ); Found At: [ " << table.p_literals[i].p_statement_ID << " " << table.p_literals[i].p_argument_ID << " ]" << std::endl;
                 }
             }
 
@@ -1033,6 +1065,9 @@ namespace accounter {
                             break;
                         case argument_type::is_hexadecimal_literal:
                             std::cout << "is_hexadecimal_literal" << " -> " << table[i].p_inputs[j].p_ID;
+                            break;
+                        case argument_type::is_string_literal:
+                            std::cout << "is_string_literal" << " -> " << table[i].p_inputs[j].p_ID;
                             break;
                         default:
                             std::cout << "is_invalid" << " -> " << table[i].p_inputs[j].p_ID;

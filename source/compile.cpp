@@ -77,6 +77,11 @@ namespace compiler {
         for (basic::u64 file = 0; file < files.size(); file++) {
             // dissect file
             unit.p_parse_trees.push_back(dissect_user_code(files[file], compilation_error, print_debug));
+
+            // check for error
+            if (compilation_error == true) {
+                return output;
+            }
         }
 
         // account for all files

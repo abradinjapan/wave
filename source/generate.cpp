@@ -42,6 +42,7 @@ namespace generator {
             p_abstraction_offsets.resize(abstraction_count);
             p_pass_type = pass_type::pass_measure;
             p_instruction_count = 0;
+            p_program.p_strings.clear();
         }
 
         void finish_pass_measure() {
@@ -49,6 +50,7 @@ namespace generator {
         }
 
         void start_pass_build() {
+            p_program.p_strings.clear();
             p_instruction_count = 0;
             p_pass_type = pass_type::pass_build;
         }
@@ -104,6 +106,12 @@ namespace generator {
 
         void write__copy_cell(workspace& workspace, runner::cell_ID source, runner::cell_ID destination) {
             write__any_instruction(workspace, runner::opcode::copy_cell, parameter_unused, source, parameter_unused, parameter_unused, parameter_unused, destination, parameter_unused, parameter_unused, parameter_unused);
+
+            return;
+        }
+
+        void write__copy_string(workspace& workspace, runner::cell_ID string_ID, runner::cell_ID destination_start, runner::cell_ID destination_end, runner::cell_ID error) {
+            write__any_instruction(workspace, runner::opcode::copy_string, parameter_unused, string_ID, parameter_unused, parameter_unused, parameter_unused, destination_start, destination_end, error, parameter_unused);
 
             return;
         }
@@ -366,6 +374,15 @@ namespace generator {
                 case runner::opcode::copy_cell:
                     // write code
                     write_instructions::write__copy_cell(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[0], abstraction));
+
+                    break;
+                // wave.copy.string(1)(3)
+                case runner::opcode::copy_string:
+                    // append string to program string list
+                    workspace.p_program.p_strings.push_back(abstraction.p_literals.p_literals[abstraction.lookup_literal_by_ID(statement_ID, 0, error_occured).p_ID].p_string_value);
+
+                    // write code
+                    write_instructions::write__copy_string(workspace, workspace.p_program.p_strings.size() - 1, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[1], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[2], abstraction));
 
                     break;
                 // wave.print_cell_as_number(1)(0)

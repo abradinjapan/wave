@@ -17,6 +17,7 @@ namespace parser {
         is_boolean_literal,
         is_instruction_literal,
         is_hexadecimal_literal,
+        is_string_literal,
     };
 
     class name {
@@ -138,6 +139,13 @@ namespace parser {
                 } else if (literals::string_is_hexadecimal_literal(lexlings.p_lexlings[lexling_index])) {
                     // add argument
                     output.push_back(name(name_type::is_hexadecimal_literal, lexlings.p_lexlings[lexling_index].p_value));
+
+                    // next argument
+                    lexling_index++;
+                // check for string literal
+                } else if (lexlings.p_lexlings[lexling_index].p_type == lexer::lexling_type::string_literal) {
+                    // add argument
+                    output.push_back(name(name_type::is_string_literal, lexlings.p_lexlings[lexling_index].p_value));
 
                     // next argument
                     lexling_index++;

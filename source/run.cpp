@@ -256,6 +256,7 @@ namespace runner {
         quit,
         write_cell,
         copy_cell,
+        copy_string,
         print_cell_as_number,
         print_cell_as_character,
         get_console_input,
@@ -317,6 +318,7 @@ namespace runner {
     class program {
     public:
         std::vector<instruction> p_instructions;
+        std::vector<std::string> p_strings;
 
         bool create_from_allocation(allocations& allocations, basic::buffer program) {
             basic::address current;
@@ -365,6 +367,8 @@ namespace runner {
         std::vector<cell> outputs;
         basic::address file_start;
         basic::address file_end;
+        std::string temp_string;
+        basic::u64 temp_length;
         bool file_error_occured;
         char console_buffer[console_input_buffer_length];
         basic::u64 console_buffer_length;
@@ -410,6 +414,41 @@ namespace runner {
             case opcode::copy_cell:
                 // copy data
                 context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0] = context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0];
+
+                // next instruction
+                current_instruction++;
+
+                break;
+            case opcode::copy_string:
+                // seup variables
+                temp_string = program.p_strings[context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0]];
+                temp_length = (basic::u64)temp_string.length();
+
+                // perform allocation
+                context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0] = (runner::cell)malloc(temp_length);
+
+                // check allocation
+                if (context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0] != 0) {
+                    // allocation succeded, setup string
+                    // copy data to new buffer
+                    for (basic::u64 character = 0; character < temp_length; character++) {
+                        // copy char
+                        ((basic::u8*)(context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0]))[character] = temp_string[character];
+                    }
+
+                    // setup string end
+                    context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_1] = context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0] + temp_length - 1;
+
+                    // register allocation
+                    allocations.add_allocation(basic::buffer((basic::address)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0], (basic::address)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_1]));
+                // allocation failed
+                } else {
+                    // setup blank end address
+                    context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_1] = 0;
+
+                    // set error code
+                    context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_2] = true;
+                }
 
                 // next instruction
                 current_instruction++;
@@ -863,6 +902,9 @@ namespace runner {
                 break;
             case runner::opcode::copy_cell:
                 std::cout << "copy_cell";
+                break;
+            case runner::opcode::copy_string:
+                std::cout << "copy_string";
                 break;
             case runner::opcode::print_cell_as_number:
                 std::cout << "print_cell_as_number";
