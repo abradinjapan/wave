@@ -72,7 +72,7 @@ int main(int argc, char** argv) {
         }
 
         // compile and run
-        compile_and_run(user_codes, true);
+        compile_and_run(user_codes, false);
     // if file name is missing
     } else {
         std::cout << "Missing file name(s)." << std::endl;
