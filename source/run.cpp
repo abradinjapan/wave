@@ -420,7 +420,7 @@ namespace runner {
 
                 break;
             case opcode::copy_string:
-                // seup variables
+                // setup variables
                 temp_string = program.p_strings[context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0]];
                 temp_length = (basic::u64)temp_string.length();
 
