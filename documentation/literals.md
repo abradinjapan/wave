@@ -80,7 +80,7 @@ Each field in the instruction has one literal to mark it's inter-instruction off
 
 The fields are:
 
-- "type" : This is the opcode.
+- "opcode" : This is the identifier of the instruction type.
 - "write_register_value" : For the set (write_cell) instruction, this contains the literal in binary.
 - "input_0" : A cell_ID input.
 - "input_1" : A cell_ID input.
@@ -93,12 +93,12 @@ The fields are:
 
 Offset Example:
 
-> wave.set(wave.instruction.type.offset)(destination_cell)
+> wave.set(wave.instruction.opcode.offset)(destination_cell)
 > wave.set(wave.instruction.input_2.offset)(destination_cell)
 
 Size Example:
 
-> wave.set(wave.instruction.type.size)(destination_cell)
+> wave.set(wave.instruction.opcode.size)(destination_cell)
 > wave.set(wave.instruction.input_2.size)(destination_cell)
 
 There is also one last literal that is a part of the instruction metadata, the instruction's total size.
