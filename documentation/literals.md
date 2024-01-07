@@ -30,6 +30,18 @@ Note, it is also possible to break up the numbers with underscores, like so:
 
 > wave.set(wave.integer.1_000_000)(destination_cell)
 
+## Binary Literal
+
+A binary literal is a binary number written with zeros and ones.
+
+Binary literals are written like so:
+
+> wave.set(wave.binary.10101010)(destination_cell)
+
+Note, it is also possible to break up the numbers with underscores, like so:
+
+> wave.set(wave.binary.1000_1000)(destination_cell)
+
 ## Hexadecimal Literal
 
 A hexadecimal literal is a positive number written in hexadecimal.
