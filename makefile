@@ -11,3 +11,4 @@ test:
 	./../wave.elf programs/context_io.wave
 	./../wave.elf programs/files.wave
 	./../wave.elf programs/math.wave
+	./../wave.elf programs/literals.wave

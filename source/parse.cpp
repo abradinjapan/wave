@@ -18,6 +18,7 @@ namespace parser {
         is_instruction_literal,
         is_hexadecimal_literal,
         is_string_literal,
+        is_binary_literal,
     };
 
     class name {
@@ -149,6 +150,13 @@ namespace parser {
 
                     // next argument
                     lexling_index++;
+                // check for binary literal
+                } else if (literals::string_is_binary_literal(lexlings.p_lexlings[lexling_index])) {
+                    // add argument
+                    output.push_back(name(name_type::is_binary_literal, lexlings.p_lexlings[lexling_index].p_value));
+
+                    // next argument
+                    lexling_index++;
                 // check for name
                 } else if (lexlings.p_lexlings[lexling_index].p_type == lexer::lexling_type::name) {
                     // add argument
@@ -156,7 +164,7 @@ namespace parser {
 
                     // next lexling
                     lexling_index++;
-                // invalid argument lexling, quit loop
+                // invalid argument lexling (error || left parenthesis), quit loop
                 } else {
                     break;
                 }

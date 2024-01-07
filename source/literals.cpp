@@ -202,11 +202,29 @@ namespace literals {
 
         // check for prefix
         if (basic::string_contains_at(lexling.p_value, 0, prefix) == false) {
+            // does not contain prefix
             return false;
         }
 
         // attempt conversion
         basic::convert_hexadecimal_literal_to_binary_integer(lexling.p_value.substr(prefix.length()), error);
+
+        // return findings
+        return !error;
+    }
+
+    bool string_is_binary_literal(lexer::lexling& lexling) {
+        std::string prefix = "wave.binary.";
+        bool error;
+
+        // check for prefix
+        if (basic::string_contains_at(lexling.p_value, 0, prefix) == false) {
+            // does not contain prefix
+            return false;
+        }
+
+        // attempt conversion
+        basic::convert_binary_literal_to_binary_integer(lexling.p_value.substr(prefix.length()), error);
 
         // return findings
         return !error;

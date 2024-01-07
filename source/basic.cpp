@@ -4,6 +4,7 @@
 #include <string>
 #include <stdint.h>
 #include <unistd.h>
+#include <fstream>
 
 /* Define */
 #define define__current_working_directory_buffer_size 2048
@@ -249,5 +250,54 @@ namespace basic {
 
     bool string_contains_at(std::string& string, basic::u64 offset, std::string contains) {
         return string.substr(offset, contains.length()) == contains;
+    }
+
+    u64 convert_binary_literal_to_binary_integer(std::string string, bool& error) {
+        u64 output = 0;
+
+        // check for blank string
+        if (string == "") {
+            // setup error
+            error = true;
+
+            return 0;
+        }
+
+        // pre check for all valid characters
+        for (u64 character = 0; character < string.length(); character++) {
+            // check character
+            if ((string[character] == '0' || string[character] == '1' || string[character] == '_') == false) {
+                // character invalid
+                // set error
+                error = true;
+
+                // return invalid
+                return 0;
+            }
+        }
+
+        // translate number
+        // for each character
+        for (u64 character = 0; character < string.length(); character++) {
+            // skip dead space
+            while (character < string.length() && string[character] == '_') {
+                // next character
+                character++;
+            }
+
+            // check for end of buffer
+            if (character >= string.length()) {
+                break;
+            }
+
+            // translate character
+            u64 value = (string[character] - '0');
+
+            // write value to output
+            output <<= 1;
+            output |= value;
+        }
+
+        return output;
     }
 }

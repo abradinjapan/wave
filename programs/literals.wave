@@ -1,0 +1,4 @@
+main()() = {
+    wave.set(wave.binary.10000010)(a)
+    wave.print.number(a)()
+}
