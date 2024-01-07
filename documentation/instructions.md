@@ -30,6 +30,18 @@ wave.copy(1)(1)
 - Outputs:
     - destination: The destination cell ID.
 
+## copy_string
+
+wave.copy.string(1)(3)
+
+- Duplicates a string into a buffer (note, the buffer from copy_string must be deallocated).
+- Inputs:
+    - string_ID: The ID of the string being used.
+- Outputs:
+    - destination_start: The first address of the string buffer.
+    - destination_end: The last address of the string buffer.
+    - error: Returns true if the string could not be allocated.
+
 ## print_cell_as_number
 
 wave.print.number(1)(0)
