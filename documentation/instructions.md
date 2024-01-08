@@ -30,11 +30,13 @@ wave.copy(1)(1)
 - Outputs:
     - destination: The destination cell ID.
 
-## copy_string
+## load_string
 
-wave.copy.string(1)(3)
+wave.load.string(1)(3)
 
-- Duplicates a string into a buffer (note, the buffer from copy_string must be deallocated).
+- Duplicates a string into a buffer (note, the buffer from load_string must be deallocated).
+- Note: When used as wave.load.string(1)(3), the input argument should be a string literal.
+        But when used as the load_string instruction, the string_ID should be used.
 - Inputs:
     - string_ID: The ID of the string being used.
 - Outputs:

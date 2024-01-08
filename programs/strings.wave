@@ -40,7 +40,7 @@ string.print(start end)() = {
 
 main()() = {
     [ allocate a string ]
-    wave.copy.string("'Here is your string: Hello world!'")(string.hello.start string.hello.end error)
+    wave.load.string("'Here is your string: Hello world!'")(string.hello.start string.hello.end error)
 
     [ print a string ]
     string.print(string.hello.start string.hello.end)()

@@ -760,7 +760,7 @@ namespace accounter {
                 synthesize_header_only_abstraction("wave.quit", 0, 0);
                 synthesize_header_only_abstraction("wave.set", 1, 1);
                 synthesize_header_only_abstraction("wave.copy", 1, 1);
-                synthesize_header_only_abstraction("wave.copy.string", 1, 3);
+                synthesize_header_only_abstraction("wave.load.string", 1, 3);
                 synthesize_header_only_abstraction("wave.print.number", 1, 0);
                 synthesize_header_only_abstraction("wave.print.character", 1, 0);
                 synthesize_header_only_abstraction("wave.get_console_input", 0, 2);

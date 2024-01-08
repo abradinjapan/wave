@@ -256,7 +256,7 @@ namespace runner {
         quit,
         write_cell,
         copy_cell,
-        copy_string,
+        load_string,
         print_cell_as_number,
         print_cell_as_character,
         get_console_input,
@@ -419,7 +419,7 @@ namespace runner {
                 current_instruction++;
 
                 break;
-            case opcode::copy_string:
+            case opcode::load_string:
                 // setup variables
                 temp_string = program.p_strings[context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0]];
                 temp_length = (basic::u64)temp_string.length();
@@ -903,8 +903,8 @@ namespace runner {
             case runner::opcode::copy_cell:
                 std::cout << "copy_cell";
                 break;
-            case runner::opcode::copy_string:
-                std::cout << "copy_string";
+            case runner::opcode::load_string:
+                std::cout << "load_string";
                 break;
             case runner::opcode::print_cell_as_number:
                 std::cout << "print_cell_as_number";

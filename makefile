@@ -12,3 +12,4 @@ test:
 	./../wave.elf programs/files.wave
 	./../wave.elf programs/math.wave
 	./../wave.elf programs/literals.wave
+	./../wave.elf programs/strings.wave
