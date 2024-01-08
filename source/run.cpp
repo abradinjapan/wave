@@ -276,6 +276,7 @@ namespace runner {
         address_to_cell,
         buffer_to_file,
         file_to_buffer,
+        copy_buffer,
         integer_add,
         integer_subtract,
         integer_multiply,
@@ -372,6 +373,10 @@ namespace runner {
         bool file_error_occured;
         char console_buffer[console_input_buffer_length];
         basic::u64 console_buffer_length;
+
+        // copy buffer variables
+        basic::buffer copy_buffer__source;
+        basic::buffer copy_buffer__destination;
         
         // run instruction variables
         runner::program temp_program;
@@ -729,6 +734,44 @@ namespace runner {
                 current_instruction++;
                 
                 break;
+            case opcode::copy_buffer:
+                // get both buffers
+                copy_buffer__source = basic::buffer((basic::address)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0], (basic::address)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_1]);
+                copy_buffer__destination = basic::buffer((basic::address)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_2], (basic::address)context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_3]);
+
+                // check if both allocations are the same length
+                // buffers are same length
+                if (basic::are_buffers_same_length(copy_buffer__source, copy_buffer__destination)) {
+                    // buffers are both in valid address ranges
+                    if (allocations.is_address_range_valid(copy_buffer__source.p_start, copy_buffer__source.p_end) && allocations.is_address_range_valid(copy_buffer__destination.p_start, copy_buffer__destination.p_end)) {
+                        // setup currents
+                        basic::address current_a = copy_buffer__source.p_start;
+                        basic::address current_b = copy_buffer__destination.p_start;
+
+                        // copy buffers
+                        while (current_a <= copy_buffer__source.p_end && current_b <= copy_buffer__destination.p_end) {
+                            // copy data
+                            (*(basic::u8*)current_b) = (*(basic::u8*)current_a);
+
+                            // increment currents
+                            current_a = (basic::address)((basic::u64)current_a + (basic::u64)sizeof(basic::u8));
+                            current_b = (basic::address)((basic::u64)current_b + (basic::u64)sizeof(basic::u8));
+                        }
+                    // buffers are not in valid address ranges
+                    } else {
+                        // set error
+                        context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_1] = true;
+                    }
+                // buffers are different length
+                } else {
+                    // set error
+                    context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0] = true;
+                }
+
+                // next instruction
+                current_instruction++;
+
+                break;
             case opcode::integer_add:
                 // perform addition
                 context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_output_0] = context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0] + context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_1];
@@ -962,6 +1005,9 @@ namespace runner {
                 break;
             case runner::opcode::file_to_buffer:
                 std::cout << "file_to_buffer";
+                break;
+            case runner::opcode::copy_buffer:
+                std::cout << "copy_buffer";
                 break;
             case runner::opcode::integer_add:
                 std::cout << "integer_add";

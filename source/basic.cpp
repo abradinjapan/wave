@@ -54,6 +54,10 @@ namespace basic {
         }
     };
 
+    bool are_buffers_same_length(basic::buffer a, basic::buffer b) {
+        return ((basic::u64)a.p_end - (basic::u64)a.p_start) == ((basic::u64)b.p_end - (basic::u64)b.p_start);
+    }
+
     std::string load_file(std::string file_path) {
         std::ifstream file(file_path);
 

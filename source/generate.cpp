@@ -230,6 +230,12 @@ namespace generator {
             return;
         }
 
+        void write__copy_buffer(workspace& workspace, runner::cell_ID source_start, runner::cell_ID source_end, runner::cell_ID destination_start, runner::cell_ID destination_end, runner::cell_ID buffer_length_error, runner::cell_ID buffer_addresses_error) {
+            write__any_instruction(workspace, runner::opcode::copy_buffer, parameter_unused, source_start, source_end, destination_start, destination_end, buffer_length_error, buffer_addresses_error, parameter_unused, parameter_unused);
+
+            return;
+        }
+
         void write__integer_add(workspace& workspace, runner::cell_ID source_1, runner::cell_ID source_2, runner::cell_ID destination) {
             write__any_instruction(workspace, runner::opcode::integer_add, parameter_unused, source_1, source_2, parameter_unused, parameter_unused, destination, parameter_unused, parameter_unused, parameter_unused);
 
@@ -528,6 +534,12 @@ namespace generator {
                 case runner::opcode::file_to_buffer:
                     // write code
                     write_instructions::write__file_to_buffer(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[1], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[1], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[2], abstraction));
+
+                    break;
+                // wave.copy.buffer(4)(2)
+                case runner::opcode::copy_buffer:
+                    // write code
+                    write_instructions::write__copy_buffer(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[1], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[2], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[3], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[1], abstraction));
 
                     break;
                 // wave.integer.add(2)(1)

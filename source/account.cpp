@@ -780,6 +780,7 @@ namespace accounter {
                 synthesize_header_only_abstraction("wave.address_to_cell", 2, 2);
                 synthesize_header_only_abstraction("wave.buffer_to_file", 4, 1);
                 synthesize_header_only_abstraction("wave.file_to_buffer", 2, 3);
+                synthesize_header_only_abstraction("wave.copy.buffer", 4, 2);
                 synthesize_header_only_abstraction("wave.integer.add", 2, 1);
                 synthesize_header_only_abstraction("wave.integer.subtract", 2, 1);
                 synthesize_header_only_abstraction("wave.integer.multiply", 2, 1);

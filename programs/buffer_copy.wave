@@ -1,0 +1,79 @@
+print.new_line()() = {
+    wave.set(wave.integer.10)(new_line)
+    wave.print.character(new_line)()
+}
+
+string.print(start end)() = {
+    [ setup variables ]
+    wave.set(wave.integer.1)(character_size)
+    wave.set(wave.boolean.true)(always)
+
+    [ setup current ]
+    wave.copy(start)(current)
+
+    [ loop start ]
+    @print_character
+
+    [ check if loop should quit ]
+    wave.integer.within_range(start current end)(continue)
+    wave.boolean.not(continue)(quit)
+    wave.jump(quit @exit)()
+
+    [ get character ]
+    wave.address_to_cell(current character_size)(character error)
+
+    [ next character ]
+    wave.integer.add(current character_size)(current)
+
+    [ print character ]
+    wave.print.character(character)()
+
+    [ jump to loop start ]
+    wave.jump(always @print_character)()
+
+    [ loop end ]
+    @exit
+
+    [ print new line ]
+    print.new_line()()
+}
+
+calculate.buffer_length(start end)(length) = {
+    wave.set(wave.integer.1)(adjust)
+    wave.integer.subtract(end start)(length)
+    wave.integer.add(length adjust)(length)
+}
+
+test.buffer_copy()() = {
+    [ load string ]
+    wave.load.string("'Hello World!'")(string.start string.end error)
+
+    [ print initial string ]
+    string.print(string.start string.end)()
+
+    [ calculate buffer length ]
+    calculate.buffer_length(string.start string.end)(string.length)
+
+    [ create new buffer ]
+    wave.request_memory(string.length)(new_string.start new_string.end error)
+
+    [ copy buffer ]
+    wave.copy.buffer(string.start string.end new_string.start new_string.end)(error.length error.address)
+
+    [ print errors ]
+    wave.print.number(error.length)()
+    print.new_line()()
+    wave.print.number(error.address)()
+    print.new_line()()
+
+    [ print copied buffer ]
+    string.print(new_string.start new_string.end)()
+
+    [ clean up buffers ]
+    wave.return_memory(string.start string.end)()
+    wave.return_memory(new_string.start new_string.end)()
+}
+
+main()() = {
+    test.buffer_copy()()
+}
