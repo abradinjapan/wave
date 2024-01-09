@@ -250,6 +250,20 @@ wave.file_to_buffer(2)(3)
     - source_end: The end address of the data buffer.
     - error_code: An error boolean.
 
+## copy_buffer
+
+wave.copy.buffer(4)(2)
+
+- Copies one buffer to another. Both buffers must be the same length.
+- Inputs:
+    - source_start: The start address of the source buffer.
+    - source_end: The end address of the source buffer.
+    - destination_start: The start address of the destination buffer.
+    - destination_end: The end address of the destination buffer.
+- Outputs:
+    - buffer_length_error: A boolean that returns true if the buffer sizes were not the same.
+    - buffer_addresses_error: A boolean that returns true if any address was invalid.
+
 ## integer_add
 
 wave.integer.add(2)(1)
