@@ -358,7 +358,7 @@ namespace runner {
     };
 
     // run code
-    basic::buffer run_code(program program, basic::buffer input, allocations& allocations, bool& error_occured) {
+    basic::buffer run_code(program& program, basic::buffer input, allocations& allocations, bool& error_occured) {
         basic::buffer output;
         bool running = true;
         basic::u64 current_instruction = 0;
@@ -426,7 +426,7 @@ namespace runner {
                 break;
             case opcode::load_string:
                 // setup variables
-                temp_string = program.p_strings[context_stack[context_stack.size() - 1].p_cells[program.p_instructions[current_instruction].p_input_0]];
+                temp_string = program.p_strings[program.p_instructions[current_instruction].p_input_0];
                 temp_length = (basic::u64)temp_string.length();
 
                 // perform allocation
@@ -889,7 +889,7 @@ namespace runner {
     }
 
     // run a program
-    basic::buffer run_program(program program, basic::buffer input, bool& error_occured) {
+    basic::buffer run_program(program& program, basic::buffer input, bool& error_occured) {
         allocations allocations;
 
         // add the input buffer to the allocations

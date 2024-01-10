@@ -42,7 +42,6 @@ namespace generator {
             p_abstraction_offsets.resize(abstraction_count);
             p_pass_type = pass_type::pass_measure;
             p_instruction_count = 0;
-            p_program.p_strings.clear();
         }
 
         void finish_pass_measure() {
@@ -50,9 +49,9 @@ namespace generator {
         }
 
         void start_pass_build() {
-            p_program.p_strings.clear();
             p_instruction_count = 0;
             p_pass_type = pass_type::pass_build;
+            p_program.p_strings.clear();
         }
 
         void finish_pass_build() {
@@ -382,7 +381,7 @@ namespace generator {
                     write_instructions::write__copy_cell(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[0], abstraction));
 
                     break;
-                // wave.copy.string(1)(3)
+                // wave.load.string(1)(3)
                 case runner::opcode::load_string:
                     // append string to program string list
                     workspace.p_program.p_strings.push_back(abstraction.p_literals.p_literals[abstraction.lookup_literal_by_ID(statement_ID, 0, error_occured).p_ID].p_string_value);
