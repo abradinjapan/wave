@@ -791,6 +791,7 @@ namespace accounter {
                 synthesize_header_only_abstraction("wave.get_context_input", 0, 2);
                 synthesize_header_only_abstraction("wave.pass_context_output", 2, 0);
                 synthesize_header_only_abstraction("wave.run", 4, 3);
+                synthesize_header_only_abstraction("wave.compile.wave", 0, 0);
             }
 
         public:

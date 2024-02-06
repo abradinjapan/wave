@@ -2,9 +2,9 @@
 
 #include <vector>
 
+#include "basic.cpp"
 #include "account.cpp"
 #include "run.cpp"
-#include "basic.cpp"
 
 namespace generator {
     class offset {
@@ -291,6 +291,12 @@ namespace generator {
 
         void write__run(workspace& workspace, runner::cell_ID program_start, runner::cell_ID program_end, runner::cell_ID input_start, runner::cell_ID input_end, runner::cell_ID result_start, runner::cell_ID result_end, runner::cell_ID runner_error_occured) {
             write__any_instruction(workspace, runner::opcode::run, parameter_unused, program_start, program_end, input_start, input_end, result_start, result_end, runner_error_occured, parameter_unused);
+
+            return;
+        }
+
+        void write__compile(workspace& workspace) {
+            write__any_instruction(workspace, runner::opcode::compile, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused, parameter_unused);
 
             return;
         }
@@ -599,6 +605,12 @@ namespace generator {
                 case runner::opcode::run:
                     // write code
                     write_instructions::write__run(workspace, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[1], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[2], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[3], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[1], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[2], abstraction));
+
+                    break;
+                // wave.compile.wave(0)(0)
+                case runner::opcode::compile:
+                    // write code
+                    write_instructions::write__compile(workspace);
 
                     break;
                 // user defined statement call

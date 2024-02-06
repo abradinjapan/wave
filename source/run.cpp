@@ -5,6 +5,7 @@
 #include <stdint.h>
 
 #include "basic.cpp"
+#include "compile.cpp"
 
 namespace runner {
     // defines
@@ -287,6 +288,7 @@ namespace runner {
         get_context_input,
         pass_context_output,
         run,
+        compile,
     };
 
     class instruction {
@@ -384,6 +386,10 @@ namespace runner {
         basic::buffer temp_input;
         basic::buffer temp_result;
         bool runner_error_occured;
+
+        // compile instruction variables
+        basic::buffer compile__source_buffers;
+        std::vector<std::string> compile__source_strings;
 
         // process instructions
         while (running == true) {
@@ -875,6 +881,17 @@ namespace runner {
                 // next instruction
                 current_instruction++;
             
+                break;
+            case opcode::compile:
+                // DEBUG
+                printf("Compile Instruction Called!\n");
+
+                // get files
+                
+
+                // next instruction
+                current_instruction++;
+
                 break;
             default:
                 std::cout << "Runner Error: Invalid Instruction ID" << std::endl;

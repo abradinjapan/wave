@@ -83,6 +83,7 @@ namespace literals {
             "opcode.get_context_input",
             "opcode.pass_context_output",
             "opcode.run",
+            "opcode.compile",
         };
 
         return suffixes;
@@ -144,6 +145,7 @@ namespace literals {
             (basic::u64)runner::opcode::get_context_input,
             (basic::u64)runner::opcode::pass_context_output,
             (basic::u64)runner::opcode::run,
+            (basic::u64)runner::opcode::compile,
         };
 
         return values;
