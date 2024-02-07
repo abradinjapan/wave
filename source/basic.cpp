@@ -24,6 +24,10 @@ namespace basic {
     typedef void* address;
 
     typedef char character;
+    
+    typedef u64 character_index;
+    typedef u64 line_index;
+    typedef u64 file_index;
 
     class buffer {
     public:

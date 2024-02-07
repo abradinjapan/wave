@@ -1030,6 +1030,9 @@ namespace runner {
             case runner::opcode::run:
                 std::cout << "run";
                 break;
+            case runner::opcode::compile:
+                std::cout << "compile";
+                break;
             default:
                 std::cout << "[ invalid instruction ]";
                 break;

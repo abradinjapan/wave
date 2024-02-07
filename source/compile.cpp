@@ -7,6 +7,7 @@
 #include <fstream>
 #include <unistd.h>
 
+#include "compiler_errors.cpp"
 #include "lex.cpp"
 #include "parse.cpp"
 #include "account.cpp"
@@ -19,18 +20,15 @@ namespace compiler {
         std::vector<std::string> p_files;
         std::vector<parser::program> p_parse_trees;
         accounter::skeleton::skeleton p_skeleton;
-        bool p_accouting_error;
-        bool p_generation_error;
+        compiler_errors::error p_error;
     };
 
-    parser::program dissect_user_code(std::string user_code, bool& compilation_error, bool print_debug) {
+    parser::program dissect_user_code(std::string user_code, compilation_unit& compilation_unit, bool print_debug) {
         parser::program output;
         lexer::lexlings lexlings;
-        bool lex_error = false;
-        bool parse_error = false;
 
         // lex file
-        lexlings = lexer::lex(user_code, lex_error);
+        lexlings = lexer::lex(user_code, compilation_unit.p_error);
 
         // print lexlings
         if (print_debug) {
@@ -38,19 +36,15 @@ namespace compiler {
         }
 
         // do not proceed if error occured
-        if (lex_error) {
-            compilation_error = true;
-
+        if (compilation_unit.p_error.error_occured()) {
             return output;
         }
 
         // parse file
-        output = parser::parse_file(lexlings, parse_error);
+        output = parser::parse_file(lexlings, compilation_unit.p_error);
 
         // do not proceed if error occured
-        if (parse_error) {
-            compilation_error = true;
-
+        if (compilation_unit.p_error.error_occured()) {
             return output;
         }
 
@@ -62,13 +56,13 @@ namespace compiler {
         return output;
     }
 
-    runner::program compile(std::vector<std::string> files, bool& compilation_error, bool print_debug) {
+    runner::program compile(std::vector<std::string> files, compilation_unit& unit, bool print_debug) {
         runner::program output;
-        compilation_unit unit;
+        bool accounting_error = false;
+        bool generation_error = false;
 
-        // setup errors
-        unit.p_accouting_error = false;
-        unit.p_generation_error = false;
+        // initialize as no error
+        unit.p_error.set_as_no_error();
 
         // add all files
         unit.p_files = files;
@@ -76,20 +70,21 @@ namespace compiler {
         // dissect all files
         for (basic::u64 file = 0; file < files.size(); file++) {
             // dissect file
-            unit.p_parse_trees.push_back(dissect_user_code(files[file], compilation_error, print_debug));
+            unit.p_parse_trees.push_back(dissect_user_code(files[file], unit, print_debug));
 
             // check for error
-            if (compilation_error == true) {
+            if (unit.p_error.error_occured()) {
                 return output;
             }
         }
 
         // account for all files
-        unit.p_skeleton.get_skeleton(unit.p_parse_trees, unit.p_accouting_error);
+        unit.p_skeleton.get_skeleton(unit.p_parse_trees, accounting_error);
 
         // do not proceed if error occured
-        if (unit.p_accouting_error) {
-            compilation_error = true;
+        if (accounting_error) {
+            // set error
+            unit.p_error.set_as_accounting_error();
 
             return output;
         }
@@ -100,12 +95,13 @@ namespace compiler {
         }
 
         // generate program code
-        output = generator::generate_program(unit.p_skeleton, unit.p_generation_error);
+        output = generator::generate_program(unit.p_skeleton, generation_error);
 
         // do not proceed if error occured
-        if (unit.p_generation_error) {
-            compilation_error = true;
-            
+        if (generation_error) {
+            // set error
+            unit.p_error.set_as_generation_error();
+
             return output;
         }
 

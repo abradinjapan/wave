@@ -421,6 +421,7 @@ namespace accounter {
             } else {
                 p_integer_value = -1;
                 error_occured = true;
+                std::cout << "Internal Accounting Error: Unrecognized literal type." << std::endl;
             }
         }
     };

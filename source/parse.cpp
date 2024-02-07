@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "basic.cpp"
+#include "compiler_errors.cpp"
 #include "lex.cpp"
 #include "literals.cpp"
 
@@ -97,7 +98,7 @@ namespace parser {
     };
 
     // parse arguments
-    std::vector<name> parse_arguments(lexer::lexlings& lexlings, int& lexling_index, bool& error_occured) {
+    std::vector<name> parse_arguments(lexer::lexlings& lexlings, int& lexling_index, compiler_errors::error& error_handle) {
         std::vector<name> output;
 
         // check for opener
@@ -176,20 +177,22 @@ namespace parser {
                 // display error
                 std::cout << "Parse error, missing closing parenthesis." << std::endl;
 
-                error_occured = true;
+                // set error
+                error_handle.set_as_parsing_error();
             }
         } else {
             // display error
             std::cout << "Parse error, missing opening parenthesis." << std::endl;
 
-            error_occured = true;
+            // set error
+            error_handle.set_as_parsing_error();
         }
 
         return output;
     }
 
     // parse arguments
-    std::vector<name> parse_header_arguments(lexer::lexlings& lexlings, int& lexling_index, bool& error_occured) {
+    std::vector<name> parse_header_arguments(lexer::lexlings& lexlings, int& lexling_index, compiler_errors::error& error_handle) {
         std::vector<name> output;
 
         // check for opener
@@ -211,11 +214,11 @@ namespace parser {
                     break;
                 // invalid argument lexling, raise error
                 } else {
-                    // set error
-                    error_occured = true;
-
                     // inform user of error
                     std::cout << "Parse error, invalid header argument: " << lexlings.p_lexlings[lexling_index].p_value << std::endl;
+
+                    // set error
+                    error_handle.set_as_parsing_error();
 
                     // quit
                     return output;
@@ -229,20 +232,22 @@ namespace parser {
                 // display error
                 std::cout << "Parse error, missing closing parenthesis." << std::endl;
 
-                error_occured = true;
+                // set error
+                error_handle.set_as_parsing_error();
             }
         } else {
             // display error
             std::cout << "Parse error, missing opening parenthesis." << std::endl;
 
-            error_occured = true;
+            // set error
+            error_handle.set_as_parsing_error();
         }
 
         return output;
     }
 
     // parse statement
-    statement parse_statement(lexer::lexlings& lexlings, int& lexling_index, bool& error_occured) {
+    statement parse_statement(lexer::lexlings& lexlings, int& lexling_index, compiler_errors::error& error_handle) {
         statement output;
 
         // get abstraction call
@@ -255,18 +260,18 @@ namespace parser {
             lexling_index++;
 
             // get inputs
-            output.p_inputs = parse_arguments(lexlings, lexling_index, error_occured);
+            output.p_inputs = parse_arguments(lexlings, lexling_index, error_handle);
 
             // check error
-            if (error_occured) {
+            if (error_handle.error_occured()) {
                 return output;
             }
 
             // get outputs
-            output.p_outputs = parse_arguments(lexlings, lexling_index, error_occured);
+            output.p_outputs = parse_arguments(lexlings, lexling_index, error_handle);
 
             // check error
-            if (error_occured) {
+            if (error_handle.error_occured()) {
                 return output;
             }
         // get offset marker
@@ -288,14 +293,14 @@ namespace parser {
             std::cout << "Parse error, unrecognized statement type." << std::endl << "Current Lexling: " << lexlings.p_lexlings[lexling_index].p_value << std::endl;
 
             // set error
-            error_occured = true;
+            error_handle.set_as_parsing_error();
         }
 
         return output;
     }
 
     // parse abstraction header
-    statement parse_abstraction_header(lexer::lexlings& lexlings, int& lexling_index, bool& error_occured) {
+    statement parse_abstraction_header(lexer::lexlings& lexlings, int& lexling_index, compiler_errors::error& error_handle) {
         statement output;
 
         // get abstraction call
@@ -305,18 +310,18 @@ namespace parser {
             lexling_index++;
 
             // get inputs
-            output.p_inputs = parse_header_arguments(lexlings, lexling_index, error_occured);
+            output.p_inputs = parse_header_arguments(lexlings, lexling_index, error_handle);
 
             // check error
-            if (error_occured) {
+            if (error_handle.error_occured()) {
                 return output;
             }
 
             // get outputs
-            output.p_outputs = parse_header_arguments(lexlings, lexling_index, error_occured);
+            output.p_outputs = parse_header_arguments(lexlings, lexling_index, error_handle);
 
             // check error
-            if (error_occured) {
+            if (error_handle.error_occured()) {
                 return output;
             }
         // error
@@ -325,18 +330,18 @@ namespace parser {
             std::cout << "Parse error, invalid abstraction header." << std::endl << "Current Lexling: " << lexlings.p_lexlings[lexling_index].p_value << std::endl;
 
             // set error
-            error_occured = true;
+            error_handle.set_as_parsing_error();
         }
 
         return output;
     }
 
     // parse abstraction
-    abstraction parse_abstraction(lexer::lexlings& lexlings, int& lexling_index, bool& error_occured) {
+    abstraction parse_abstraction(lexer::lexlings& lexlings, int& lexling_index, compiler_errors::error& error_handle) {
         abstraction output;
 
         // get abstraction name
-        output.p_header = parse_abstraction_header(lexlings, lexling_index, error_occured);
+        output.p_header = parse_abstraction_header(lexlings, lexling_index, error_handle);
 
         // parse abstraction marker for abstraction
         if (lexling_index < lexlings.count() && lexlings.p_lexlings[lexling_index].p_type == lexer::lexling_type::abstraction_marker) {
@@ -354,10 +359,10 @@ namespace parser {
                 // get all statements
                 while (lexling_index < lexlings.count() && lexlings.p_lexlings[lexling_index].p_type != lexer::lexling_type::right_curly_bracket) {
                     // parse statement
-                    output.p_scope.push_back(parse_statement(lexlings, lexling_index, error_occured));
+                    output.p_scope.push_back(parse_statement(lexlings, lexling_index, error_handle));
 
                     // check error
-                    if (error_occured) {
+                    if (error_handle.error_occured()) {
                         return output;
                     }
                 }
@@ -369,7 +374,7 @@ namespace parser {
                 std::cout << "Parse error, missing scope opener '{'." << std::endl;
 
                 // set error
-                error_occured = true;
+                error_handle.set_as_parsing_error();
             }
         }
 
@@ -377,17 +382,17 @@ namespace parser {
     }
 
     // parse file
-    program parse_file(lexer::lexlings lexlings, bool& error_occured) {
+    program parse_file(lexer::lexlings lexlings, compiler_errors::error& error_handle) {
         program output = program();
         int lexling_index = 0;
 
         // get abstractions and includes
         while (lexling_index < lexlings.count()) {
             // new abstraction
-            output.p_abstractions.push_back(parse_abstraction(lexlings, lexling_index, error_occured));
+            output.p_abstractions.push_back(parse_abstraction(lexlings, lexling_index, error_handle));
 
             // check error
-            if (error_occured) {
+            if (error_handle.error_occured()) {
                 return output;
             }
         }

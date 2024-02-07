@@ -5,17 +5,16 @@
 
 void compile_and_run(std::vector<std::string> user_codes, bool debug) {
     runner::program program;
-    bool compilation_error = false;
+    compiler::compilation_unit compilation_unit;
     bool run_time_error = false;
-    basic::buffer input = basic::buffer(); // blank
 
     // compile program
-    program = compiler::compile(user_codes, compilation_error, debug);
+    program = compiler::compile(user_codes, compilation_unit, debug);
 
     // run if no errors occured
-    if (compilation_error == false) {
+    if (compilation_unit.p_error.error_occured() == false) {
         // run code
-        runner::run_program(program, input, run_time_error);
+        runner::run_program(program, basic::buffer(), run_time_error);
     } else {
         std::cout << "Code not run, compilation error." << std::endl;
     }

@@ -5,6 +5,7 @@
 #include <string>
 
 #include "basic.cpp"
+#include "compiler_errors.cpp"
 
 /* Code */
 namespace lexer {
@@ -62,17 +63,19 @@ namespace lexer {
     }
 
     // lex user code
-    lexlings lex(std::string user_code, bool& error_occured) {
+    lexlings lex(std::string user_code, compiler_errors::error& error_handle) {
         lexlings output;
         unsigned int index;
         unsigned int comment_depth;
         unsigned int string_depth;
         unsigned int string_start;
         int length;
+        int line_index;
 
         // setup variables
         output = lexlings();
         index = 0;
+        line_index = 0;
 
         // get lexlings
         while (index < user_code.length()) {
@@ -81,10 +84,22 @@ namespace lexer {
 
             // absorb whitespace
             while (index < user_code.length() && (user_code[index] == ' ' || user_code[index] == '\n' || user_code[index] == '\r' || user_code[index] == '\t' || user_code[index] == '[')) {
+                // check for line index
+                if (user_code[index] == '\n' || user_code[index] == '\r') {
+                    // next line
+                    line_index++;
+                }
+
                 // if comment
                 if (user_code[index] == '[') {
                     // run through characters
                     while (index < user_code.length()) {
+                        // check for line index
+                        if (user_code[index] == '\n' || user_code[index] == '\r') {
+                            // next line
+                            line_index++;
+                        }
+
                         // increase comment depth
                         if (user_code[index] == '[') {
                             comment_depth++;
@@ -179,7 +194,13 @@ namespace lexer {
                     index += 2;
 
                     // get string
-                    while (string_depth > 0) {
+                    while (index + 1 < user_code.length() && string_depth > 0) {
+                        // check for line index
+                        if (user_code[index] == '\n' || user_code[index] == '\r') {
+                            // next line
+                            line_index++;
+                        }
+
                         // check for string opener
                         if (user_code[index] == '"' && user_code[index + 1] == '\'') {
                             // increase string depth
@@ -210,7 +231,7 @@ namespace lexer {
                     std::cout << "Lexical error, invalid lexling / character detected: " << user_code[index] << std::endl;
 
                     // set error
-                    error_occured = true;
+                    error_handle.set_as_lexical_error(index, line_index);
 
                     // quit
                     return output;
