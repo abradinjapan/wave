@@ -27,6 +27,8 @@ namespace lexer {
     public:
         lexling_type p_type;
         std::string p_value;
+        basic::character_index p_character_index;
+        basic::line_index p_line_index;
 
         // default constructor
         lexling() {
@@ -35,9 +37,11 @@ namespace lexer {
         }
 
         // constructor
-        lexling(lexling_type type, std::string value) {
+        lexling(lexling_type type, std::string value, basic::character_index character_index, basic::line_index line_index) {
             p_type = type;
             p_value = value;
+            p_character_index = character_index;
+            p_line_index = line_index;
         }
     };
 
@@ -139,46 +143,46 @@ namespace lexer {
                     }
 
                     // add lexling
-                    output.p_lexlings.push_back(lexling(lexling_type::name, user_code.substr(index - length, length)));
+                    output.p_lexlings.push_back(lexling(lexling_type::name, user_code.substr(index - length, length), index, line_index));
                 // check for left parenthesis
                 } else if (user_code[index] == '(') {
                     // add lexling
-                    output.p_lexlings.push_back(lexling(lexling_type::left_parenthesis, "("));
+                    output.p_lexlings.push_back(lexling(lexling_type::left_parenthesis, "(", index, line_index));
 
                     // next index
                     index++;
                 // check for right parenthesis
                 } else if (user_code[index] == ')') {
                     // add lexling
-                    output.p_lexlings.push_back(lexling(lexling_type::right_parenthesis, ")"));
+                    output.p_lexlings.push_back(lexling(lexling_type::right_parenthesis, ")", index, line_index));
 
                     // next index
                     index++;
                 // check for left curly bracket
                 } else if (user_code[index] == '{') {
                     // add lexling
-                    output.p_lexlings.push_back(lexling(lexling_type::left_curly_bracket, "{"));
+                    output.p_lexlings.push_back(lexling(lexling_type::left_curly_bracket, "{", index, line_index));
 
                     // next index
                     index++;
                 // check for right curly bracket
                 } else if (user_code[index] == '}') {
                     // add lexling
-                    output.p_lexlings.push_back(lexling(lexling_type::right_curly_bracket, "}"));
+                    output.p_lexlings.push_back(lexling(lexling_type::right_curly_bracket, "}", index, line_index));
 
                     // next index
                     index++;
                 // check for offset marker
                 } else if (user_code[index] == '@') {
                     // add lexling
-                    output.p_lexlings.push_back(lexling(lexling_type::offset_marker, "@"));
+                    output.p_lexlings.push_back(lexling(lexling_type::offset_marker, "@", index, line_index));
 
                     // next index
                     index++;
                 // check for abstraction marker
                 } else if (user_code[index] == '=') {
                     // add lexling
-                    output.p_lexlings.push_back(lexling(lexling_type::abstraction_marker, "="));
+                    output.p_lexlings.push_back(lexling(lexling_type::abstraction_marker, "=", index, line_index));
 
                     // next index
                     index++;
@@ -224,7 +228,7 @@ namespace lexer {
                     }
 
                     // push back string
-                    output.p_lexlings.push_back(lexling(lexling_type::string_literal, user_code.substr(string_start + 2, (index - 2) - (string_start + 2))));
+                    output.p_lexlings.push_back(lexling(lexling_type::string_literal, user_code.substr(string_start + 2, (index - 2) - (string_start + 2)), index, line_index));
                 // no lexling found, error
                 } else {
                     // set error
