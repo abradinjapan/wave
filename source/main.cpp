@@ -16,6 +16,7 @@ void compile_and_run(std::vector<std::string> user_codes, bool debug) {
         // run code
         runner::run_program(program, basic::buffer(), run_time_error);
     } else {
+        compilation_unit.p_error.print_error();
         std::cout << "Code not run, compilation error." << std::endl;
     }
 

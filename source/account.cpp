@@ -2,6 +2,7 @@
 
 #include "parse.cpp"
 #include "basic.cpp"
+#include "compiler_errors.cpp"
 
 #include <vector>
 

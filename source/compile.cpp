@@ -84,7 +84,7 @@ namespace compiler {
         // do not proceed if error occured
         if (accounting_error) {
             // set error
-            unit.p_error.set_as_accounting_error();
+            unit.p_error.set_as_accounting_error("[ accounting error system not yet implemented ]");
 
             return output;
         }
@@ -100,7 +100,7 @@ namespace compiler {
         // do not proceed if error occured
         if (generation_error) {
             // set error
-            unit.p_error.set_as_generation_error();
+            unit.p_error.set_as_generation_error("[ generation error system not yet implemented ]");
 
             return output;
         }

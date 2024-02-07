@@ -178,14 +178,14 @@ namespace parser {
                 std::cout << "Parse error, missing closing parenthesis." << std::endl;
 
                 // set error
-                error_handle.set_as_parsing_error();
+                error_handle.set_as_parsing_error("");
             }
         } else {
             // display error
             std::cout << "Parse error, missing opening parenthesis." << std::endl;
 
             // set error
-            error_handle.set_as_parsing_error();
+            error_handle.set_as_parsing_error("");
         }
 
         return output;
@@ -218,7 +218,7 @@ namespace parser {
                     std::cout << "Parse error, invalid header argument: " << lexlings.p_lexlings[lexling_index].p_value << std::endl;
 
                     // set error
-                    error_handle.set_as_parsing_error();
+                    error_handle.set_as_parsing_error("");
 
                     // quit
                     return output;
@@ -233,14 +233,14 @@ namespace parser {
                 std::cout << "Parse error, missing closing parenthesis." << std::endl;
 
                 // set error
-                error_handle.set_as_parsing_error();
+                error_handle.set_as_parsing_error("");
             }
         } else {
             // display error
             std::cout << "Parse error, missing opening parenthesis." << std::endl;
 
             // set error
-            error_handle.set_as_parsing_error();
+            error_handle.set_as_parsing_error("");
         }
 
         return output;
@@ -293,7 +293,7 @@ namespace parser {
             std::cout << "Parse error, unrecognized statement type." << std::endl << "Current Lexling: " << lexlings.p_lexlings[lexling_index].p_value << std::endl;
 
             // set error
-            error_handle.set_as_parsing_error();
+            error_handle.set_as_parsing_error("");
         }
 
         return output;
@@ -330,7 +330,7 @@ namespace parser {
             std::cout << "Parse error, invalid abstraction header." << std::endl << "Current Lexling: " << lexlings.p_lexlings[lexling_index].p_value << std::endl;
 
             // set error
-            error_handle.set_as_parsing_error();
+            error_handle.set_as_parsing_error("");
         }
 
         return output;
@@ -374,7 +374,7 @@ namespace parser {
                 std::cout << "Parse error, missing scope opener '{'." << std::endl;
 
                 // set error
-                error_handle.set_as_parsing_error();
+                error_handle.set_as_parsing_error("");
             }
         }
 

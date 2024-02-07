@@ -75,7 +75,7 @@ namespace lexer {
         // setup variables
         output = lexlings();
         index = 0;
-        line_index = 0;
+        line_index = 1;
 
         // get lexlings
         while (index < user_code.length()) {
@@ -227,11 +227,8 @@ namespace lexer {
                     output.p_lexlings.push_back(lexling(lexling_type::string_literal, user_code.substr(string_start + 2, (index - 2) - (string_start + 2))));
                 // no lexling found, error
                 } else {
-                    // inform user of failure
-                    std::cout << "Lexical error, invalid lexling / character detected: " << user_code[index] << std::endl;
-
                     // set error
-                    error_handle.set_as_lexical_error(index, line_index);
+                    error_handle.set_as_lexical_error("Lexical error, invalid lexling / character detected: [ character_index: " + std::to_string(index) + " ] [ line_index: " + std::to_string(line_index) + " ]");
 
                     // quit
                     return output;
