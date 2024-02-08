@@ -187,7 +187,7 @@ namespace lexer {
                     // next index
                     index++;
                 // check for string
-                } else if (user_code[index] == '\"' && user_code[index + 1] == '\'') {
+                } else if (index + 1 < user_code.length() && user_code[index] == '\"' && user_code[index + 1] == '\'') {
                     // setup string start
                     string_start = index;
 
@@ -227,8 +227,17 @@ namespace lexer {
                         index++;
                     }
 
-                    // push back string
-                    output.p_lexlings.push_back(lexling(lexling_type::string_literal, user_code.substr(string_start + 2, (index - 2) - (string_start + 2)), index, line_index));
+                    // string was completed
+                    if (user_code[index - 2] == '\'' && user_code[index - 1] == '"' && string_depth == 0) {
+                        // push back string
+                        output.p_lexlings.push_back(lexling(lexling_type::string_literal, user_code.substr(string_start + 2, (index - 2) - (string_start + 2)), index, line_index));
+                    // string was not completed
+                    } else {
+                        // set error
+                        error_handle.set_as_lexical_error("Lexical error, end of file was reached before string was finished.");
+
+                        return output;
+                    }
                 // no lexling found, error
                 } else {
                     // set error

@@ -97,12 +97,23 @@ namespace parser {
         std::vector<abstraction> p_abstractions;
     };
 
+    // generate error string
+    std::string generate_error_string(std::string base_message, lexer::lexlings& lexlings, int& lexling_index) {
+        // if lexlings ended abruptly
+        if (lexling_index >= lexlings.count()) {
+            return base_message + " Unexpected end of file reached.";
+        // if wrong lexling type
+        } else {
+            return base_message + " Lexling information [ character_index: " + std::to_string(lexlings.p_lexlings[lexling_index].p_character_index) + " ][ line_index: " + std::to_string(lexlings.p_lexlings[lexling_index].p_line_index) + " ][ string_value: '" + lexlings.p_lexlings[lexling_index].p_value + "' ]";
+        }
+    }
+
     // parse arguments
     std::vector<name> parse_arguments(lexer::lexlings& lexlings, int& lexling_index, compiler_errors::error& error_handle) {
         std::vector<name> output;
 
         // check for opener
-        if (lexlings.p_lexlings[lexling_index].p_type == lexer::lexling_type::left_parenthesis) {
+        if (lexling_index < lexlings.count() && lexlings.p_lexlings[lexling_index].p_type == lexer::lexling_type::left_parenthesis) {
             // next lexling
             lexling_index++;
 
@@ -171,15 +182,16 @@ namespace parser {
             }
 
             // skip past ending parenthesis
-            if (lexlings.p_lexlings[lexling_index].p_type == lexer::lexling_type::right_parenthesis) {
+            if (lexling_index < lexlings.count() && lexlings.p_lexlings[lexling_index].p_type == lexer::lexling_type::right_parenthesis) {
                 lexling_index++;
+            // ending parenthesis not found
             } else {
                 // set error
-                error_handle.set_as_parsing_error("Parse error, missing closing parenthesis.");
+                error_handle.set_as_parsing_error(generate_error_string("Parse error, missing closing parenthesis.", lexlings, lexling_index));
             }
         } else {
             // set error
-            error_handle.set_as_parsing_error("Parse error, missing opening parenthesis.");
+            error_handle.set_as_parsing_error(generate_error_string("Parse error, missing opening parenthesis.", lexlings, lexling_index));
         }
 
         return output;
@@ -190,7 +202,7 @@ namespace parser {
         std::vector<name> output;
 
         // check for opener
-        if (lexlings.p_lexlings[lexling_index].p_type == lexer::lexling_type::left_parenthesis) {
+        if (lexling_index < lexlings.count() && lexlings.p_lexlings[lexling_index].p_type == lexer::lexling_type::left_parenthesis) {
             // next lexling
             lexling_index++;
 
@@ -209,7 +221,7 @@ namespace parser {
                 // invalid argument lexling, raise error
                 } else {
                     // set error
-                    error_handle.set_as_parsing_error("Parse error, invalid header argument: " + lexlings.p_lexlings[lexling_index].p_value);
+                    error_handle.set_as_parsing_error(generate_error_string("Parse error, invalid header argument.", lexlings, lexling_index));
 
                     // quit
                     return output;
@@ -217,15 +229,15 @@ namespace parser {
             }
 
             // skip past ending parenthesis
-            if (lexlings.p_lexlings[lexling_index].p_type == lexer::lexling_type::right_parenthesis) {
+            if (lexling_index < lexlings.count() && lexlings.p_lexlings[lexling_index].p_type == lexer::lexling_type::right_parenthesis) {
                 lexling_index++;
             } else {
                 // set error
-                error_handle.set_as_parsing_error("Parse error, missing closing parenthesis.");
+                error_handle.set_as_parsing_error(generate_error_string("Parse error, missing closing parenthesis.", lexlings, lexling_index));
             }
         } else {
             // set error
-            error_handle.set_as_parsing_error("Parse error, missing opening parenthesis.");
+            error_handle.set_as_parsing_error(generate_error_string("Parse error, missing opening parenthesis.", lexlings, lexling_index));
         }
 
         return output;
@@ -236,7 +248,7 @@ namespace parser {
         statement output;
 
         // get abstraction call
-        if (lexlings.p_lexlings[lexling_index].p_type == lexer::lexling_type::name) {
+        if (lexling_index < lexlings.count() && lexlings.p_lexlings[lexling_index].p_type == lexer::lexling_type::name) {
             // mark type
             output.p_type = statement_type::is_abstraction_call;
 
@@ -275,7 +287,7 @@ namespace parser {
             output.p_type = statement_type::is_not_valid;
 
             // set error
-            error_handle.set_as_parsing_error("Parse error, unrecognized statement type.");
+            error_handle.set_as_parsing_error(generate_error_string("Parse error, unrecognized statement type.", lexlings, lexling_index));
         }
 
         return output;
@@ -286,7 +298,7 @@ namespace parser {
         statement output;
 
         // get abstraction call
-        if (lexlings.p_lexlings[lexling_index].p_type == lexer::lexling_type::name) {
+        if (lexling_index < lexlings.count() && lexlings.p_lexlings[lexling_index].p_type == lexer::lexling_type::name) {
             // assign name
             output.p_name = name(name_type::is_abstraction_name, lexlings.p_lexlings[lexling_index].p_value);
             lexling_index++;
@@ -309,7 +321,7 @@ namespace parser {
         // error
         } else {
             // set error
-            error_handle.set_as_parsing_error("Parse error, invalid abstraction header.");
+            error_handle.set_as_parsing_error(generate_error_string("Parse error, invalid abstraction header.", lexlings, lexling_index));
         }
 
         return output;
@@ -321,6 +333,11 @@ namespace parser {
 
         // get abstraction name
         output.p_header = parse_abstraction_header(lexlings, lexling_index, error_handle);
+
+        // check for error
+        if (error_handle.error_occured()) {
+            return output;
+        }
 
         // parse abstraction marker for abstraction
         if (lexling_index < lexlings.count() && lexlings.p_lexlings[lexling_index].p_type == lexer::lexling_type::abstraction_marker) {
@@ -346,12 +363,24 @@ namespace parser {
                     }
                 }
 
+                // check for missing right curly bracket
+                if (lexling_index >= lexlings.count()) {
+                    // set error
+                    error_handle.set_as_parsing_error(generate_error_string("Parse error, missing scope closer '}'.", lexlings, lexling_index));
+
+                    return output;
+                }
+
                 // skip past scope end
                 lexling_index++;
             } else {
                 // set error
-                error_handle.set_as_parsing_error("Parse error, missing scope opener '{'.");
+                error_handle.set_as_parsing_error(generate_error_string("Parse error, missing scope opener '{'.", lexlings, lexling_index));
             }
+        // abstraction marker missing
+        } else {
+            // set error
+            error_handle.set_as_parsing_error(generate_error_string("Parsing error, missing abstraction marker '='.", lexlings, lexling_index));
         }
 
         return output;
