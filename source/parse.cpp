@@ -71,6 +71,10 @@ namespace parser {
             p_inputs = inputs;
             p_outputs = outputs;
         }
+
+        std::string convert_to_header_ID() {
+            return p_name.p_name_value + "(" + std::to_string(p_inputs.size()) + ")(" + std::to_string(p_outputs.size()) + ")";
+        }
     };
 
     enum abstraction_type {
@@ -120,7 +124,7 @@ namespace parser {
             // get arguments until end of arguments
             while (lexling_index < lexlings.count()) {
                 // check for offset
-                if (lexlings.p_lexlings[lexling_index].p_type == lexer::lexling_type::offset_marker && lexlings.p_lexlings[lexling_index + 1].p_type == lexer::lexling_type::name) {
+                if (lexling_index + 1 < lexlings.count() && lexlings.p_lexlings[lexling_index].p_type == lexer::lexling_type::offset_marker && lexlings.p_lexlings[lexling_index + 1].p_type == lexer::lexling_type::name) {
                     // add argument
                     output.push_back(name(name_type::is_offset, lexlings.p_lexlings[lexling_index + 1].p_value));
 

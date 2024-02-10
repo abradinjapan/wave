@@ -58,8 +58,6 @@ namespace compiler {
 
     runner::program compile(std::vector<std::string> files, compilation_unit& unit, bool print_debug) {
         runner::program output;
-        bool accounting_error = false;
-        bool generation_error = false;
 
         // initialize as no error
         unit.p_error.set_as_no_error();
@@ -79,13 +77,10 @@ namespace compiler {
         }
 
         // account for all files
-        unit.p_skeleton.get_skeleton(unit.p_parse_trees, accounting_error);
+        unit.p_skeleton.get_skeleton(unit.p_parse_trees, unit.p_error);
 
         // do not proceed if error occured
-        if (accounting_error) {
-            // set error
-            unit.p_error.set_as_accounting_error("[ accounting error system not yet implemented ]");
-
+        if (unit.p_error.error_occured()) {
             return output;
         }
 
@@ -95,13 +90,10 @@ namespace compiler {
         }
 
         // generate program code
-        output = generator::generate_program(unit.p_skeleton, generation_error);
+        output = generator::generate_program(unit.p_skeleton, unit.p_error);
 
         // do not proceed if error occured
-        if (generation_error) {
-            // set error
-            unit.p_error.set_as_generation_error("[ generation error system not yet implemented ]");
-
+        if (unit.p_error.error_occured()) {
             return output;
         }
 

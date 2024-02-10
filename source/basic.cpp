@@ -141,6 +141,9 @@ namespace basic {
             }
         }
 
+        // set error to false
+        error = false;
+
         // translate the number
         // if the number is negative
         if (string[0] == 'n') {
@@ -231,6 +234,9 @@ namespace basic {
             }
         }
 
+        // set error to false
+        error = false;
+
         // translate number
         // for each character
         for (u64 character = 0; character < string.length(); character++) {
@@ -284,6 +290,9 @@ namespace basic {
                 return 0;
             }
         }
+
+        // set as no error
+        error = false;
 
         // translate number
         // for each character

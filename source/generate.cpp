@@ -318,7 +318,7 @@ namespace generator {
         }
     }
 
-    void generate_abstraction(workspace& workspace, accounter::skeleton::abstraction& abstraction, basic::u64 abstraction_ID, bool& error_occured) {
+    void generate_abstraction(workspace& workspace, accounter::skeleton::abstraction& abstraction, basic::u64 abstraction_ID, compiler_errors::error& error_handle) {
         basic::u64 variable_count;
 
         // determine variable count
@@ -359,7 +359,7 @@ namespace generator {
                     // determine type of input
                     if (abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0].p_type == accounter::skeleton::argument_type::is_integer_literal || abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0].p_type == accounter::skeleton::argument_type::is_boolean_literal || abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0].p_type == accounter::skeleton::argument_type::is_instruction_literal || abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0].p_type == accounter::skeleton::argument_type::is_hexadecimal_literal || abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0].p_type == accounter::skeleton::argument_type::is_binary_literal) {
                         // constant is an integer literal, write code
-                        write_instructions::write__write_cell(workspace, abstraction.p_literals.p_literals[abstraction.lookup_literal_by_ID(statement_ID, 0, error_occured).p_ID].p_integer_value, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[0], abstraction));
+                        write_instructions::write__write_cell(workspace, abstraction.p_literals.p_literals[abstraction.lookup_literal_by_ID(statement_ID, 0, error_handle).p_ID].p_integer_value, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[0], abstraction));
                     } else if (abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_inputs[0].p_type == accounter::skeleton::argument_type::is_offset) {
                         // if pass is measure
                         if (workspace.p_pass_type == pass_type::pass_measure) {
@@ -372,10 +372,7 @@ namespace generator {
                         }
                     } else {
                         // set error
-                        error_occured = true;
-
-                        // print error message
-                        printf("Generation error, set has an invalid argument.\n");
+                        error_handle.set_as_generation_error("Generation error, write_cell has an invalid argument type.");
 
                         return;
                     }
@@ -390,7 +387,7 @@ namespace generator {
                 // wave.load.string(1)(3)
                 case runner::opcode::load_string:
                     // append string to program string list
-                    workspace.p_program.p_strings.push_back(abstraction.p_literals.p_literals[abstraction.lookup_literal_by_ID(statement_ID, 0, error_occured).p_ID].p_string_value);
+                    workspace.p_program.p_strings.push_back(abstraction.p_literals.p_literals[abstraction.lookup_literal_by_ID(statement_ID, 0, error_handle).p_ID].p_string_value);
 
                     // write code
                     write_instructions::write__load_string(workspace, workspace.p_program.p_strings.size() - 1, calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[0], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[1], abstraction), calculate_variable_index(abstraction.p_calls[abstraction.p_statement_map[statement_ID].p_ID].p_outputs[2], abstraction));
@@ -417,73 +414,49 @@ namespace generator {
                 // wave.create_new_context(1)(0)
                 case runner::opcode::create_new_context:
                     // set error
-                    error_occured = true;
-
-                    // print error
-                    std::cout << "Generation Error: Although create_new_context is a valid instruction, it is not available for general use." << std::endl;
+                    error_handle.set_as_generation_error("Generation Error: Although create_new_context is a valid instruction, it is not available for general use.");
 
                     break;
                 // wave.restore_old_context(0)(0)
                 case runner::opcode::restore_old_context:
                     // set error
-                    error_occured = true;
-
-                    // print error
-                    std::cout << "Generation Error: Although restore_old_context is a valid instruction, it is not available for general use." << std::endl;
+                    error_handle.set_as_generation_error("Generation Error: Although restore_old_context is a valid instruction, it is not available for general use.");
 
                     break;
                 // wave.pass_input(1)(0)
                 case runner::opcode::pass_input:
                     // set error
-                    error_occured = true;
-
-                    // print error
-                    std::cout << "Generation Error: Although pass_input is a valid instruction, it is not available for general use." << std::endl;
+                    error_handle.set_as_generation_error("Generation Error: Although pass_input is a valid instruction, it is not available for general use.");
 
                     break;
                 // wave.get_input(0)(1)
                 case runner::opcode::get_input:
                     // set error
-                    error_occured = true;
-
-                    // print error
-                    std::cout << "Generation Error: Although get_input is a valid instruction, it is not available for general use." << std::endl;
+                    error_handle.set_as_generation_error("Generation Error: Although get_input is a valid instruction, it is not available for general use.");
 
                     break;
                 // wave.pass_output(1)(0)
                 case runner::opcode::pass_output:
                     // set error
-                    error_occured = true;
-
-                    // print error
-                    std::cout << "Generation Error: Although pass_output is a valid instruction, it is not available for general use." << std::endl;
+                    error_handle.set_as_generation_error("Generation Error: Although pass_output is a valid instruction, it is not available for general use.");
 
                     break;
                 // wave.get_output(0)(1)
                 case runner::opcode::get_output:
                     // set error
-                    error_occured = true;
-
-                    // print error
-                    std::cout << "Generation Error: Although get_output is a valid instruction, it is not available for general use." << std::endl;
+                    error_handle.set_as_generation_error("Generation Error: Although get_output is a valid instruction, it is not available for general use.");
 
                     break;
                 // wave.jump_to_abstraction(1)(0)
                 case runner::opcode::jump_to_abstraction:
                     // set error
-                    error_occured = true;
-
-                    // print error
-                    std::cout << "Generation Error: Although jump_to_abstraction is a valid instruction, it is not available for general use." << std::endl;
+                    error_handle.set_as_generation_error("Generation Error: Although jump_to_abstraction is a valid instruction, it is not available for general use.");
 
                     break;
                 // wave.jump_from_abstraction(0)(0)
                 case runner::opcode::jump_from_abstraction:
                     // set error
-                    error_occured = true;
-
-                    // print error
-                    std::cout << "Generation Error: Although jump_from_abstraction is a valid instruction, it is not available for general use." << std::endl;
+                    error_handle.set_as_generation_error("Generation Error: Although jump_from_abstraction is a valid instruction, it is not available for general use.");
 
                     break;
                 // wave.jump(2)(0)
@@ -662,7 +635,7 @@ namespace generator {
     }
 
     // generate code from a program
-    runner::program generate_program(accounter::skeleton::skeleton& skeleton, bool& error_occured) {
+    runner::program generate_program(accounter::skeleton::skeleton& skeleton, compiler_errors::error& error_handle) {
         workspace workspace;
         basic::u64 main_function_ID;
 
@@ -670,10 +643,10 @@ namespace generator {
         workspace.start_pass_measure(skeleton.p_abstractions.size());
 
         // get main function ID
-        main_function_ID = skeleton.lookup_header_by_name("main", error_occured);
+        main_function_ID = skeleton.lookup_header_by_name("main", error_handle);
 
         // check error
-        if (error_occured) {
+        if (error_handle.error_occured()) {
             return workspace.p_program;
         }
 
@@ -685,10 +658,10 @@ namespace generator {
             // check if abstraction has scope
             if (skeleton.p_abstractions[abstraction_ID].p_has_scope) {
                 // turn into function
-                generate_abstraction(workspace, skeleton.p_abstractions[abstraction_ID], abstraction_ID, error_occured);
+                generate_abstraction(workspace, skeleton.p_abstractions[abstraction_ID], abstraction_ID, error_handle);
 
                 // check error
-                if (error_occured) {
+                if (error_handle.error_occured()) {
                     return workspace.p_program;
                 }
             }
@@ -704,7 +677,7 @@ namespace generator {
         generate_kickstarter(workspace, main_function_ID);
 
         // check error
-        if (error_occured) {
+        if (error_handle.error_occured()) {
             return workspace.p_program;
         }
 
@@ -713,10 +686,10 @@ namespace generator {
             // check if abstraction has scope
             if (skeleton.p_abstractions[abstraction_ID].p_has_scope) {
                 // turn into function
-                generate_abstraction(workspace, skeleton.p_abstractions[abstraction_ID], abstraction_ID, error_occured);
+                generate_abstraction(workspace, skeleton.p_abstractions[abstraction_ID], abstraction_ID, error_handle);
 
                 // check error
-                if (error_occured) {
+                if (error_handle.error_occured()) {
                     return workspace.p_program;
                 }
             }
