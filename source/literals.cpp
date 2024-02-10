@@ -1,30 +1,29 @@
 #pragma once
 
 #include "basic.cpp"
-#include "lex.cpp"
 #include "run.cpp"
 
 /* Code */
 namespace literals {
-    bool string_is_integer_literal(lexer::lexling& lexling) {
+    bool string_is_integer_literal(std::string literal) {
         bool output = false;
         bool error;
         std::string prefix = "wave.integer.";
 
         // check for the start of the literal
-        if (basic::string_contains_at(lexling.p_value, 0, prefix) == false) {
+        if (basic::string_contains_at(literal, 0, prefix) == false) {
             return output;
         }
 
         // convert integer literal to binary integer
-        basic::convert_integer_literal_to_binary_integer(lexling.p_value.substr(prefix.length()), error);
+        basic::convert_integer_literal_to_binary_integer(literal.substr(prefix.length()), error);
         output = !error;
 
         return output;
     }
 
-    bool string_is_boolean_literal(lexer::lexling& lexling) {
-        return (lexling.p_value == "wave.boolean.true" || lexling.p_value == "wave.boolean.false");
+    bool string_is_boolean_literal(std::string literal) {
+        return (literal == "wave.boolean.true" || literal == "wave.boolean.false");
     }
 
     std::vector<std::string> get_all_instruction_literal_suffixes() {
@@ -176,19 +175,19 @@ namespace literals {
         return -1;
     }
 
-    bool string_is_instruction_literal(lexer::lexling& lexling) {
+    bool string_is_instruction_literal(std::string literal) {
         std::string instruction_prefix = "wave.instruction.";
         std::vector<std::string> suffixes = get_all_instruction_literal_suffixes();
 
         // check for prefix
-        if (!basic::string_contains_at(lexling.p_value, 0, instruction_prefix)) {
+        if (!basic::string_contains_at(literal, 0, instruction_prefix)) {
             return false;
         }
 
         // check for suffixes
         for (basic::u64 suffix = 0; suffix < suffixes.size(); suffix++) {
             // check suffix
-            if (basic::string_contains_at(lexling.p_value, instruction_prefix.length(), suffixes[suffix])) {
+            if (basic::string_contains_at(literal, instruction_prefix.length(), suffixes[suffix])) {
                 // if found, return true
                 return true;
             }
@@ -198,35 +197,35 @@ namespace literals {
         return false;
     }
 
-    bool string_is_hexadecimal_literal(lexer::lexling& lexling) {
+    bool string_is_hexadecimal_literal(std::string literal) {
         std::string prefix = "wave.hexadecimal.";
         bool error;
 
         // check for prefix
-        if (basic::string_contains_at(lexling.p_value, 0, prefix) == false) {
+        if (basic::string_contains_at(literal, 0, prefix) == false) {
             // does not contain prefix
             return false;
         }
 
         // attempt conversion
-        basic::convert_hexadecimal_literal_to_binary_integer(lexling.p_value.substr(prefix.length()), error);
+        basic::convert_hexadecimal_literal_to_binary_integer(literal.substr(prefix.length()), error);
 
         // return findings
         return !error;
     }
 
-    bool string_is_binary_literal(lexer::lexling& lexling) {
+    bool string_is_binary_literal(std::string literal) {
         std::string prefix = "wave.binary.";
         bool error;
 
         // check for prefix
-        if (basic::string_contains_at(lexling.p_value, 0, prefix) == false) {
+        if (basic::string_contains_at(literal, 0, prefix) == false) {
             // does not contain prefix
             return false;
         }
 
         // attempt conversion
-        basic::convert_binary_literal_to_binary_integer(lexling.p_value.substr(prefix.length()), error);
+        basic::convert_binary_literal_to_binary_integer(literal.substr(prefix.length()), error);
 
         // return findings
         return !error;

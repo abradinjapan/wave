@@ -131,28 +131,28 @@ namespace parser {
                     // next lexling
                     lexling_index += 2;
                 // check for integer literal
-                } else if (literals::string_is_integer_literal(lexlings.p_lexlings[lexling_index])) {
+                } else if (literals::string_is_integer_literal(lexlings.p_lexlings[lexling_index].p_value)) {
                     // add argument
                     output.push_back(name(name_type::is_integer_literal, lexlings.p_lexlings[lexling_index].p_value));
 
                     // next argument
                     lexling_index++;
                 // check for boolean literal
-                } else if (literals::string_is_boolean_literal(lexlings.p_lexlings[lexling_index])) {
+                } else if (literals::string_is_boolean_literal(lexlings.p_lexlings[lexling_index].p_value)) {
                     // add argument
                     output.push_back(name(name_type::is_boolean_literal, lexlings.p_lexlings[lexling_index].p_value));
 
                     // next argument
                     lexling_index++;
                 // check for instruction literal
-                } else if (literals::string_is_instruction_literal(lexlings.p_lexlings[lexling_index])) {
+                } else if (literals::string_is_instruction_literal(lexlings.p_lexlings[lexling_index].p_value)) {
                     // add argument
                     output.push_back(name(name_type::is_instruction_literal, lexlings.p_lexlings[lexling_index].p_value));
 
                     // next argument
                     lexling_index++;
                 // check for hexadecimal literal
-                } else if (literals::string_is_hexadecimal_literal(lexlings.p_lexlings[lexling_index])) {
+                } else if (literals::string_is_hexadecimal_literal(lexlings.p_lexlings[lexling_index].p_value)) {
                     // add argument
                     output.push_back(name(name_type::is_hexadecimal_literal, lexlings.p_lexlings[lexling_index].p_value));
 
@@ -166,7 +166,7 @@ namespace parser {
                     // next argument
                     lexling_index++;
                 // check for binary literal
-                } else if (literals::string_is_binary_literal(lexlings.p_lexlings[lexling_index])) {
+                } else if (literals::string_is_binary_literal(lexlings.p_lexlings[lexling_index].p_value)) {
                     // add argument
                     output.push_back(name(name_type::is_binary_literal, lexlings.p_lexlings[lexling_index].p_value));
 
